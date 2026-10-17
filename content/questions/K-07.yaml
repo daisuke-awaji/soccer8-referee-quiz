@@ -1,0 +1,114 @@
+# K-07 キックオフの笛の前に
+# 根拠: 世田谷少年サッカー連盟「審判基本マニュアル」【試合】「主審は選手の人数。副審・第4審判の位置。時計を確認した後、開始の合図を笛で行い、試合を開始する」
+#       関西学生サッカー連盟「審判活動のガイドライン」（3）キックオフ「①主審は両チームが…所定の位置にいることを確認する。
+#       ②主審は、笛を吹く前に副審１、副審２に、守備チーム、攻撃チームが、正規のポジションにいることを確かめる。
+#       （副審は、何か異常を認めたときは、旗を真上に上げる）③キックオフの笛を吹く」
+#       競技規則 第8条「主審が合図する」
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: K-07
+category: matchStart
+badges: []
+review: {status: draft, note: 笛の前の確認の手順は、競技規則ではなく連盟のマニュアルによる。監修で確認する}
+title: キックオフの笛の前に
+kind: 2d
+hint: 主審が笛を吹く前に確かめるのは、試合を正しく始めるための準備です。
+scene:
+  actors:
+    - {id: REF, role: referee}
+    - {id: AR1, role: assistant}
+    - {id: AR2, role: assistant}
+    - {id: R1, role: goalkeeper, team: red, label: "1"}
+    - {id: R2, role: player, team: red, label: "2"}
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R4, role: player, team: red, label: "4"}
+    - {id: R5, role: player, team: red, label: "5"}
+    - {id: R6, role: player, team: red, label: "6"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R8, role: player, team: red, label: "8"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: B2, role: player, team: blue, label: "2"}
+    - {id: B3, role: player, team: blue, label: "3"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B7, role: player, team: blue, label: "7"}
+    - {id: B8, role: player, team: blue, label: "8"}
+    - {id: ball, role: ball}
+  timeline:
+    - t: 0
+      positions:
+        REF: [29, 16]
+        AR1: [11, -0.9]
+        AR2: [56.5, 50.9]
+        ball: [34, 25]
+        R1: [3, 25]
+        R2: [12, 14]
+        R3: [11, 25]
+        R4: [12, 36]
+        R5: [25, 10]
+        R6: [24, 25]
+        R7: [25, 40]
+        R8: [33.1, 25.5]
+        B1: [65, 25]
+        B2: [54, 14]
+        B3: [56.5, 26]
+        B4: [53, 37]
+        B5: [46, 10]
+        B6: [44, 25]
+        B7: [46, 40]
+        B8: [43.5, 30]
+      events:
+        - {type: caption, text: 赤チームのキックオフ。両チームが位置についた}
+    - t: 1
+      events:
+        - {type: caption, text: 主審は、笛を吹く前に何を確かめる？}
+        - {type: highlight, actor: AR1, dur: 1}
+        - {type: highlight, actor: AR2, dur: 1}
+    - t: 2.5
+      events:
+        - {type: caption, text: 人数・副審の位置・時計を確かめる}
+        - {type: highlight, actor: AR1, dur: 1}
+    - t: 3.5
+      events:
+        - {type: highlight, actor: AR2, dur: 1}
+    - t: 4.5
+      positions:
+        ball: [34, 25]
+      events:
+        - {type: whistle}
+        - {type: caption, text: キックオフの笛}
+    - t: 4.8
+      positions:
+        R8: [33.3, 25.4]
+        ball: [34, 25]
+    - t: 5.8
+      positions:
+        ball: [25, 25]
+        R6: [24, 25]
+  pauseAt: 1
+  endAt: 5.8
+steps:
+  - type: choice
+    question: キックオフの笛を吹く前に、主審が確かめることとして「誤っている」ものは？
+    choices:
+      - {id: coach, text: 両チームの監督に、試合を始めてよいかをたずねる}
+      - id: count
+        text: 両チームの競技者の人数がそろっていること
+        feedback: これは笛の前に確かめることです。8人制では、どちらかのチームが6人未満なら試合を始めません。
+      - id: ar
+        text: 副審が位置について、準備ができていること
+        feedback: これは笛の前に確かめることです。主審は笛の前に、副審の準備ができているかを確かめます。
+      - id: watch
+        text: 時計（試合時間を計る準備）
+        feedback: これは笛の前に確かめることです。試合時間を正しく計れるように、時計の準備をしておきます。
+    answer: coach
+explain:
+  summary: 主審は、競技者の人数・副審の位置・時計を確かめてから、キックオフの笛を吹きます。監督に許可をもらう必要はありません。
+  detail: 世田谷少年サッカー連盟のマニュアルでは、主審は「選手の人数、副審（第4の審判員）の位置、時計」を確かめてから、笛で開始の合図をするとしています。関西学生サッカー連盟のガイドラインでは、主審は笛の前に副審に、両チームが正しい位置にいるかを確かめ、副審は何か異常があれば旗を真上に上げる、としています。キックオフの合図をするのは主審です（第8条）。
+  overlays:
+    - {type: sightLine, from: REF, to: AR1}
+    - {type: sightLine, from: REF, to: AR2}
+refs:
+  - {src: setagaya, article: 審判基本マニュアル【試合】}
+  - {src: kansaiUniv, article: 試合の進行（3）キックオフ ①〜③}
+  - {src: laws, article: 第8条 プレーの開始および再開 1. キックオフ}

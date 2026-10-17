@@ -11,3 +11,15 @@ apply2627:
 laws:
   label: JFA サッカー競技規則
   url: https://www.jfa.jp/laws/soccer/2025_26
+guidelines:
+  label: JFA 審判員のための実践的ガイドライン
+  url: https://www.jfa.jp/laws/soccer/guidelines
+osakaFA:
+  label: 大阪府サッカー協会 初心者のためのレフェリーズマニュアル
+  url: https://osaka-fa.or.jp/referee/wp-content/uploads/sites/4/2021/12/8249052c0407cb8516e1ef883f3efbee.pdf
+setagaya:
+  label: 世田谷少年サッカー連盟 審判員規定および基本マニュアル
+  url: http://www.sjfl.tokyo/dl/hb/23-47-52.pdf
+kansaiUniv:
+  label: 関西学生サッカー連盟 審判活動のガイドライン
+  url: https://www.jufa-kansai.jp/document24st/notice_06.pdf

@@ -1,0 +1,108 @@
+# K-10 相手の陣地にいたままキックオフ
+# 根拠: 競技規則 第8条 1. キックオフ「すべてのキックオフにおいて、キックオフを行う競技者を除いて、すべての競技者は、
+#       競技のフィールドの自分たちのハーフ内にいなければならない」
+#       反則と罰則「キックオフの進め方に対して、その他の反則があった場合、キックオフを再び行う」
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: K-10
+category: matchStart
+badges: []
+review: {status: draft}
+title: 相手の陣地にいたままキックオフ
+kind: 2d
+hint: キックオフのとき、競技者はどこにいなければならないでしょう。
+scene:
+  actors:
+    - {id: REF, role: referee}
+    - {id: AR1, role: assistant}
+    - {id: AR2, role: assistant}
+    - {id: R1, role: goalkeeper, team: red, label: "1"}
+    - {id: R2, role: player, team: red, label: "2"}
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R4, role: player, team: red, label: "4"}
+    - {id: R5, role: player, team: red, label: "5"}
+    - {id: R6, role: player, team: red, label: "6"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R8, role: player, team: red, label: "8"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: B2, role: player, team: blue, label: "2"}
+    - {id: B3, role: player, team: blue, label: "3"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B7, role: player, team: blue, label: "7"}
+    - {id: B8, role: player, team: blue, label: "8"}
+    - {id: ball, role: ball}
+  timeline:
+    - t: 0
+      positions:
+        REF: [29, 16]
+        AR1: [11, -0.9]
+        AR2: [56.5, 50.9]
+        ball: [34, 25]
+        R1: [3, 25]
+        R2: [12, 14]
+        R3: [11, 25]
+        R4: [12, 36]
+        R5: [25, 10]
+        R6: [24, 25]
+        R7: [25, 40]
+        R8: [33.1, 25.5]
+        B1: [65, 25]
+        B2: [54, 14]
+        B3: [56.5, 26]
+        B4: [53, 37]
+        B5: [46, 10]
+        B6: [44, 25]
+        B7: [46, 40]
+        B8: [30, 41]
+      events:
+        - {type: caption, text: 赤チームのキックオフ。両チームの位置をよく見よう}
+    - t: 1.5
+      positions:
+        ball: [34, 25]
+      events:
+        - {type: whistle}
+    - t: 1.8
+      positions:
+        R8: [33.3, 25.4]
+        ball: [34, 25]
+    - t: 2.8
+      positions:
+        ball: [25, 25]
+        R6: [24, 25]
+    - t: 3.2
+      events:
+        - {type: whistle}
+        - {type: caption, text: 主審が笛でプレーを止めた}
+        - {type: highlight, actor: B8, dur: 3}
+    - t: 4.8
+      positions:
+        B8: [40, 41]
+        ball: [34, 25]
+        R6: [24, 25]
+      events:
+        - {type: caption, text: 青8番を自分の陣地に戻して、キックオフをやり直す}
+  pauseAt: 3.2
+  endAt: 4.8
+steps:
+  - type: choice
+    question: 青8番が、相手の陣地（赤の陣地）にいたままキックオフが行われました。主審はプレーを止めました。どう再開しますか？
+    choices:
+      - {id: retake, text: キックオフをやり直す}
+      - id: ifk
+        text: 赤チームの間接フリーキック
+        feedback: キックオフの進め方の違反（自分の陣地にいなかった）は、フリーキックではなく、キックオフのやり直しです。
+      - id: drop
+        text: ドロップボール
+        feedback: 第8条で、キックオフの進め方に反則があったときは、キックオフを再び行うと決められています。
+      - id: blue
+        text: 青チームのキックオフ
+        feedback: キックオフをするのは、もともとの赤チームです。同じチームがやり直します。
+    answer: retake
+explain:
+  summary: キックオフのとき、キッカー以外の競技者は全員が自分の陣地にいなければなりません。違反があれば、キックオフをやり直します。
+  detail: 第8条では、キックオフを行う競技者を除き、すべての競技者が自分たちのハーフ内にいなければならないと定めています。キックオフの進め方に反則があった場合は、キックオフを再び行います。こうならないように、主審は笛の前に両チームの位置を確かめます（K-07）。なお、キッカーがほかの競技者より先に2回続けてボールに触れた場合は、相手チームの間接フリーキックです。
+  overlays:
+    - {type: zone, x1: 0, x2: 34, y1: 0, y2: 50, label: 赤の陣地}
+refs:
+  - {src: laws, article: 第8条 プレーの開始および再開 1. キックオフ／反則と罰則}

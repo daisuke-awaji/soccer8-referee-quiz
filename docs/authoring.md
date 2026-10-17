@@ -14,7 +14,7 @@
 ## ファイルの形
 
 ```yaml
-id: D-05                 # ファイル名と同じ。分野の英字（A〜J）＋2〜3桁
+id: D-05                 # ファイル名と同じ。分野の英字（A〜K）＋2〜3桁
 category: offside        # content/categories.yaml の ID
 badges: []               # new2026 = 2026/27改正点 / provisional = 一部が監修前の暫定解答
 review: {status: draft}  # draft → inReview → approved
@@ -58,7 +58,7 @@ scene:
   endAt: 4.0       # 解説リプレイの終わり（pauseAt より後の動きは、解説でだけ見せる）
 ```
 
-ほかのイベント: `countdown`（5秒のカウントダウン: `{type: countdown, by: REF, from: 5, dur: 5}`）、`flag`（副審の旗）。
+ほかのイベント: `countdown`（5秒のカウントダウン: `{type: countdown, by: REF, from: 5, dur: 5}`）、`flag`（副審の旗）、`coin`（コイントス: `{type: coin, by: REF, result: heads}`。最初の1.2秒はコインが回り、そのあと `dur` 秒（省略時3秒）まで「表」または「裏」を出す。`tails` なら裏）。
 
 ### 問い（steps）
 

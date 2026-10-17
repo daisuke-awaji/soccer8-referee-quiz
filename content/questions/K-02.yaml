@@ -1,0 +1,107 @@
+# K-02 挨拶のあとの握手
+# 根拠: 大阪府サッカー協会「初心者のためのレフェリーズマニュアル」試合の進行 P.9（PDF 11ページ）
+#       「入場 ②片方のチーム（通常は主審の左手側）のチームが移動し審判団および相手チームと握手を行う ③主審が両チームのキャプテンを呼んでトスを行う」
+# 画面では、全員がベンチ側（左）を向いている。主審の左手側は画面の下（x が小さい側）＝赤チーム
+id: K-02
+category: matchStart
+badges: [provisional]
+review: {status: draft, note: 「通常は主審の左手側のチームが動く」は大阪府FAのマニュアルの記述。地域・大会で違う場合がある。監修で確認する}
+title: 挨拶のあとの握手
+kind: 2d
+hint: 全員がベンチ側（画面の左）を向いています。主審から見て左手はどちらでしょう。
+scene:
+  view: {x: 4, y: -6, w: 60, h: 30}
+  actors:
+    - {id: AR1, role: assistant}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+    - {id: R1, role: goalkeeper, team: red, label: "1"}
+    - {id: R2, role: player, team: red, label: "2"}
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R4, role: player, team: red, label: "4"}
+    - {id: R5, role: player, team: red, label: "5"}
+    - {id: R6, role: player, team: red, label: "6"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R8, role: player, team: red, label: "8"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: B2, role: player, team: blue, label: "2"}
+    - {id: B3, role: player, team: blue, label: "3"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B7, role: player, team: blue, label: "7"}
+    - {id: B8, role: player, team: blue, label: "8"}
+  timeline:
+    - t: 0
+      positions:
+        AR1: [31.4, 5.5]
+        REF: [34, 5.5]
+        AR2: [36.6, 5.5]
+        R1: [28.8, 5.5]
+        B1: [39.2, 5.5]
+        R2: [26.2, 5.5]
+        B2: [41.8, 5.5]
+        R3: [23.6, 5.5]
+        B3: [44.4, 5.5]
+        R4: [21, 5.5]
+        B4: [47, 5.5]
+        R5: [18.4, 5.5]
+        B5: [49.6, 5.5]
+        R6: [15.8, 5.5]
+        B6: [52.2, 5.5]
+        R7: [13.2, 5.5]
+        B7: [54.8, 5.5]
+        R8: [10.6, 5.5]
+        B8: [57.4, 5.5]
+      events:
+        - {type: caption, text: 整列して挨拶が終わった。次は握手}
+    - t: 1.5
+      events:
+        - {type: caption, text: 握手のために動くのは、どちらのチーム？}
+    - t: 2.5
+      positions:
+        R1: [28.8, 2.6]
+        R2: [26.2, 2.6]
+        R3: [23.6, 2.6]
+        R4: [21, 2.6]
+        R5: [18.4, 2.6]
+        R6: [15.8, 2.6]
+        R7: [13.2, 2.6]
+        R8: [10.6, 2.6]
+      events:
+        - {type: caption, text: 赤チームが一歩前に出て、列の前を進む}
+    - t: 8.5
+      positions:
+        R1: [59.8, 2.6]
+        R2: [57.2, 2.6]
+        R3: [54.6, 2.6]
+        R4: [52, 2.6]
+        R5: [49.4, 2.6]
+        R6: [46.8, 2.6]
+        R7: [44.2, 2.6]
+        R8: [41.6, 2.6]
+      events:
+        - {type: caption, text: 審判員と、青チームの全員と握手していく}
+    - t: 10
+      events:
+        - {type: caption, text: 握手のあと、主審がキャプテンを呼んでコイントス}
+  pauseAt: 1.5
+  endAt: 10
+steps:
+  - type: choice
+    question: 握手のとき、ふつう動くのはどちらのチームですか？（全員が画面の左を向いています）
+    choices:
+      - {id: left, text: 主審から見て左手側のチーム（赤）が動き、審判員と相手チームの前を通って握手する}
+      - id: right
+        text: 主審から見て右手側のチーム（青）が動き、審判員と相手チームの前を通って握手する
+        feedback: 大阪府サッカー協会のマニュアルでは、通常は「主審の左手側」のチームが動くとしています。左を向いた主審の左手側は、画面の下の赤チームです。
+      - id: refs
+        text: 審判員だけが動き、両チームの選手と順番に握手する
+        feedback: 審判員は動かずに待ちます。片方のチームが移動して、審判員と相手チームに握手していきます。
+    answer: left
+explain:
+  summary: 挨拶のあと、片方のチーム（通常は主審の左手側）が移動して、審判員と相手チームと握手します。
+  detail: 大阪府サッカー協会のマニュアルの手順です。動いたチームが全員と握手を終えたら、主審が両チームのキャプテンを呼んでコイントスを行います。どちらのチームが動くかは、大会の運営で決まっていることもあります。
+  overlays: []
+refs:
+  - {src: osakaFA, article: 試合の進行「入場」②③（P.9）}

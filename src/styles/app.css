@@ -126,6 +126,8 @@ a { color: inherit; text-decoration: underline; text-decoration-color: var(--lin
 .bub-text { font-size: 1.6px; font-weight: 700; text-anchor: middle; fill: #171717; font-family: var(--sans); }
 .bub-whistle rect { fill: #fff; }
 .bub-count rect { fill: #fff; } .bub-zero rect { fill: #ffd7d5; }
+.bub-coin rect { fill: #fff3c4; }
+.coin ellipse { fill: #f6c945; stroke: #9a6b00; stroke-width: 0.16; }
 
 .stage-caption {
   display: flex; align-items: center; min-height: 2.8em; padding: 6px 12px;

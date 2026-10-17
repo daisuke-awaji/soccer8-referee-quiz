@@ -31,6 +31,7 @@ function txt(parent: Element, x: number, y: number, str: string, cls?: string, e
 }
 
 const COLORS = { red: '#e53935', blue: '#1e63d6', gkBlue: '#ffb300', gkRed: '#8e24aa', ref: '#111', refRing: '#ffeb3b' };
+const COIN_SPIN = 1.2;
 const OFFICIAL_LABEL: Partial<Record<Actor['role'], string>> = { referee: '主', assistant: '副', fourth: '4', assistantSingle: '補' };
 
 export interface Pitch2DOptions {
@@ -353,6 +354,9 @@ export class Pitch2D implements StageEngine {
       } else if (ev.type === 'flag') {
         const a = this.actorEls[ev.by];
         if (a?.flag) a.flag.setAttribute('opacity', age <= (ev.dur ?? 99) ? '1' : '0');
+      } else if (ev.type === 'coin' && age <= ev.dur) {
+        if (age < COIN_SPIN) this.coin(ev.by, age);
+        else this.bubble(ev.by, ev.result === 'heads' ? '表' : '裏', 'bub-coin');
       }
     }
     if (this.opts.onCaption && caption !== this.lastCaption) {
@@ -360,6 +364,16 @@ export class Pitch2D implements StageEngine {
       this.opts.onCaption(caption);
     }
     for (const o of this.overlayItems) o.update(t);
+  }
+  /** 空中で回るコイン（age = 投げてからの秒数） */
+  private coin(actorId: string, age: number) {
+    const p = this.pos(actorId, this.t);
+    if (!p) return;
+    const [X, Y] = S(p[0], p[1]);
+    const k = age / COIN_SPIN;
+    const lift = 2.4 + 4 * Math.sin(Math.PI * k);
+    const g = el('g', { class: 'coin', transform: `translate(${X} ${Y - lift})` }, this.gBubbles);
+    el('ellipse', { rx: Math.max(0.12, 0.9 * Math.abs(Math.cos(k * Math.PI * 6))), ry: 0.9 }, g);
   }
   private bubble(actorId: string, str: string, cls: string) {
     const p = this.pos(actorId, this.t);

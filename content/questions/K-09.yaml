@@ -1,0 +1,109 @@
+# K-09 キックオフから直接ゴールに入った
+# 根拠: 8人制競技規則 第8条（P.4）「キックオフしたボールが直接相手チームのゴールに入った場合、相手チームにゴールキックが与えられる」
+#       8人制と11人制の違い（P.6）キックオフ「直接得点することができない」（11人制は「直接得点することができる」）
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: K-09
+category: matchStart
+badges: []
+review: {status: draft}
+title: キックオフから直接ゴールへ
+kind: 2d
+hint: 8人制と11人制で、扱いが違います。
+scene:
+  actors:
+    - {id: REF, role: referee}
+    - {id: AR1, role: assistant}
+    - {id: AR2, role: assistant}
+    - {id: R1, role: goalkeeper, team: red, label: "1"}
+    - {id: R2, role: player, team: red, label: "2"}
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R4, role: player, team: red, label: "4"}
+    - {id: R5, role: player, team: red, label: "5"}
+    - {id: R6, role: player, team: red, label: "6"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R8, role: player, team: red, label: "8"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: B2, role: player, team: blue, label: "2"}
+    - {id: B3, role: player, team: blue, label: "3"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B7, role: player, team: blue, label: "7"}
+    - {id: B8, role: player, team: blue, label: "8"}
+    - {id: ball, role: ball}
+  timeline:
+    - t: 0
+      positions:
+        REF: [29, 16]
+        AR1: [11, -0.9]
+        AR2: [56.5, 50.9]
+        ball: [34, 25]
+        R1: [3, 25]
+        R2: [12, 14]
+        R3: [11, 25]
+        R4: [12, 36]
+        R5: [25, 10]
+        R6: [24, 25]
+        R7: [25, 40]
+        R8: [33.1, 25.5]
+        B1: [65, 25]
+        B2: [54, 14]
+        B3: [56.5, 26]
+        B4: [53, 37]
+        B5: [46, 10]
+        B6: [44, 25]
+        B7: [46, 40]
+        B8: [43.5, 30]
+      events:
+        - {type: caption, text: 赤チームのキックオフ}
+    - t: 1
+      positions:
+        ball: [34, 25]
+        B1: [62, 29]
+      events:
+        - {type: whistle}
+    - t: 1.3
+      positions:
+        R8: [33.4, 25.4]
+        ball: [34, 25]
+      events:
+        - {type: caption, text: 赤8番が、そのまま青ゴールへ大きくける}
+    - t: 3.6
+      positions:
+        ball: [68.6, 24]
+        B1: [64.5, 27.5]
+      events:
+        - {type: caption, text: 誰にも触れずに、ゴールに入った}
+    - t: 3.8
+      events:
+        - {type: highlight, actor: ball, dur: 1.2}
+    - t: 5
+      positions:
+        ball: [66, 22]
+        B1: [65.2, 21.3]
+      events:
+        - {type: caption, text: 得点にならず、青チームのゴールキック}
+  pauseAt: 3.8
+  endAt: 5
+steps:
+  - type: choice
+    question: キックオフのボールが、誰にも触れずに相手ゴールに入りました。どうしますか？
+    choices:
+      - id: goal
+        text: 得点を認める
+        feedback: 11人制ならキックオフから直接得点できますが、8人制では得点になりません。
+      - {id: gk, text: 得点を認めず、青チームのゴールキック}
+      - id: retake
+        text: 得点を認めず、キックオフをやり直す
+        feedback: キックオフは正しく行われているので、やり直しにはなりません。8人制では、相手チームのゴールキックで再開します。
+      - id: ifk
+        text: 得点を認めず、青チームの間接フリーキック
+        feedback: 反則ではありません。8人制競技規則では、相手チームのゴールキックと決められています。
+    answer: gk
+explain:
+  summary: 8人制では、キックオフのボールが直接相手のゴールに入っても得点にならず、相手チームのゴールキックになります。
+  detail: 8人制競技規則 第8条の修正です。11人制ではキックオフから直接得点できますが、8人制では「直接得点することができない」とされています（8人制と11人制の違いの表）。ほかの競技者がボールに触れてからゴールに入れば、得点になります。
+  overlays: []
+refs:
+  - {src: eight, article: 第8条 プレーの開始及び再開（P.4）}
+  - {src: eight, article: 8人制サッカーと11人制サッカーの違い キックオフ（P.6）}

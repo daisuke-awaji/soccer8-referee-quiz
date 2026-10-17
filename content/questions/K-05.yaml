@@ -1,0 +1,119 @@
+# K-05 前半と後半のキックオフ
+# 根拠: 競技規則 第8条 1. キックオフ 進め方
+#       「トスに勝ったチームが、前半にどちらのゴールを攻めるのか、またはキックオフを行うのかを決める」
+#       「この結果により、相手チームがキックオフを行うのか、または前半にどちらのゴールを攻めるのかを決める」
+#       「前半にどちらのゴールを攻めるのかを決めたチームは、後半開始のキックオフを行う」
+#       「試合の後半には、両チームは、エンドを替え、反対のゴールを攻める」
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: K-05
+category: matchStart
+badges: []
+review: {status: draft}
+title: 前半と後半のキックオフ
+kind: 2d
+hint: トスに勝ったチームが選ばなかったほうを、相手チームが受け持ちます。
+scene:
+  actors:
+    - {id: REF, role: referee}
+    - {id: AR1, role: assistant}
+    - {id: AR2, role: assistant}
+    - {id: R1, role: goalkeeper, team: red, label: "1"}
+    - {id: R2, role: player, team: red, label: "2"}
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R4, role: player, team: red, label: "4"}
+    - {id: R5, role: player, team: red, label: "5"}
+    - {id: R6, role: player, team: red, label: "6"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R8, role: player, team: red, label: "8"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: B2, role: player, team: blue, label: "2"}
+    - {id: B3, role: player, team: blue, label: "3"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B7, role: player, team: blue, label: "7"}
+    - {id: B8, role: player, team: blue, label: "8"}
+    - {id: ball, role: ball}
+  timeline:
+    - t: 0
+      positions:
+        REF: [29, 16]
+        AR1: [10, -0.9]
+        AR2: [57, 50.9]
+        ball: [34, 25]
+        R1: [3, 25]
+        R2: [11, 14]
+        R3: [10, 25]
+        R4: [11, 36]
+        R5: [19, 9]
+        R6: [18, 25]
+        R7: [19, 41]
+        R8: [24.5, 22]
+        B1: [65, 25]
+        B2: [56, 14]
+        B3: [57, 25]
+        B4: [56, 36]
+        B5: [45, 10]
+        B6: [44, 25]
+        B7: [45, 40]
+        B8: [38, 30]
+      events:
+        - {type: caption, text: 赤がトスに勝ち、「前半は上のゴールを攻める」を選んだ}
+    - t: 1
+      events:
+        - {type: caption, text: 前半のキックオフをするのは？}
+    - t: 2.5
+      positions:
+        B8: [34.9, 25.6]
+      events:
+        - {type: caption, text: 青チームが前半のキックオフ}
+        - {type: highlight, actor: B8, dur: 1.5}
+    - t: 3
+      positions:
+        ball: [34, 25]
+      events:
+        - {type: whistle}
+    - t: 3.3
+      positions:
+        B8: [35.2, 25.4]
+        ball: [34, 25]
+    - t: 4.3
+      positions:
+        ball: [43, 25]
+        B6: [44, 25]
+      events:
+        - {type: caption, text: 前半開始}
+    - t: 6
+      events:
+        - {type: caption, text: 後半は赤チームがキックオフ。両チームはエンドを替える}
+  pauseAt: 1
+  endAt: 6
+steps:
+  - type: choice
+    question: 赤チームがトスに勝ち、前半に攻めるゴールを選びました。前半のキックオフをするのは？
+    choices:
+      - {id: blue, text: 青チーム}
+      - id: red
+        text: 赤チーム
+        feedback: 赤チームはゴールを選んだので、キックオフは相手の青チームが行います。勝ったチームが決めるのは、ゴールかキックオフの「どちらか」です。
+      - id: toss
+        text: もう一度コイントスをして決める
+        feedback: トスは1回だけです。勝ったチームが選ばなかったほうを、相手チームが受け持ちます。
+    answer: blue
+  - type: choice
+    question: では、後半開始のキックオフは？
+    choices:
+      - {id: redswap, text: 赤チームがキックオフする。両チームはエンドを替える}
+      - id: blueswap
+        text: 青チームが続けてキックオフする。両チームはエンドを替える
+        feedback: 後半開始のキックオフは、前半に攻めるゴールを選んだチーム（赤）が行います。
+      - id: redstay
+        text: 赤チームがキックオフする。エンドは前半のまま
+        feedback: 後半は、両チームがエンドを替えて反対のゴールを攻めます。
+    answer: redswap
+explain:
+  summary: ゴールを選んだのが赤なら、前半のキックオフは青です。後半は{{エンド}}を替えて、ゴールを選んだ赤がキックオフします。
+  detail: 第8条では「前半にどちらのゴールを攻めるのかを決めたチームは、後半開始のキックオフを行う」と決められています。前半と後半で、両チームが1回ずつキックオフをすることになります。キックオフのあと、得点が入った場合は、得点されたチームがキックオフします。
+  overlays: []
+refs:
+  - {src: laws, article: 第8条 プレーの開始および再開 1. キックオフ 進め方}

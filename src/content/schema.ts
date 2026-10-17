@@ -20,6 +20,7 @@ export const CATEGORY_IDS = [
   'foul3d',
   'signals',
   'matchTime',
+  'matchStart',
 ] as const;
 export const Category = z.enum(CATEGORY_IDS);
 export type Category = z.infer<typeof Category>;
@@ -49,6 +50,13 @@ const SceneEvent = z.discriminatedUnion('type', [
     dur: z.number().positive(),
   }),
   z.object({ type: z.literal('flag'), by: z.string(), dur: z.number().positive().optional() }),
+  /** コイントス。最初の 1.2 秒はコインが回り、そのあと dur 秒まで結果（表・裏）を出す */
+  z.object({
+    type: z.literal('coin'),
+    by: z.string().default('REF'),
+    result: z.enum(['heads', 'tails']),
+    dur: z.number().positive().default(3),
+  }),
 ]);
 export type SceneEvent = z.infer<typeof SceneEvent>;
 
@@ -197,7 +205,7 @@ export type Overlay = z.infer<typeof Overlay>;
 export const ReviewStatus = z.enum(['draft', 'inReview', 'approved']);
 
 const QuestionBase = {
-  id: z.string().regex(/^[A-J]-\d{2,3}$/, 'ID は「A-01」の形式（分野の英字 A〜J＋2〜3桁）'),
+  id: z.string().regex(/^[A-K]-\d{2,3}$/, 'ID は「A-01」の形式（分野の英字 A〜K＋2〜3桁）'),
   category: Category,
   /** new2026 = 2026/27改正点 / provisional = 一部が監修前の暫定解答 */
   badges: z.array(z.enum(['new2026', 'provisional'])).default([]),

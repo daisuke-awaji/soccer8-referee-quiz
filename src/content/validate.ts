@@ -89,7 +89,7 @@ export function validateContent(bundle: ContentBundle): ContentIssue[] {
           placed.add(id);
         }
         for (const ev of kf.events ?? []) {
-          const ref = ev.type === 'highlight' ? ev.actor : ev.type === 'countdown' || ev.type === 'flag' ? ev.by : null;
+          const ref = ev.type === 'highlight' ? ev.actor : ev.type === 'countdown' || ev.type === 'flag' || ev.type === 'coin' ? ev.by : null;
           if (ref && !actorIds.has(ref)) add(`${at}: イベント「${ev.type}」の登場人物「${ref}」が actors にありません`);
         }
       });

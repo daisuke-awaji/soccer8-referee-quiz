@@ -9,3 +9,4 @@ foul3d: ファウル判定（3D）
 foul: ファウル・不正行為
 signals: シグナル
 matchTime: 試合時間・勝敗
+matchStart: 試合開始の手順
