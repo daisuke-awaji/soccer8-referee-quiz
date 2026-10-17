@@ -9,7 +9,7 @@ import path from 'node:path';
 import { parse } from 'yaml';
 import type { Plugin } from 'vite';
 import { z } from 'zod';
-import { Categories, Glossary, Question, Sources } from '../src/content/schema.ts';
+import { Categories, Glossary, Question, Sources, Stages } from '../src/content/schema.ts';
 import { validateContent, type ContentBundle, type ContentIssue } from '../src/content/validate.ts';
 
 export const CONTENT_DIR = path.resolve(import.meta.dirname, '..', 'content');
@@ -50,6 +50,7 @@ export function loadContent(dir: string = CONTENT_DIR): LoadResult {
   const sources = load(path.join(dir, 'sources.yaml'), Sources, {});
   const glossary = load(path.join(dir, 'glossary.yaml'), Glossary, {});
   const categories = load(path.join(dir, 'categories.yaml'), Categories, {} as Categories);
+  const stages = load(path.join(dir, 'stages.yaml'), Stages, []);
 
   const qdir = path.join(dir, 'questions');
   const questions: Question[] = [];
@@ -73,7 +74,7 @@ export function loadContent(dir: string = CONTENT_DIR): LoadResult {
     questions.push(r.data);
   }
 
-  const bundle: ContentBundle = { questions, sources, glossary, categories };
+  const bundle: ContentBundle = { questions, sources, glossary, categories, stages };
   issues.push(...validateContent(bundle));
   return { bundle, issues, files };
 }

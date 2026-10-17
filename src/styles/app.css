@@ -65,6 +65,15 @@ a { color: inherit; text-decoration: underline; text-decoration-color: var(--lin
 .home h1 { font-size: 1.9rem; line-height: 1.2; font-weight: 700; letter-spacing: -.02em; margin: 0 0 12px; }
 .home .lead { margin: 0; color: var(--muted); font-size: .95rem; }
 .home .meta { margin: 14px 0 0; font-family: var(--mono); font-size: .78rem; color: var(--muted); }
+.stages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.stage-card { width: 100%; height: 100%; display: grid; justify-items: start; align-content: start; gap: 4px; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; color: var(--ink); transition: background .12s, border-color .12s, transform .08s; }
+.stage-card:hover { background: var(--bg-2); border-color: var(--line-2); }
+.stage-card:active { transform: scale(.98); }
+.stage-card.now { border-color: var(--ink); }
+.stage-icon { font-size: 2rem; line-height: 1.2; }
+.stage-title { font-weight: 600; font-size: .95rem; line-height: 1.4; }
+.stage-meta { font-family: var(--mono); font-size: .75rem; color: var(--muted); }
+.stage-card.now .stage-meta { color: var(--ink); }
 .resume { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .resume strong { font-weight: 600; }
 .howto ol { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 12px; }

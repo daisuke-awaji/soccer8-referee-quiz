@@ -1,0 +1,21 @@
+# ステージ（ホームに並ぶ順）。どの問題も、どれか1つのステージに入れる（npm run content:check で確かめる）
+- id: field
+  icon: 🥅
+  title: フィールドと用具
+  questions: [A-01, A-02, A-06, A-07, A-08, A-09, A-10, F-01, F-05, B-06]
+- id: kickoff
+  icon: 🪙
+  title: 試合開始の手順
+  questions: [K-01, K-02, K-03, K-04, K-05, K-06, K-07, K-08, K-09, K-10]
+- id: players
+  icon: ⏱️
+  title: 時間・人数・交代
+  questions: [J-03, J-04, J-05, J-06, B-01, B-03, B-04, B-05, B-09, F-04]
+- id: keeper
+  icon: 🧤
+  title: GKと手・懲戒
+  questions: [G-03, G-13, G-14, G-15, G-16, G-17, G-18, G-19, G-02, G-11]
+- id: restart
+  icon: 🚩
+  title: 再開・オフサイド・位置
+  questions: [C-01, C-02, D-01, D-02, E-01, H-01]

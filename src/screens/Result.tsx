@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 import type { Nav } from '../App';
 import { useUi } from '../app/context';
 import { Icon } from '../ui/Icon';
-import { CATEGORIES, QMAP, QUESTIONS } from '../content';
-import { resultMessage, startRoundPatch, summarize } from '../engine/session';
+import { CATEGORIES, QMAP, STAGE_MAP } from '../content';
+import { resultMessage, startStagePatch, summarize } from '../engine/session';
 import type { AppState } from '../storage/store';
 
 export function buildReport(state: AppState): string {
+  const stage = state.stage ? STAGE_MAP[state.stage] : undefined;
   const lines = ['【8人制審判トレーニング フィードバック】'];
+  if (stage) lines.push(`ステージ: ${stage.title}`);
   for (const id of state.order) {
     const r = state.results[id];
     const q = QMAP[id];
@@ -23,6 +25,7 @@ export function buildReport(state: AppState): string {
 export function Result({ state, nav }: { state: AppState; nav: Nav }) {
   const { store, sound, buzz, toast } = useUi();
   const sum = summarize(state.order, state.results, QMAP);
+  const stage = state.stage ? STAGE_MAP[state.stage] : undefined;
 
   useEffect(() => {
     if (sum.ratio >= 0.9 && sum.total) {
@@ -58,7 +61,8 @@ export function Result({ state, nav }: { state: AppState; nav: Nav }) {
     ta.remove();
   };
   const restart = (ids?: string[], round: AppState['round'] = 'main') => {
-    store.set((s) => startRoundPatch(QUESTIONS, s, ids, round));
+    if (!stage) return nav.home();
+    store.set((s) => startStagePatch(stage, s, ids, round));
     nav.next();
   };
 
@@ -68,7 +72,7 @@ export function Result({ state, nav }: { state: AppState; nav: Nav }) {
         <button type="button" className="icon-btn" aria-label="ホームへ" onClick={nav.home}>
           <Icon name="close" />
         </button>
-        <span className="count">結果</span>
+        <span className="count">{stage ? `${stage.icon} ${stage.title}` : '結果'}</span>
       </header>
       <main className="qmain">
         <div className="score">
@@ -151,10 +155,10 @@ export function Result({ state, nav }: { state: AppState; nav: Nav }) {
             </button>
           )}
           <button type="button" className="btn ghost" onClick={() => restart()}>
-            最初からやり直す
+            もう一度
           </button>
           <button type="button" className="btn ghost" onClick={nav.home}>
-            レベルを変える
+            ホームへ
           </button>
         </div>
       </main>

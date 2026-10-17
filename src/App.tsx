@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { QMAP } from './content';
+import { QMAP, STAGE_MAP } from './content';
+import { finishPatch } from './engine/session';
 import { useUi } from './app/context';
 import { clearHash, parseDirectLink } from './app/route';
 import { useAppState } from './storage/store';
@@ -52,7 +53,7 @@ export function App() {
     next: () => {
       const s = store.get();
       if (s.idx >= s.order.length) {
-        if (!s.finished) store.set({ finished: true });
+        if (!s.finished) store.set((x) => finishPatch(x, STAGE_MAP));
         setScreen({ name: 'result' });
       } else setScreen({ name: 'quiz', id: s.order[s.idx]!, review: false, key: ++navKey });
     },

@@ -37,6 +37,15 @@ const edit = (file: string, from: string | RegExp, to: string) => {
 };
 
 describe('content の検査は壊れたデータを見つける', () => {
+  it('どのステージにも入っていない問題・2つのステージに入っている問題・ない問題', () => {
+    const issues = withBrokenCopy((d) => {
+      const f = path.join(d, 'stages.yaml');
+      edit(f, 'A-01, A-02,', 'A-02, K-01, J-99,');
+    });
+    expect(issues).toContain('[stages.yaml] 問題「A-01」が、どのステージにも入っていません');
+    expect(issues).toContain('[stages.yaml] 問題「K-01」が、ステージ「field」と「kickoff」の両方に入っています');
+    expect(issues.some((i) => i.includes('ステージ「field」の問題「J-99」がありません'))).toBe(true);
+  });
   it('正解が選択肢にない', () => {
     const issues = withBrokenCopy((d) => edit(path.join(d, 'questions/A-02.yaml'), 'answer: m7', 'answer: m8'));
     expect(issues.join('\n')).toContain('正解「m8」が選択肢にありません');
