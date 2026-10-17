@@ -6,12 +6,12 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNo
 import type { Nav } from '../App';
 import { useUi } from '../app/context';
 import { CATEGORIES, QMAP, SOURCES } from '../content';
-import type { ChoiceStep, Question, Step, Vec2 } from '../content/schema';
+import type { Question, Step, Vec2 } from '../content/schema';
 import { hasAnimation } from '../engine/animation';
 import { judgePlacement, type PlacementJudgement } from '../engine/placement';
 import type { StageEngine } from '../engine/stage';
 import { Pitch2D } from '../pitch2d/Pitch2D';
-import { CAMERAS, createScene3D, preloadScene3D, type CameraId, type Scene3DEngine } from '../scene3d';
+import { createScene3D, preloadScene3D, type CameraTab, type LegendItem, type Scene3DEngine } from '../scene3d';
 import type { AppState } from '../storage/store';
 import { Icon } from '../ui/Icon';
 import { RichText } from '../ui/RichText';
@@ -26,7 +26,9 @@ interface StepResult {
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
-function Legend({ is3d }: { is3d: boolean }) {
+const DEFAULT_3D_TIP = '上の視点を「副審の位置」「真横」に切り替えると、見え方の違いを確かめられます。';
+
+function Legend({ items3d }: { items3d: ReadonlyArray<LegendItem> | null }) {
   const dot = (cls: string, label: string) => (
     <span className="lg" key={cls}>
       <i className={'dot ' + cls} />
@@ -35,8 +37,8 @@ function Legend({ is3d }: { is3d: boolean }) {
   );
   return (
     <div className="legend">
-      {is3d
-        ? [dot('d-red', '赤10番（攻撃）'), dot('d-blue', '青4番（守備）'), dot('d-gk', 'GK'), dot('d-ref', '黒＝審判'), dot('d-sole', '黄色＝スパイクの裏')]
+      {items3d
+        ? items3d.map((x) => dot(x.cls, x.label))
         : [
             dot('d-red', '赤チーム（↑へ攻撃）'),
             dot('d-blue', '青チーム'),
@@ -74,7 +76,11 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   const [caption, setCaption] = useState('');
   const [frozen, setFrozen] = useState(false);
   const [legendOpen, setLegendOpen] = useState(false);
-  const [cam, setCam] = useState<CameraId>('referee');
+  const [cam, setCam] = useState('');
+  const [cams, setCams] = useState<ReadonlyArray<CameraTab>>([]);
+  const [initialCam, setInitialCam] = useState('');
+  const [legend3d, setLegend3d] = useState<ReadonlyArray<LegendItem> | null>(null);
+  const [contactLabel, setContactLabel] = useState('接触の瞬間');
   const [camsUnlocked, setCamsUnlocked] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
@@ -87,9 +93,12 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   const stageWrapRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<StageEngine | null>(null);
   const placementOn = useRef<number | null>(null);
+  const candidatesOn = useRef<number | null>(null);
 
   const step: Step = steps[stepIdx]!;
   const submitted = res.length > stepIdx;
+  /** 立ち位置を選び終えた（このあとは全体を通して再生する） */
+  const posDone = steps[0]?.type === 'position' && res.length > 0;
   const isFeedback = phase === 'feedback';
   const engine2d = () => (engineRef.current?.kind === '2d' ? (engineRef.current as Pitch2D) : null);
   const engine3d = () => (engineRef.current?.kind === '3d' ? (engineRef.current as Scene3DEngine) : null);
@@ -133,6 +142,11 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
             return;
           }
           engineRef.current = e;
+          setCams(e.cameras);
+          setCam(e.initialCamera);
+          setInitialCam(e.initialCamera);
+          setLegend3d(e.legend);
+          setContactLabel(e.contactLabel);
           ready();
         })
         .catch((err: unknown) => {
@@ -148,6 +162,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
       engineRef.current?.destroy();
       engineRef.current = null;
       placementOn.current = null;
+      candidatesOn.current = null;
     };
   }, [q, hasAnim, retryKey, sound, setPhase]);
 
@@ -177,6 +192,23 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
     placementOn.current = stepIdx;
     e.enablePlacement(step.placement, (p) => setPlace(p));
   }, [phase, step, stepIdx]);
+
+  /* ---------- 立ち位置の問題：判定の瞬間に、候補をフィールドに出す */
+  useEffect(() => {
+    const e = engine3d();
+    if (phase !== 'answering' || step.type !== 'position' || !e?.showCandidates) return;
+    if (candidatesOn.current === stepIdx) return;
+    candidatesOn.current = stepIdx;
+    e.showCandidates(step.candidates, (id) => {
+      setSel(id);
+      buzz(8);
+    });
+    setCams(e.cameras);
+  }, [phase, step, stepIdx, buzz]);
+  useEffect(() => {
+    if (step.type !== 'position' || submitted) return;
+    engine3d()?.selectCandidate?.(sel);
+  }, [sel, step, submitted]);
 
   // 選択肢が出たら見える位置へ
   useEffect(() => {
@@ -209,8 +241,15 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
     setFrozen(false);
     if (hasAnim) e.play({ from: 0, to: endAt, speed: sp });
   };
+  /** 立ち位置を選んだあと：判定の瞬間から最後まで、いまの視点で再生する */
+  const playFromPause = (sp = speed) => {
+    const e = engineRef.current;
+    if (!e) return;
+    setFrozen(false);
+    e.play({ from: pauseAt, to: endAt, speed: sp });
+  };
   const replay = () => {
-    if (isFeedback) playExplain();
+    if (isFeedback || posDone) playExplain();
     else watch();
   };
   const toggleSpeed = () => {
@@ -226,6 +265,19 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
     let r: StepResult;
     if (step.type === 'choice') {
       r = { ok: sel === step.answer, pick: sel };
+    } else if (step.type === 'position') {
+      r = { ok: sel === step.answer, pick: sel };
+      const e = engine3d();
+      if (e) {
+        e.revealCandidates?.(step.answer, sel);
+        setCams(e.cameras);
+        setCamsUnlocked(true);
+        if (sel) {
+          setCam(sel);
+          e.setCamera(sel, true);
+        }
+        playFromPause();
+      }
     } else {
       const j = judgePlacement(step.placement, place!);
       r = { ok: j.ok, pick: place, placement: j };
@@ -257,11 +309,14 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
     setPhase('feedback');
     const e3 = engine3d();
     const e2 = engine2d();
-    if (e3) {
+    if (e3 && steps[steps.length - 1]?.type === 'position') {
+      // 立ち位置だけの問題：選んだ位置からの再生をそのまま見せる
+      e3.setAnalysis(true);
+    } else if (e3) {
       e3.setAnalysis(true);
       setCamsUnlocked(true);
-      setCam('side');
-      e3.setCamera('side', true);
+      setCam(e3.explainCamera);
+      e3.setCamera(e3.explainCamera, true);
       setSpeed(0.5);
       playExplain(0.5);
     } else if (e2) {
@@ -287,9 +342,17 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   }, [phase]);
 
   const nextStep = () => {
+    const prev = steps[stepIdx];
     setStepIdx((i) => i + 1);
     setSel(null);
     setPhase('answering');
+    const e3 = engine3d();
+    if (prev?.type === 'position' && e3) {
+      // 正しい立ち位置から、もう一度見る
+      setCam(prev.answer);
+      e3.setCamera(prev.answer, true);
+      playFromPause();
+    }
     panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
   const goNext = () => {
@@ -311,8 +374,8 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
     }
     if (await confirm('中断してホームに戻りますか？ 進み具合は保存されます。', 'ホームへ', '続ける')) nav.home();
   };
-  const pickCam = (id: CameraId) => {
-    if (!camsUnlocked && id !== 'referee') {
+  const pickCam = (id: string) => {
+    if (!camsUnlocked && id !== initialCam) {
       toast('解答したあとに、ほかの視点で見られます');
       return;
     }
@@ -336,7 +399,13 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
     case 'answering': {
       const ok = step.type === 'placement' ? !!place : !!sel;
       action = {
-        label: ok ? '判定する' : step.type === 'placement' ? '位置を決めてください' : '選択肢を選んでください',
+        label: ok
+          ? '判定する'
+          : step.type === 'placement'
+            ? '位置を決めてください'
+            : step.type === 'position'
+              ? '立ち位置を選んでください'
+              : '選択肢を選んでください',
         disabled: !ok,
         onClick: submit,
       };
@@ -359,7 +428,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
       : q.kind === '2d' && q.scene.timeline.some((k) => (k.events ?? []).some((e) => e.type === 'caption'));
   const showTools = hasStage && (hasAnim || isFeedback);
   const replayLabel = isFeedback ? '解説リプレイ' : 'もう一度見る';
-  const replayDisabled = !isFeedback && (phase === 'intro' || phase === 'watching' || phase === 'loading');
+  const replayDisabled = !isFeedback && !posDone && (phase === 'intro' || phase === 'watching' || phase === 'loading');
   const nOk = res.filter((r) => r.ok).length;
   const okAll = nOk === steps.length;
   const showChoices = phase === 'answering' || phase === 'stepResult' || phase === 'feedback';
@@ -470,8 +539,8 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
 
         {is3d && phase !== 'error' && phase !== 'loading' && (
           <div className="cam-tabs" role="tablist" aria-label="視点">
-            {CAMERAS.map((c) => {
-              const locked = !camsUnlocked && c.id !== 'referee';
+            {cams.map((c) => {
+              const locked = !camsUnlocked && c.id !== initialCam;
               return (
                 <button
                   key={c.id}
@@ -511,14 +580,14 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                 setProg(e.contactAt / endAt);
               }}
             >
-              接触の瞬間
+              {contactLabel}
             </button>
           )}
           <button type="button" className="tool" aria-expanded={legendOpen} onClick={() => setLegendOpen((v) => !v)}>
             凡例
           </button>
         </div>
-        {legendOpen && <Legend is3d={is3d} />}
+        {legendOpen && <Legend items3d={is3d ? legend3d : null} />}
 
         <section className="panel" ref={panelRef}>
           {phase !== 'error' && (
@@ -532,7 +601,12 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                 <ol className="step-hist">
                   {res.slice(0, stepIdx).map((r, i) => {
                     const s = steps[i]!;
-                    const t = s.type === 'placement' ? '位置' : (s.choices.find((c) => c.id === r.pick)?.text ?? '');
+                    const t =
+                      s.type === 'placement'
+                        ? '位置'
+                        : s.type === 'position'
+                          ? `立ち位置 ${r.pick ?? ''}`
+                          : (s.choices.find((c) => c.id === r.pick)?.text ?? '');
                     return (
                       <li key={i} className={r.ok ? 'ok' : 'ng'}>
                         <span className="mk">{r.ok ? '○' : '×'}</span>
@@ -569,6 +643,22 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                   buzz(8);
                 }} />
               )}
+              {showChoices && step.type === 'position' && (
+                <>
+                  {!submitted && <p className="place-help">フィールドの黄色い丸（{step.candidates.map((c) => c.id).join('・')}）をタップするか、下の一覧から選びます。</p>}
+                  <ChoiceList
+                    step={{ choices: step.candidates.map((c) => ({ id: c.id, text: c.text, feedback: c.feedback })), answer: step.answer }}
+                    letters={step.candidates.map((c) => c.id)}
+                    sel={sel}
+                    result={submitted ? res[stepIdx]! : null}
+                    onPick={(id) => {
+                      setSel(id);
+                      buzz(8);
+                    }}
+                  />
+                  {submitted && <p className="ex-tip">上の視点で、ほかの候補（{step.candidates.map((c) => c.id).join('・')}）からの見え方も比べられます。</p>}
+                </>
+              )}
               {showChoices && step.type === 'placement' && !submitted && (
                 <p className="place-help">
                   {step.placement.mode === 'line'
@@ -598,7 +688,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
               <p className="ex-sum">
                 <RichText text={q.explain.summary} />
               </p>
-              {is3d && <p className="ex-tip">上の視点を「副審の位置」「真横」に切り替えると、見え方の違いを確かめられます。</p>}
+              {q.kind === '3d' && <p className="ex-tip">{q.scene3d.tip ?? DEFAULT_3D_TIP}</p>}
               {q.explain.detail && (
                 <details className="ex-detail" open>
                   <summary>くわしい解説</summary>
@@ -644,13 +734,20 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   );
 }
 
+interface ChoiceListStep {
+  choices: ReadonlyArray<{ id: string; text: string; feedback?: string; note?: string }>;
+  answer: string;
+}
+
 function ChoiceList({
   step,
+  letters = LETTERS,
   sel,
   result,
   onPick,
 }: {
-  step: ChoiceStep;
+  step: ChoiceListStep;
+  letters?: ReadonlyArray<string>;
   sel: string | null;
   result: StepResult | null;
   onPick: (id: string) => void;
@@ -678,7 +775,7 @@ function ChoiceList({
               disabled={done}
               onClick={() => !done && onPick(c.id)}
             >
-              <span className="letter">{LETTERS[i]}</span>
+              <span className="letter">{letters[i]}</span>
               <span className="ctext">
                 <RichText text={c.text} />
               </span>

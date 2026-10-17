@@ -76,6 +76,17 @@ describe('content の検査は壊れたデータを見つける', () => {
     );
     expect(issues.join('\n')).toContain('kind: text');
   });
+  it('立ち位置の問題：正解が候補にない・候補の id が順でない・対応していないシーン', () => {
+    const issues = withBrokenCopy((d) => {
+      const f = path.join(d, 'questions/H-04.yaml');
+      edit(f, '    answer: C\n', '    answer: E\n');
+      edit(f, '      - id: B\n', '      - id: F\n');
+      edit(f, 'id: penaltyAreaPush', 'id: slidingTackle');
+    }).join('\n');
+    expect(issues).toContain('正解「E」が候補にありません');
+    expect(issues).toContain('候補の id は A から順に付けてください');
+    expect(issues).toContain('立ち位置に対応した3Dシーン');
+  });
   it('スキーマ違反（知らない項目）', () => {
     const issues = withBrokenCopy((d) => edit(path.join(d, 'questions/A-02.yaml'), 'title: ', 'titel: x\ntitle: '));
     expect(issues.join('\n')).toMatch(/A-02\.yaml/);

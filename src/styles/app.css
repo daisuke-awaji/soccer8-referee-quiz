@@ -116,6 +116,29 @@ a { color: inherit; text-decoration: underline; text-decoration-color: var(--lin
 .pitch-svg { display: block; width: 100%; height: 100%; user-select: none; -webkit-user-select: none; }
 .pitch-svg.placing { touch-action: none; cursor: crosshair; }
 .scene3d-canvas { display: block; width: 100% !important; height: 100% !important; }
+.stage-3d { position: relative; overflow: hidden; }
+/* 3D：主審の立ち位置の候補（フィールド上の位置に重ねる） */
+.s3-cands { position: absolute; inset: 0; pointer-events: none; }
+.s3-cand {
+  position: absolute; transform: translate(-50%, -50%); pointer-events: auto;
+  width: 34px; height: 34px; border-radius: 50%; border: 2px solid #fff; padding: 0;
+  background: rgba(23,23,23,.78); color: #ffd600; font-weight: 700; font-size: .95rem; line-height: 1;
+}
+.s3-cand.sel { background: #ffd600; color: #171717; border-color: #171717; transform: translate(-50%, -50%) scale(1.15); }
+.s3-cand.ok { background: var(--ok); color: #fff; }
+.s3-cand.ng { background: var(--ng); color: #fff; }
+.s3-cand.dim { background: rgba(23,23,23,.55); color: #ddd; border-color: rgba(255,255,255,.6); }
+/* 3D：候補の位置からの見え方 */
+.s3-check {
+  position: absolute; left: 8px; top: 8px; max-width: calc(100% - 16px);
+  background: rgba(0,0,0,.72); color: #fff; border-radius: var(--r-sm); padding: 6px 10px; font-size: .78rem; line-height: 1.5;
+  pointer-events: none;
+}
+.s3-check p { margin: 0 0 2px; font-weight: 600; }
+.s3-check ul { margin: 0; padding: 0; list-style: none; }
+.s3-check b { display: inline-block; width: 1.3em; }
+.s3-check .ok b { color: #69f0ae; }
+.s3-check .ng b { color: #ff8a80; }
 .pl-num { font-size: 1.45px; font-weight: 700; fill: #fff; text-anchor: middle; font-family: var(--sans); }
 .pl-gk { fill: #1a1a1a; }
 .pl-ref { fill: #ffeb3b; font-size: 1.25px; }
@@ -175,7 +198,7 @@ a { color: inherit; text-decoration: underline; text-decoration-color: var(--lin
 .d-red { background: #e53935; } .d-blue { background: #1e63d6; } .d-gk { background: #ffb300; border-color: #1e63d6; }
 .d-ref { background: #111; border-color: #ffeb3b; } .d-ball { background: #fff; border-color: #222; width: 10px; height: 10px; }
 .d-sub { background: #e53935; border-style: dashed; }
-.d-sole { background: #ffca28; border-radius: 3px; }
+.d-sole { background: #ffca28; border-radius: 3px; } .d-cand { background: transparent; border: 3px solid #ffd600; box-shadow: 0 0 0 1px #171717; }
 
 /* ---------- 問い・選択肢 */
 .panel { margin-top: 16px; }
