@@ -24,6 +24,7 @@ npm ci
 npm run dev            # 開発サーバー（http://localhost:5173/）
 npm run check          # lint・型チェック・問題データの検査・単体テスト
 npm run e2e            # E2E（Playwright。初回は npx playwright install chromium）
+BASE_URL=https://daisuke-awaji.github.io/soccer8-referee-quiz/ npx playwright test --project=phone   # 公開済みのサイトを確かめる
 npm run build          # dist/ に静的サイトを出力
 ```
 
