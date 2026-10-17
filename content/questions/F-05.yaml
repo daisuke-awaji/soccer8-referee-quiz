@@ -8,7 +8,7 @@ title: 審判員の人数
 kind: text
 steps:
   - type: choice
-    question: 正しい？ 誤り？ ——「3人制審判（主審・副審2人）では、第4の審判員を必ず置く」
+    question: 3人制審判（主審・副審2人）では、第4の審判員を必ず置く。
     choices:
       - id: o
         text: 正しい
@@ -16,7 +16,7 @@ steps:
       - {id: x, text: 誤り}
     answer: x
   - type: choice
-    question: 正しい？ 誤り？ ——「1人制審判（主審1人）では、補助審判を必ず置く」
+    question: 1人制審判（主審1人）では、補助審判を必ず置く。
     choices:
       - {id: o, text: 正しい}
       - id: x

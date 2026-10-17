@@ -10,7 +10,7 @@ kind: text
 hint: GKが手で扱えないボールは、2種類だけです。
 steps:
   - type: choice
-    question: 正しい？ 誤り？ ——「GKも、自分のペナルティーエリアの外では、手でボールを扱えない」
+    question: GKも、自分のペナルティーエリアの外では、手でボールを扱えない。
     choices:
       - {id: o, text: 正しい}
       - id: x
@@ -18,7 +18,7 @@ steps:
         feedback: ペナルティーエリアの外では、GKもほかの競技者と同じです。手で扱えばハンドの反則（直接FK）です。
     answer: o
   - type: choice
-    question: 正しい？ 誤り？ ——「バックパスを手で扱ったGKには、警告を与える」
+    question: バックパスを手で扱ったGKには、警告を与える。
     choices:
       - id: o
         text: 正しい
@@ -26,7 +26,7 @@ steps:
       - {id: x, text: 誤り}
     answer: x
   - type: choice
-    question: 正しい？ 誤り？ ——「味方が胸で返したボールは、GKが手で取ってよい」
+    question: 味方が胸で返したボールは、GKが手で取ってよい。
     choices:
       - {id: o, text: 正しい}
       - id: x
@@ -34,7 +34,7 @@ steps:
         feedback: 手で扱えないのは、味方が意図的に足でけったボールと、味方のスローインを直接受けたボールです。胸や頭で返したボールは手で扱えます（規則の裏をかくトリックは除く）。
     answer: o
   - type: choice
-    question: 正しい？ 誤り？ ——「GKは、相手チームのスローインのボールなら、手で取ってよい」
+    question: GKは、相手チームのスローインのボールなら、手で取ってよい。
     choices:
       - {id: o, text: 正しい}
       - id: x
