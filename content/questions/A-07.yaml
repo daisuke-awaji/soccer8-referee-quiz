@@ -9,7 +9,7 @@ kind: text
 hint: 8人制の規則には「すね当て」「靴」「眼鏡」について、それぞれ書かれています。
 steps:
   - type: choice
-    question: 正しい？ 誤り？ ——「競技者は、すね当てを着けなければならない」
+    question: 競技者は、すね当てを着けなければならない。
     choices:
       - {id: o, text: 正しい}
       - id: x
@@ -17,7 +17,7 @@ steps:
         feedback: すね当ては、8人制でも着けなければなりません。
     answer: o
   - type: choice
-    question: 正しい？ 誤り？ ——「靴は、スパイクでなければならない」
+    question: 靴は、スパイクでなければならない。
     choices:
       - id: o
         text: 正しい
@@ -25,7 +25,7 @@ steps:
       - {id: x, text: 誤り}
     answer: x
   - type: choice
-    question: 正しい？ 誤り？ ——「眼鏡は、主審が安全だと判断したものなら着けてよい」
+    question: 眼鏡は、主審が安全だと判断したものなら着けてよい。
     choices:
       - {id: o, text: 正しい}
       - id: x
