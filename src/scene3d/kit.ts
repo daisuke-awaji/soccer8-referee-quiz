@@ -87,6 +87,8 @@ export interface PersonStyle {
   number: number | null;
   numColor?: string;
   longSleeve?: boolean;
+  /** 足元に敷く丸の色（チームの色。GK も自分のチームの色）。省略すると敷かない（審判など） */
+  disc?: string;
 }
 
 interface Limb {
@@ -213,6 +215,17 @@ export function makePerson(scene: THREE.Scene, o: PersonStyle): Person {
   blob.rotation.x = -Math.PI / 2;
   blob.position.y = 0.01;
   root.add(blob);
+  if (o.disc) {
+    // チームの色の丸（白いふち付き）。影と一緒に骨盤の真下へ動く
+    const flat = (geo: THREE.BufferGeometry, color: string, opacity: number, z: number) => {
+      const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+      const m = new THREE.Mesh(geo, mat);
+      m.position.z = z;
+      blob.add(m);
+    };
+    flat(new THREE.CircleGeometry(0.46, 28), o.disc, 0.72, 0.002);
+    flat(new THREE.RingGeometry(0.46, 0.52, 28), '#ffffff', 0.75, 0.002);
+  }
   scene.add(root);
   return { root, body, armL, armR, legL, legR, blob };
 }
