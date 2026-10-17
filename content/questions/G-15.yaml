@@ -1,0 +1,80 @@
+# G-15 味方の足に当たったボールを、GKが手で押さえた
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+# 根拠: 第12条2 間接フリーキック（「ボールが味方競技者によって意図的にゴールキーパーにキックされる」）
+id: G-15
+category: foul
+badges: []
+review: {status: draft, note: 「意図的にキックした」かどうかの境目（クリアのつもりがGKへ飛んだ等）は監修で確認する。この場面はシュートのブロック}
+title: 味方の足に当たったボールを、GKが手で押さえた
+kind: 2d
+hint: 青5番は、GKへボールを「けった」のでしょうか？
+scene:
+  view: {x: 42, y: 0, w: 27, h: 50}
+  actors:
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+  timeline:
+    - t: 0
+      positions:
+        R9: [54, 17.6]
+        ball: [54.7, 18]
+        R7: [54, 32]
+        B5: [58.6, 22]
+        B4: [57, 30]
+        B1: [65.5, 24]
+        REF: [47, 27]
+      events:
+        - {type: caption, text: 赤9番がドリブルから…}
+    - t: 0.6
+      positions:
+        R9: [55.4, 18.6]
+        ball: [56.1, 19]
+        B5: [58.3, 21]
+      events:
+        - {type: caption, text: シュート}
+    - t: 0.9
+      positions:
+        ball: [58.1, 20.7]
+        B5: [58.4, 20.9]
+      events:
+        - {type: caption, text: ブロックに入った青5番の足に当たる}
+        - {type: highlight, actor: B5, dur: 1}
+    - t: 2.2
+      positions:
+        ball: [64.8, 23.4]
+        B1: [65, 23.6]
+        R9: [57.5, 20]
+        REF: [50, 26]
+      events:
+        - {type: caption, text: こぼれたボールを、GKが手で押さえた}
+        - {type: highlight, actor: B1, dur: 1.2}
+    - t: 2.3
+      positions: {}
+    - t: 3
+      positions:
+        R9: [58, 20.4]
+      events:
+        - {type: caption, text: 反則ではない。プレーは続く}
+  pauseAt: 2.3
+  endAt: 3
+steps:
+  - type: choice
+    question: シュートが味方の足に当たって、GKのところへ転がりました。GKは手で押さえてよい？
+    choices:
+      - {id: ok, text: よい（反則ではない）}
+      - id: ifk
+        text: だめ（赤チームの間接フリーキック）
+        feedback: 反則になるのは、味方が意図的にGKへけったボールです。シュートをブロックしようとして足に当たっただけのボールは、手で扱えます。
+    answer: ok
+explain:
+  summary: 味方の足に当たっただけで、意図的にけったのではないボールは、GKが手で扱えます。
+  detail: 分かれ目は「足に当たったか」ではなく、「味方が意図的にGKへけったか」です。相手のシュートやクロスが味方の足に当たってGKのところへ来た場合は、手で押さえてかまいません。
+  overlays:
+    - {type: zone, x1: 56, x2: 68, y1: 10.5, y2: 39.5, label: ペナルティーエリア}
+refs:
+  - {src: laws, article: 第12条 ファウルと不正行為 2.間接フリーキック}

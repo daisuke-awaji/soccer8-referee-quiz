@@ -1,0 +1,102 @@
+# G-16 足で浮かせて、頭でGKへ
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+# 根拠: 第12条2 間接フリーキック（GKが手で触れる触れないにかかわらず、競技規則の裏をかいて頭・胸・膝などでGKにパスする意図的なトリック）／第12条4 懲戒処置（反スポーツ的行為に対する警告）
+id: G-16
+category: foul
+badges: []
+review: {status: draft}
+title: 足で浮かせて、頭でGKへ
+kind: 2d
+hint: 「手で扱えるようにするため」に、わざとそうしたのでしょうか？
+scene:
+  view: {x: 42, y: 0, w: 27, h: 50}
+  actors:
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+  timeline:
+    - t: 0
+      positions:
+        B4: [58, 30]
+        ball: [58.6, 30.2]
+        B5: [55, 18]
+        B1: [65.5, 26]
+        R9: [48, 26]
+        R7: [47, 38]
+        REF: [50, 33]
+      events:
+        - {type: caption, text: 青4番の近くに、相手はいない}
+    - t: 1
+      positions:
+        ball: [58.7, 30.2]
+      events:
+        - {type: caption, text: 青4番が、足でボールを浮かせて…}
+        - {type: highlight, actor: B4, dur: 1.6}
+    - t: 1.8
+      positions:
+        ball: [59.1, 30.1]
+      events:
+        - {type: caption, text: 自分の頭でGKへパス}
+    - t: 3
+      positions:
+        ball: [64.8, 27]
+        B1: [65.1, 26.9]
+        R9: [51, 27]
+      events:
+        - {type: caption, text: GKが手でキャッチした}
+        - {type: highlight, actor: B1, dur: 1.2}
+    - t: 3.1
+      positions: {}
+    - t: 3.7
+      positions:
+        REF: [54, 31]
+      events:
+        - {type: whistle}
+        - {type: caption, text: 主審が笛を吹く}
+    - t: 4.3
+      positions: {}
+      events:
+        - {type: caption, text: 青4番に警告。赤チームの間接フリーキック}
+  pauseAt: 3.1
+  endAt: 4.3
+steps:
+  - type: choice
+    question: 青4番は足でボールを浮かせ、頭でGKへ返しました。GKは手で取りました。どう判定しますか？
+    choices:
+      - id: play
+        text: 頭で返したので反則ではない。プレーを続ける
+        feedback: 頭で返したボールでも、規則の裏をかくための意図的なトリックは反則です。
+      - {id: ifk, text: 赤チームの間接フリーキック}
+      - id: dfk
+        text: 赤チームの直接フリーキック
+        feedback: 直接FKではなく、間接FKです。
+    answer: ifk
+  - type: choice
+    question: 懲戒はどうしますか？
+    choices:
+      - {id: b4, text: 青4番を警告する（反スポーツ的行為）}
+      - id: none
+        text: 懲戒はない
+        feedback: 規則の裏をかく意図的なトリックは、反スポーツ的行為として警告されます。
+      - id: gk
+        text: GK（青1番）を警告する
+        feedback: 罰せられるのは、トリックを企てた競技者（ここでは青4番）です。GKが企てた場合は、GKが罰せられます。
+    answer: b4
+  - type: choice
+    question: もしGKが手を使わず、足でけり出していたら？
+    choices:
+      - {id: still, text: それでも反則（警告と間接フリーキック）}
+      - id: noff
+        text: 反則ではなくなる
+        feedback: このトリックは、GKが手でボールに触れたかどうかにかかわらず反則です。
+    answer: still
+explain:
+  summary: 規則の裏をかいて、足で浮かせたボールを頭などでGKに渡す意図的なトリックは、反スポーツ的行為で警告し、相手チームの{{間接フリーキック}}で再開します。
+  detail: GKが手で触れたかどうかは関係ありません。フリーキックやゴールキックのときも同じです。ふつうに頭や胸で返したボールをGKが手で扱うのは、反則ではありません。違いは「手で扱えるようにするために、わざとそうしたか」です。
+  overlays: []
+refs:
+  - {src: laws, article: 第12条 ファウルと不正行為 2.間接フリーキック／4.懲戒処置（反スポーツ的行為）}

@@ -11,7 +11,7 @@
 | 文書 | 内容 |
 |---|---|
 | [docs/plan.md](./docs/plan.md) | 開発計画書（目的・技術構成・マイルストーン・テスト・リスク） |
-| [docs/question-backlog.md](./docs/question-backlog.md) | 問題候補の一覧（89問。第1弾は63問） |
+| [docs/question-backlog.md](./docs/question-backlog.md) | 問題候補の一覧（96問。第1弾は67問） |
 | [docs/authoring.md](./docs/authoring.md) | 問題の作り方（YAML の書き方と、自動で検査されること） |
 | [prototype/](./prototype/) | 試作版 v0.1（1ファイル HTML 版。参照用） |
 

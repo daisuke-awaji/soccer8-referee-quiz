@@ -1,0 +1,79 @@
+# G-14 頭で返したボールを、GKが手で取った
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+# 根拠: 第12条2 間接フリーキック（手で扱えないのは、味方が意図的に「キック」したボールと、味方のスローインを直接受けたボール）
+id: G-14
+category: foul
+badges: []
+review: {status: draft}
+title: 頭で返したボールを、GKが手で取った
+kind: 2d
+hint: GKが手で扱えないのは、味方が「どこで」返したボールでしょう？
+scene:
+  view: {x: 42, y: 0, w: 27, h: 50}
+  actors:
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+  timeline:
+    - t: 0
+      positions:
+        R7: [44, 30]
+        ball: [44.8, 30]
+        R9: [53, 22]
+        B4: [56, 25]
+        B5: [55, 35]
+        B1: [65.5, 25]
+        REF: [46, 21]
+      events:
+        - {type: caption, text: 赤7番が、前へロングボール}
+    - t: 1.6
+      positions:
+        ball: [56.8, 26.2]
+        B4: [57.2, 26.2]
+        R9: [55.6, 23.6]
+        REF: [48, 23]
+      events:
+        - {type: caption, text: 青4番が、頭でGKへ返す}
+        - {type: highlight, actor: B4, dur: 1}
+    - t: 2.8
+      positions:
+        ball: [65, 25.3]
+        B1: [65.4, 25.2]
+        R9: [58, 24.5]
+      events:
+        - {type: caption, text: GKが手でキャッチした}
+        - {type: highlight, actor: B1, dur: 1.2}
+    - t: 2.9
+      positions: {}
+    - t: 3.8
+      positions:
+        B1: [65.8, 25]
+        ball: [66.1, 25.1]
+        R9: [58.5, 25]
+      events:
+        - {type: caption, text: 反則ではない。プレーは続く}
+  pauseAt: 2.9
+  endAt: 3.8
+steps:
+  - type: choice
+    question: 味方が頭で返したボールを、GKが手で取りました。どう判定しますか？
+    choices:
+      - {id: play, text: 反則ではない。プレーを続ける}
+      - id: ifk
+        text: 赤チームの間接フリーキック
+        feedback: 手で扱えないのは、味方が意図的に足でけったボールと、味方のスローインを直接受けたボールです。頭や胸、膝で返したボールは、GKが手で扱えます。
+      - id: dfk
+        text: 赤チームの直接フリーキック
+        feedback: ハンドの反則ではありません。GKは自分のペナルティーエリアの中で手を使えます。
+    answer: play
+explain:
+  summary: 味方が頭や胸、膝で返したボールは、GKが手で扱っても反則ではありません。
+  detail: 反則になるのは、①味方が意図的に足でけったボール（{{バックパス}}）、②味方のスローインを直接受けたボール、をGKが自分のペナルティーエリアの中で手で扱った場合です。ただし、規則の裏をかくために、わざと足でボールを浮かせてから頭でGKに返すようなトリックは反則です（警告と間接FK）。
+  overlays:
+    - {type: zone, x1: 56, x2: 68, y1: 10.5, y2: 39.5, label: ペナルティーエリア}
+refs:
+  - {src: laws, article: 第12条 ファウルと不正行為 2.間接フリーキック}
