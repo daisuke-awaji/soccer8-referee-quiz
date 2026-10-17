@@ -6,7 +6,6 @@ import type { Level } from '../content/schema';
 import { LEVEL_CONFIG } from '../engine/levels';
 import { isInProgress, startRoundPatch } from '../engine/session';
 import type { AppState } from '../storage/store';
-import { PitchLogo } from '../ui/PitchLogo';
 
 const LEVEL_KEYS = Object.keys(LEVEL_CONFIG) as Level[];
 
@@ -46,22 +45,12 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
   return (
     <div className="screen home">
       <div className="hero">
-        <PitchLogo />
-        <div>
-          <h1>
-            8人制
-            <br />
-            審判トレーニング
-          </h1>
-          <p className="lead">動きを見て、その場で判定。保護者審判と4級審判のための練習クイズです。</p>
-        </div>
-      </div>
-      <div className="chips">
-        <span className="chip">競技規則 {RULE_VERSION} 準拠</span>
-        <span className="chip">
-          {L.label} {count}問・約{Math.max(1, Math.round(count * 0.8))}分
-        </span>
-        <span className="chip">3D問題あり</span>
+        <p className="eyebrow">JFA 8人制サッカー競技規則・競技規則 {RULE_VERSION}</p>
+        <h1>8人制 審判トレーニング</h1>
+        <p className="lead">プレーを見て、判定の瞬間に答える練習問題です。保護者審判と4級審判員向け。</p>
+        <p className="meta">
+          {L.label}・{count}問・約{Math.max(1, Math.round(count * 0.6))}分
+        </p>
       </div>
 
       {inProgress && state.level && (
@@ -114,7 +103,7 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
               data-k={k}
               onClick={() => setSel(k)}
             >
-              <span className={`lv-badge lv-${k}`}>{c.label}</span>
+              <span className="lv-name">{c.label}</span>
               <span className="lv-who">{c.who}</span>
               <ul className="lv-points">
                 {c.points.map((p) => (
@@ -152,14 +141,13 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
 
       <div className="notes">
         <p>
-          <b>試験公開中：</b>問題と解説は監修前です。実際の判定はJFAの競技規則に従ってください。
+          <b>試験公開中</b>問題と解説は監修前です。実際の判定はJFAの競技規則に従ってください。
         </p>
         <p>
-          <b>2026/27改正：</b>
-          地域・都道府県の大会では、主催者が適用開始日を決めます（遅くとも2027年4月1日）。🆕の問題は大会要項で確認しましょう。
+          <b>2026/27改正</b>地域・都道府県の大会では、主催者が適用開始日を決めます（遅くとも2027年4月1日）。「2026/27改正」と表示した問題は、大会要項で確認してください。
         </p>
         <p className="src">
-          出典：
+          出典 
           {Object.entries(SOURCES).map(([k, s], i) => (
             <span key={k}>
               {i ? '／' : ''}

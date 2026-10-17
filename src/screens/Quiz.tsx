@@ -13,6 +13,7 @@ import type { StageEngine } from '../engine/stage';
 import { Pitch2D } from '../pitch2d/Pitch2D';
 import { CAMERAS, createScene3D, preloadScene3D, type CameraId, type Scene3DEngine } from '../scene3d';
 import type { AppState } from '../storage/store';
+import { Icon } from '../ui/Icon';
 import { RichText } from '../ui/RichText';
 
 type Phase = 'loading' | 'intro' | 'watching' | 'answering' | 'stepResult' | 'feedback' | 'error';
@@ -333,13 +334,13 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   let action: { label: string; disabled: boolean; onClick?: () => void } | null;
   switch (phase) {
     case 'loading':
-      action = { label: '読み込み中…', disabled: true };
+      action = { label: '読み込み中', disabled: true };
       break;
     case 'intro':
-      action = { label: '▶ プレーを見る', disabled: false, onClick: watch };
+      action = { label: 'プレーを見る', disabled: false, onClick: watch };
       break;
     case 'watching':
-      action = { label: '再生中…', disabled: true };
+      action = { label: '再生中', disabled: true };
       break;
     case 'answering': {
       const ok = step.type === 'placement' ? !!place : !!sel;
@@ -351,10 +352,10 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
       break;
     }
     case 'stepResult':
-      action = { label: '次の質問へ →', disabled: false, onClick: nextStep };
+      action = { label: '次の質問へ', disabled: false, onClick: nextStep };
       break;
     case 'feedback':
-      action = { label: review ? '結果に戻る' : isLast ? '結果を見る' : '次の問題へ →', disabled: false, onClick: goNext };
+      action = { label: review ? '結果に戻る' : isLast ? '結果を見る' : '次の問題へ', disabled: false, onClick: goNext };
       break;
     case 'error':
       action = null;
@@ -367,11 +368,11 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
       : q.kind === '2d' && q.scene.timeline.some((k) => (k.events ?? []).some((e) => e.type === 'caption'));
   const showTools = hasStage && (hasAnim || isFeedback);
   const replayLabel = isFeedback
-    ? '↺ 解説リプレイ'
+    ? '解説リプレイ'
     : left === Infinity
-      ? '↺ もう一度見る'
+      ? 'もう一度見る'
       : left > 0
-        ? `↺ もう一度見る（残り${left}回）`
+        ? `もう一度見る（残り${left}回）`
         : '見直しは1回まで';
   const replayDisabled = !isFeedback && (phase === 'intro' || phase === 'watching' || phase === 'loading' || left <= 0);
   const nOk = res.filter((r) => r.ok).length;
@@ -383,7 +384,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
     <div className={'screen quiz' + (is3d ? ' is3d' : '') + (hasStage ? '' : ' is-text')}>
       <header className="qbar">
         <button type="button" className="icon-btn" aria-label={review ? '結果に戻る' : '中断する'} onClick={quit}>
-          ×
+          <Icon name="close" />
         </button>
         <div className="segs" aria-hidden="true">
           {state.order.map((id, i) => {
@@ -407,14 +408,14 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
             if (v) sound.unlock();
           }}
         >
-          {state.settings.sound ? '🔊' : '🔇'}
+          <Icon name={state.settings.sound ? 'soundOn' : 'soundOff'} />
         </button>
       </header>
 
       <main className="qmain">
         <div className="qmeta">
-          <span className="chip chip-cat">{CATEGORIES[q.category]}</span>
-          {q.badges.includes('new2026') && <span className="chip chip-new">🆕 2026/27改正</span>}
+          <span className="chip">{CATEGORIES[q.category]}</span>
+          {q.badges.includes('new2026') && <span className="chip">2026/27改正</span>}
           {q.badges.includes('provisional') && <span className="chip chip-warn">一部 監修前</span>}
           <span className="chip chip-lv">{L.label}</span>
         </div>
@@ -429,7 +430,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
               {phase === 'loading' && (
                 <div className="loader">
                   <span className="spin" />
-                  3Dを読み込み中…
+                  3Dを読み込み中
                 </div>
               )}
               {phase === 'error' && (
@@ -459,17 +460,19 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                   </div>
                 </div>
               )}
-              {hasRed && (
+              {hasRed && !isFeedback && (
                 <div className="dir-chip" aria-hidden="true">
                   赤の攻撃 ↑
                 </div>
               )}
               <div className="stage-badge" hidden={!frozen || isFeedback}>
-                ⏸ 判定の瞬間
+                判定の瞬間
               </div>
               <button type="button" className="stage-play" aria-label="プレーを再生する" hidden={phase !== 'intro'} onClick={watch}>
-                <span className="tri" aria-hidden="true" />
-                <span className="lbl">プレーを見る</span>
+                <span className="lbl">
+                  <Icon name="play" />
+                  プレーを見る
+                </span>
               </button>
             </div>
             <div className={'stage-caption' + (hasCaptions ? '' : ' none') + (caption ? ' show' : '')} aria-live="polite">
@@ -495,11 +498,6 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                   aria-selected={cam === c.id}
                   onClick={() => pickCam(c.id)}
                 >
-                  {locked && (
-                    <span className="lock" aria-hidden="true">
-                      🔒
-                    </span>
-                  )}
                   {c.label}
                 </button>
               );
@@ -515,7 +513,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
           )}
           {hasAnim && (isFeedback || L.slow) && (
             <button type="button" className="tool" aria-pressed={speed < 1} onClick={toggleSpeed}>
-              🐢 {speed === 1 ? 'スロー' : `${speed}倍`}
+              {speed === 1 ? 'スロー' : `${speed}倍`}
             </button>
           )}
           {is3d && isFeedback && (
@@ -529,7 +527,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                 setProg(e.contactAt / endAt);
               }}
             >
-              ⏱ 接触の瞬間
+              接触の瞬間
             </button>
           )}
           <button type="button" className="tool" aria-expanded={legendOpen} onClick={() => setLegendOpen((v) => !v)}>
@@ -553,7 +551,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                     const t = s.type === 'placement' ? '位置' : (s.choices.find((c) => c.id === r.pick)?.text ?? '');
                     return (
                       <li key={i} className={r.ok ? 'ok' : 'ng'}>
-                        <span className="mk">{r.ok ? '✓' : '✗'}</span>
+                        <span className="mk">{r.ok ? '○' : '×'}</span>
                         <span>{t}</span>
                       </li>
                     );
@@ -567,14 +565,19 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                 <>
                   {!hintOpen && (
                     <button type="button" className="link-btn" onClick={() => setHintOpen(true)}>
-                      💡 ヒントを見る
+                      ヒントを見る
                     </button>
                   )}
-                  {hintOpen && <p className="hint">💡 {q.hint}</p>}
+                  {hintOpen && (
+                    <p className="hint">
+                      <b>ヒント</b>
+                      {q.hint}
+                    </p>
+                  )}
                 </>
               )}
               {!showChoices && hasAnim && (
-                <p className="muted wait">問いを読んだら、プレーを再生しましょう。判定の瞬間で止まり、選択肢が出ます。</p>
+                <p className="muted wait">問いを読んでから、プレーを再生してください。判定の瞬間で止まり、選択肢が出ます。</p>
               )}
               {showChoices && step.type === 'choice' && (
                 <ChoiceList step={step} sel={sel} result={submitted ? res[stepIdx]! : null} onPick={(id) => {
@@ -585,8 +588,8 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
               {showChoices && step.type === 'placement' && !submitted && (
                 <p className="place-help">
                   {step.placement.mode === 'line'
-                    ? '↕ 副審をタッチラインに沿って上下にドラッグ。ピッチをタップしても動かせます。'
-                    : '👆 ピッチをタップして置き、ドラッグで微調整できます。'}
+                    ? '副審をタッチラインに沿って上下にドラッグします。ピッチをタップしても動かせます。'
+                    : 'ピッチをタップして置き、ドラッグで微調整できます。'}
                 </p>
               )}
               {submitted && res[stepIdx]?.placement && (
@@ -597,7 +600,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
               )}
               {submitted && !(isFeedback && steps.length === 1) && (
                 <p className={'verdict-mini ' + (res[stepIdx]!.ok ? 'ok' : 'ng')} role="status">
-                  {res[stepIdx]!.ok ? '✓ 正解！' : '✗ ざんねん'}
+                  {res[stepIdx]!.ok ? '正解' : '不正解'}
                 </p>
               )}
             </>
@@ -606,15 +609,12 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
           {isFeedback && (
             <div className="explain">
               <div className={'verdict ' + (okAll ? 'ok' : nOk ? 'part' : 'ng')} ref={verdictRef}>
-                <span className="v-icon" aria-hidden="true">
-                  {okAll ? '✓' : nOk ? '△' : '✗'}
-                </span>
-                <strong>{okAll ? '正解！' : nOk > 0 ? `おしい！ ${nOk} / ${steps.length} 問正解` : 'ざんねん'}</strong>
+                {okAll ? '正解' : nOk > 0 ? `${steps.length}問中 ${nOk}問 正解` : '不正解'}
               </div>
               <p className="ex-sum">
                 <RichText text={q.explain.summary} />
               </p>
-              {is3d && <p className="ex-tip">👆 上の視点ボタンで「副審の位置」「真横」に切り替えて、見え方の違いを確かめましょう。</p>}
+              {is3d && <p className="ex-tip">上の視点を「副審の位置」「真横」に切り替えると、見え方の違いを確かめられます。</p>}
               {q.explain.detail && (
                 <details className="ex-detail" open>
                   <summary>くわしい解説</summary>
@@ -625,34 +625,34 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
               )}
               {q.badges.includes('new2026') && (
                 <p className="notice new">
-                  <b>🆕 2026/27改正。</b>
-                  地域・都道府県の大会では、まだ2025/26版を使っている場合があります（遅くとも2027年4月1日までに適用）。大会要項で確認しましょう。
+                  <b>2026/27改正</b>
+                  地域・都道府県の大会では、まだ2025/26版を使っている場合があります（遅くとも2027年4月1日までに適用）。大会要項で確認してください。
                 </p>
               )}
               {q.badges.includes('provisional') && (
                 <p className="notice warn">
-                  <b>⚠️ 監修前の暫定解答。</b>
+                  <b>監修前の暫定解答</b>
                   {q.review.note ?? '一部の判断は、監修者の確認後に確定します。'}
                 </p>
               )}
               <div className="refs">
-                <span className="muted">根拠</span>
+                <h3 className="sec">根拠</h3>
                 {q.refs.map((r) => (
                   <a key={r.src + r.article} className="ref" href={SOURCES[r.src]?.url} target="_blank" rel="noopener">
-                    📖 {r.article}
+                    <span>{r.article}</span>
                     <small>{SOURCES[r.src]?.label}</small>
                   </a>
                 ))}
               </div>
               {!review && (
                 <div className="rating">
-                  <span className="muted">この問題は、わかりやすかった？</span>
+                  <span className="muted">この問題はわかりやすかったですか</span>
                   <div className="rate-row">
                     <button type="button" className={'rate' + (rating === 'good' ? ' on' : '')} onClick={() => rate('good')}>
-                      👍 わかりやすい
+                      わかりやすい
                     </button>
                     <button type="button" className={'rate' + (rating === 'hard' ? ' on' : '')} onClick={() => rate('hard')}>
-                      🤔 わかりにくい
+                      わかりにくい
                     </button>
                   </div>
                 </div>
@@ -712,8 +712,8 @@ function ChoiceList({
                 <RichText text={c.text} />
               </span>
               {done && c.note && <span className="cnote">{c.note}</span>}
-              {done && c.id === step.answer && <span className="mark">✓ 正解</span>}
-              {wrongPick && <span className="mark">✗</span>}
+              {done && c.id === step.answer && <span className="mark">正解</span>}
+              {wrongPick && <span className="mark">あなたの回答</span>}
             </button>
           </FragmentWithFeedback>
         );

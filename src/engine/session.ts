@@ -54,7 +54,7 @@ export function summarize(order: readonly string[], results: Record<string, Ques
 }
 
 export function resultMessage(ratio: number): string {
-  if (ratio >= 0.9) return 'すばらしい！ 試合でも自信を持って判定できそうです。';
-  if (ratio >= 0.6) return 'よくできました。間違えた問題の解説リプレイを、もう一度見ておきましょう。';
-  return 'まずは解説リプレイで、動きと判定の関係をつかみましょう。何度でも挑戦できます。';
+  if (ratio >= 0.9) return 'ほとんどの問題に正解しました。';
+  if (ratio >= 0.6) return '間違えた問題は、解説をもう一度見ておくと確実です。';
+  return '解説で動きと判定の関係を確かめてから、もう一度解いてみてください。';
 }

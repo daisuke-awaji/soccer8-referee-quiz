@@ -1,5 +1,6 @@
 /** 画面をまたいで使うもの（保存・効果音・振動・トースト・用語の説明・確認ダイアログ） */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Icon } from '../ui/Icon';
 import { GLOSSARY } from '../content';
 import { createHaptics, createSound, type Sound } from '../audio/feedback';
 import type { Store } from '../storage/store';
@@ -85,7 +86,7 @@ export function UiProvider({ store, children }: { store: Store; children: ReactN
           <div className="gloss-head">
             <strong>{gloss}</strong>
             <button type="button" className="icon-btn" aria-label="閉じる" onClick={() => setGloss(null)}>
-              ×
+              <Icon name="close" />
             </button>
           </div>
           <p>{GLOSSARY[gloss] ?? ''}</p>
