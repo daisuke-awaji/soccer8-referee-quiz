@@ -13,8 +13,7 @@ export function buildReport(state: AppState): string {
     const r = state.results[id];
     const q = QMAP[id];
     const m = !r ? '未' : r.skipped ? 'スキップ' : r.ok ? '○' : '×';
-    const rate = state.ratings[id] === 'hard' ? '（わかりにくい）' : state.ratings[id] === 'good' ? '（わかりやすい）' : '';
-    lines.push(`${id} ${q?.title ?? ''}: ${m}${rate}`);
+    lines.push(`${id} ${q?.title ?? ''}: ${m}`);
   }
   lines.push(`感想: ${state.notes || '（なし）'}`);
   lines.push(`版: v${__APP_VERSION__}${__APP_COMMIT__ ? ` (${__APP_COMMIT__})` : ''}`);

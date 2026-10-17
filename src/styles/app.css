@@ -236,10 +236,6 @@ a { color: inherit; text-decoration: underline; text-decoration-color: var(--lin
 .ref:hover { border-color: var(--line-2); background: var(--bg-2); }
 .ref span { font-weight: 500; }
 .ref small { color: var(--muted); }
-.rating { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px; font-size: .85rem; }
-.rate-row { display: flex; gap: 8px; margin-top: 8px; }
-.rate { flex: 1; border: 1px solid var(--line); background: var(--bg); border-radius: var(--r-sm); min-height: 40px; font-size: .86rem; }
-.rate.on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 
 /* ---------- 結果 */
 .score { padding: 36px 0 8px; }
