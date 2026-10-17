@@ -1,0 +1,88 @@
+{
+  "id": "D-01",
+  "version": "0.1.0",
+  "ruleBase": "2026/27",
+  "category": "offside",
+  "levels": ["beginner", "grade4"],
+  "format": "animation",
+  "badges": ["mvp"],
+  "refereeSystem": "three",
+  "title": "プレーに関わらないオフサイドポジション",
+  "question": "赤10番のシュートが決まりました。副審側には、オフサイドポジションにいる赤7番がいます。どう判定しますか？",
+  "scene": {
+    "view": { "x": 34, "y": 0, "w": 34, "h": 50 },
+    "actors": [
+      { "id": "R10", "role": "player", "team": "red", "label": "10" },
+      { "id": "R7", "role": "player", "team": "red", "label": "7" },
+      { "id": "R9", "role": "player", "team": "red", "label": "9" },
+      { "id": "B4", "role": "player", "team": "blue", "label": "4" },
+      { "id": "B5", "role": "player", "team": "blue", "label": "5" },
+      { "id": "B1", "role": "goalkeeper", "team": "blue", "label": "1" },
+      { "id": "ball", "role": "ball", "team": "none" },
+      { "id": "REF", "role": "referee", "team": "none" },
+      { "id": "AR2", "role": "assistant", "team": "none" }
+    ],
+    "timeline": [
+      {
+        "t": 0,
+        "positions": {
+          "R10": [44, 24], "R7": [60, 42], "R9": [50, 14],
+          "B4": [54, 22], "B5": [55, 32], "B1": [66, 25],
+          "ball": [44.6, 24], "REF": [42, 16], "AR2": [55, 50]
+        },
+        "events": [{ "type": "caption", "text": "赤チームが右側の青ゴールへ攻撃中" }]
+      },
+      {
+        "t": 2,
+        "positions": {
+          "R10": [50, 25], "R7": [57, 44], "R9": [53, 15],
+          "B4": [54, 23], "B5": [55, 30], "B1": [65, 25],
+          "ball": [50.6, 25], "REF": [45, 17], "AR2": [55, 50]
+        },
+        "events": [{ "type": "caption", "text": "赤7番はプレーに関わらず、歩いて戻っている" }]
+      },
+      {
+        "t": 2.4,
+        "positions": { "ball": [50.8, 25], "R10": [50.4, 25] },
+        "events": [{ "type": "shot", "by": "R10" }]
+      },
+      {
+        "t": 3.3,
+        "positions": {
+          "ball": [68.3, 27], "B1": [65.5, 26], "R7": [56.5, 44],
+          "REF": [47, 18], "AR2": [55, 50]
+        },
+        "events": [{ "type": "caption", "text": "ゴール" }]
+      }
+    ],
+    "pauseAt": 3.4,
+    "overlays": [
+      { "type": "offsideLine", "x": 55, "note": "後方から2人目の守備側競技者（青5番）のライン" },
+      { "type": "sightLine", "from": "B1", "to": "ball", "note": "GKの視線を赤7番は遮っていない" },
+      { "type": "zone", "note": "赤7番はボールにも相手にも関わっていない" }
+    ]
+  },
+  "choices": [
+    { "id": "goal", "text": "得点を認める（オフサイドの反則ではない）" },
+    {
+      "id": "offside",
+      "text": "オフサイド。守備側の間接フリーキック",
+      "feedback": "オフサイドポジションにいるだけでは反則になりません。プレーへの干渉、相手への干渉、その位置にいて利益を得ることのどれかがあって初めて罰せられます。"
+    },
+    {
+      "id": "dropball",
+      "text": "ノーゴール。ドロップボールで再開",
+      "feedback": "反則も外的要因による妨害もないので、プレーを止める理由がありません。"
+    }
+  ],
+  "answer": "goal",
+  "explanation": {
+    "summary": "オフサイドポジションにいるだけでは反則ではありません。赤7番はボールにも相手にも関わっていないので、得点を認めます。",
+    "detail": "副審は、オフサイドポジションの選手が「関わったか」を見極めてから旗を上げます。すぐに旗を上げず、少し待つ（wait and see）のが基本です。",
+    "replay": true
+  },
+  "references": [
+    { "source": "laws2025_26", "article": "第11条 オフサイド", "url": "https://www.jfa.jp/laws/soccer/2025_26" }
+  ],
+  "review": { "status": "draft", "reviewer": "", "note": "副審の待ち方（wait and see）の表現は監修者に確認" }
+}

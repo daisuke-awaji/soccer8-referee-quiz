@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/soccer8-referee-quiz/question.schema.json",
+  "title": "8人制審判クイズ 問題定義",
+  "description": "座標系: ピッチ長辺 x=0〜68m（x=0 が自陣=赤チーム守備ゴール側）, 短辺 y=0〜50m（y=0 がベンチ側タッチライン）。スマホ縦表示では描画側で回転する。時間は秒。",
+  "type": "object",
+  "required": ["id", "version", "category", "levels", "format", "title", "question", "choices", "answer", "explanation", "references"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[A-H]-\\d{2}$", "examples": ["D-01"] },
+    "version": { "type": "string", "description": "問題データの版", "examples": ["0.1.0"] },
+    "ruleBase": { "type": "string", "default": "2026/27", "description": "準拠する競技規則の版" },
+    "category": { "enum": ["basics", "substitution", "restart", "offside", "positioning", "officials", "foul", "foul3d"] },
+    "levels": { "type": "array", "items": { "enum": ["beginner", "grade4"] }, "minItems": 1 },
+    "format": { "enum": ["animation", "placement", "choice", "scene3d"] },
+    "badges": { "type": "array", "items": { "enum": ["new2026", "needsReview", "mvp"] } },
+    "refereeSystem": { "enum": ["three", "three+fourth", "single+assistant"], "default": "three" },
+    "title": { "type": "string" },
+    "question": { "type": "string", "description": "停止時に表示する問い" },
+
+    "scene": {
+      "description": "2D描画用（format=animation/placement）",
+      "type": "object",
+      "properties": {
+        "view": {
+          "type": "object",
+          "description": "表示範囲（ズーム）。省略時はピッチ全体",
+          "properties": { "x": { "type": "number" }, "y": { "type": "number" }, "w": { "type": "number" }, "h": { "type": "number" } }
+        },
+        "actors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "role"],
+            "properties": {
+              "id": { "type": "string", "examples": ["R7", "B4", "ball", "REF", "AR1"] },
+              "role": { "enum": ["player", "goalkeeper", "ball", "referee", "assistant", "fourth", "assistantSingle", "substitute"] },
+              "team": { "enum": ["red", "blue", "none"] },
+              "label": { "type": "string", "description": "背番号など" }
+            }
+          }
+        },
+        "timeline": {
+          "type": "array",
+          "description": "キーフレーム。actor毎に時刻 t の位置を線形（または ease）補間",
+          "items": {
+            "type": "object",
+            "required": ["t", "positions"],
+            "properties": {
+              "t": { "type": "number", "minimum": 0 },
+              "positions": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2
+                }
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "enum": ["pass", "shot", "throwIn", "whistle", "flag", "countdown", "contact", "caption"] },
+                    "by": { "type": "string" },
+                    "text": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "pauseAt": { "type": "number", "description": "この時刻で停止して出題" },
+        "overlays": {
+          "type": "array",
+          "description": "解説リプレイ時の補助線",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "enum": ["offsideLine", "distanceCircle", "sightLine", "zone", "arrow"] },
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "x": { "type": "number" },
+              "radius": { "type": "number" },
+              "note": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "placement": {
+      "description": "format=placement のとき。ドラッグする対象と正解エリア",
+      "type": "object",
+      "properties": {
+        "dragActor": { "type": "string", "examples": ["AR1"] },
+        "target": {
+          "type": "object",
+          "properties": {
+            "x": { "type": "number" }, "y": { "type": "number" },
+            "toleranceM": { "type": "number", "description": "正解とみなす半径(m)" },
+            "constraint": { "enum": ["free", "onTouchline", "onGoalline"] }
+          }
+        }
+      }
+    },
+
+    "scene3d": {
+      "description": "format=scene3d のとき。Three.js 用アセットと視点",
+      "type": "object",
+      "properties": {
+        "asset": { "type": "string", "description": "glTF ファイルパス", "examples": ["assets/h01_slide_tackle.glb"] },
+        "clip": { "type": "string" },
+        "cameras": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "enum": ["referee", "assistant", "side", "top"] },
+              "label": { "type": "string" },
+              "position": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+              "lookAt": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+              "availableBeforeAnswer": { "type": "boolean" }
+            }
+          }
+        },
+        "slowMotion": { "type": "array", "items": { "type": "number" }, "examples": [[1, 0.5, 0.25]] }
+      }
+    },
+
+    "steps": {
+      "description": "段階的に問う場合（例: ファウル→再開→懲戒）。levels により表示する段階を制御",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string" },
+          "question": { "type": "string" },
+          "choices": { "$ref": "#/$defs/choices" },
+          "answer": { "type": "string" },
+          "levels": { "type": "array", "items": { "enum": ["beginner", "grade4"] } }
+        }
+      }
+    },
+
+    "choices": { "$ref": "#/$defs/choices" },
+    "answer": { "type": "string", "description": "正解の choice id（placement は 'placement'）" },
+    "explanation": {
+      "type": "object",
+      "required": ["summary"],
+      "properties": {
+        "summary": { "type": "string" },
+        "detail": { "type": "string" },
+        "replay": { "type": "boolean", "description": "解説で overlays 付きリプレイを行う" }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source", "article"],
+        "properties": {
+          "source": { "enum": ["laws2026_27", "laws2025_26", "eightAside", "refereeGuideline"] },
+          "article": { "type": "string", "examples": ["第11条"] },
+          "url": { "type": "string" }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "status": { "enum": ["draft", "inReview", "approved"] },
+        "reviewer": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "choices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text"],
+        "properties": {
+          "id": { "type": "string" },
+          "text": { "type": "string" },
+          "feedback": { "type": "string", "description": "この選択肢を選んだときの解説（誤答の理由）" }
+        }
+      }
+    }
+  }
+}
