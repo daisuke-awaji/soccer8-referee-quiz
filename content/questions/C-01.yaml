@@ -1,0 +1,112 @@
+# C-01 スローインを遅らせる
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: C-01
+category: restart
+levels:
+  - beginner
+  - grade4
+badges:
+  - new2026
+review: {status: draft}
+title: スローインを遅らせる
+kind: 2d
+hint: 2026/27版で新しく加わったルールです。
+scene:
+  view: {x: 36, y: 0, w: 33, h: 52}
+  actors:
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: B2, role: player, team: blue, label: "2"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        R3: [50, 51.1]
+        ball: [50, 50.6]
+        R9: [55, 40]
+        R7: [52, 30]
+        R10: [46, 36]
+        B2: [49, 44]
+        B4: [56, 38]
+        B5: [55, 28]
+        B1: [66.5, 25]
+        REF: [44, 36]
+        AR2: [56, 51.7]
+      events:
+        - {type: caption, text: 赤チームが1点リード。試合終了まで、あと少し}
+    - t: 1.2
+      positions: {}
+      events:
+        - {type: caption, text: 赤3番は、なかなかスローインをしない}
+        - {type: highlight, actor: R3, dur: 1.4}
+    - t: 2.4
+      positions:
+        R3: [48, 51.1]
+        ball: [48, 50.6]
+    - t: 2.6
+      positions: {}
+      events:
+        - {type: whistle}
+        - {type: caption, text: 主審が笛を吹き、5秒のカウントダウンを始めた}
+    - t: 2.8
+      positions: {}
+      events:
+        - {type: countdown, by: REF, from: 5, dur: 5}
+    - t: 5.2
+      positions:
+        R3: [48.6, 51.1]
+        ball: [48.6, 50.6]
+    - t: 7.6
+      positions:
+        R3: [48.1, 51.1]
+        ball: [48.1, 50.6]
+    - t: 8
+      positions: {}
+    - t: 8.4
+      positions: {}
+      events:
+        - {type: whistle}
+        - {type: caption, text: 5秒経過。青チームのスローインで再開}
+    - t: 9.2
+      positions:
+        R3: [50, 47]
+        B2: [48.1, 51.1]
+        ball: [48.1, 50.6]
+    - t: 9.6
+      positions: {}
+    - t: 10.3
+      positions:
+        ball: [52, 45]
+    - t: 10.6
+      positions: {}
+  pauseAt: 8
+  endAt: 10.6
+steps:
+  - type: choice
+    question: 主審の5秒のカウントダウンが終わっても、赤3番はスローインをしません。どうなりますか？
+    choices:
+      - {id: blue, text: 相手チーム（青）のスローインになる}
+      - id: ycred
+        text: 赤3番に警告し、赤チームのスローインでやり直す
+        feedback: 2026/27版では、まず相手チームのスローインになります。警告するのは、その後も過度に再開を遅らせた場合だけです。
+      - id: ifk
+        text: 青チームの間接フリーキックになる
+        feedback: スローインを遅らせた場合の再開は、相手チームのスローインです。
+      - id: wait
+        text: 何もせず、スローインを待つ
+        feedback: カウントダウンが終わったら、相手チームのスローインにします。待ち続ける必要はありません。
+    answer: blue
+explain:
+  summary: スローインを不当に遅らせているとき、主審は笛を吹き、手を上げて5秒をカウントダウンします。5秒を過ぎたら相手チームのスローインです。
+  detail: 警告するのは、相手チームのスローインになった後も過度に再開を遅らせた場合だけです。ゴールキックにも同じようなカウントダウンがあります（次の問題）。
+  overlays: []
+refs:
+  - {src: laws2627, article: 第15条 スローイン（2026/27改正）}
+  - {src: apply2627, article: 適用開始日}

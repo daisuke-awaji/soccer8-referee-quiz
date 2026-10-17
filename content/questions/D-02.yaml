@@ -1,0 +1,94 @@
+# D-02 スローインとオフサイド
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: D-02
+category: offside
+levels:
+  - beginner
+  - grade4
+badges: []
+review: {status: draft}
+title: スローインとオフサイド
+kind: 2d
+hint: どこから受けたボールか、に注目しましょう。
+scene:
+  view: {x: 36, y: 0, w: 33, h: 52}
+  actors:
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        R3: [58, 51.1]
+        ball: [58, 50.6]
+        R9: [62.6, 43]
+        R10: [52, 30]
+        R7: [56, 20]
+        B4: [60, 40]
+        B5: [59, 30]
+        B6: [57, 21]
+        B1: [66.5, 25]
+        REF: [50, 33]
+        AR2: [60, 51.6]
+      events:
+        - {type: caption, text: 赤チームのスローイン}
+    - t: 0.8
+      positions:
+        ball: [58, 50.3]
+      events:
+        - {type: caption, text: 赤3番がスローイン}
+    - t: 1.7
+      positions:
+        ball: [62.5, 43.6]
+        R9: [62.9, 43.2]
+        B4: [60.8, 41]
+      events:
+        - {type: caption, text: オフサイドポジションの赤9番が、直接ボールを受けた}
+        - {type: highlight, actor: R9, dur: 1.2}
+    - t: 2
+      positions:
+        R9: [63.3, 42]
+        ball: [63.6, 41.4]
+    - t: 2.8
+      positions:
+        R9: [64, 36]
+        ball: [64.5, 35.4]
+        B4: [62, 38]
+        B1: [66.6, 27]
+    - t: 3.5
+      positions:
+        ball: [68.4, 26.5]
+        B1: [66.9, 27.5]
+      events:
+        - {type: caption, text: そのままシュートして得点}
+    - t: 4
+      positions: {}
+  pauseAt: 2
+  endAt: 4
+steps:
+  - type: choice
+    question: 赤9番はオフサイドポジションで、スローインのボールを直接受けました。副審は旗を上げますか？
+    choices:
+      - id: flag
+        text: 旗を上げる（オフサイドの反則）
+        feedback: スローインから直接ボールを受けた場合は、オフサイドの反則になりません。
+      - {id: noflag, text: 上げない（反則ではない）}
+      - id: retake
+        text: スローインをやり直させる
+        feedback: スローインは正しく行われています。やり直す理由はありません。
+    answer: noflag
+explain:
+  summary: スローイン、ゴールキック、コーナーキックから直接ボールを受けた場合は、オフサイドの反則になりません。
+  detail: フリーキックやドロップボールからは、オフサイドの反則になり得ます。再開方法によって違うので、セットで覚えておきましょう。
+  overlays:
+    - {type: offsideLine, actor: B4, label: 後方から2人目（青4番）}
+refs:
+  - {src: laws, article: 第11条 オフサイド}

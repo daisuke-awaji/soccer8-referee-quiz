@@ -1,0 +1,102 @@
+# B-01 インプレー中の交代
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: B-01
+category: substitution
+levels:
+  - beginner
+  - grade4
+badges: []
+review: {status: draft}
+title: インプレー中の交代
+kind: 2d
+hint: 8人制の交代は「自由な交代」と呼ばれます。
+scene:
+  view: {x: 24, y: -8, w: 24, h: 58}
+  pad: 0.6
+  pitch: {showBench: true}
+  actors:
+    - {id: B9, role: player, team: blue, label: "9"}
+    - {id: B10, role: player, team: blue, label: "10"}
+    - {id: R4, role: player, team: red, label: "4"}
+    - {id: R5, role: player, team: red, label: "5"}
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R8, role: player, team: red, label: "8"}
+    - {id: S12, role: substitute, team: red, label: "12"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR1, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        B9: [45, 36]
+        ball: [44.2, 35.6]
+        B10: [41, 44]
+        R4: [31, 31]
+        R5: [30, 21]
+        R3: [33, 41]
+        R8: [37.5, 7]
+        S12: [33, -3]
+        REF: [41, 25]
+        AR1: [29, -0.9]
+      events:
+        - {type: caption, text: インプレー中。青チームが攻めている}
+    - t: 1
+      positions: {}
+      events:
+        - {type: caption, text: 赤8番がベンチへ下がり、赤12番が入ろうとしている}
+        - {type: highlight, actor: R8, dur: 2.4}
+    - t: 2
+      positions:
+        R8: [34.4, 0.4]
+    - t: 2.5
+      positions:
+        R8: [34.2, -3.2]
+        S12: [33.4, 0.5]
+      events:
+        - {type: caption, text: 交代ゾーンから出て、交代ゾーンから入った}
+        - {type: highlight, actor: S12, dur: 1.4}
+    - t: 3.7
+      positions:
+        B9: [34, 30]
+        ball: [33.2, 29.6]
+        B10: [32, 40]
+        R4: [28.5, 30]
+        R5: [27.5, 22]
+        R3: [30, 38]
+        S12: [37, 8]
+        REF: [37, 23]
+        AR1: [27.5, -0.9]
+    - t: 4.7
+      positions:
+        B9: [30, 28]
+        ball: [29.2, 27.6]
+        S12: [38, 12]
+        REF: [34, 22]
+      events:
+        - {type: caption, text: プレーはそのまま続く}
+  pauseAt: 3.7
+  endAt: 4.7
+steps:
+  - type: choice
+    question: ボールがインプレー中に、交代が行われました。主審はどうしますか？
+    choices:
+      - id: stop
+        text: プレーを止めて、交代をやり直させる
+        feedback: 8人制では、インプレー中でも交代できます。プレーを止める必要はありません。
+      - {id: go, text: そのままプレーを続けさせる}
+      - id: yc
+        text: 交代要員に警告（イエローカード）を示す
+        feedback: 交代ゾーンから正しく出入りしているので、反則ではありません。
+    answer: go
+explain:
+  summary: 8人制のフィールドプレーヤーの交代は、{{インプレー}}中でも{{アウトオブプレー}}中でもでき、主審の承認もいりません。
+  detail: 退く競技者も入る競技者も、{{交代ゾーン}}から出入りします。GKの交代だけは別で、アウトオブプレーのときに主審に通知し、承認を得て行います。
+  overlays:
+    - type: zone
+      x1: 31
+      x2: 37
+      y1: -1.6
+      y2: 1.6
+      label: 交代ゾーン（6m）
+refs:
+  - {src: eight, article: 第3条 競技者（交代の手続き）}
