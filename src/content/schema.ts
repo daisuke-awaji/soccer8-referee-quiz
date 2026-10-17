@@ -232,6 +232,8 @@ const QuestionBase = {
 export const Question = z.discriminatedUnion('kind', [
   z.object({ ...QuestionBase, kind: z.literal('2d'), scene: Scene2D }).strict(),
   z.object({ ...QuestionBase, kind: z.literal('3d'), scene3d: Scene3D }).strict(),
+  /** 図のない問題（選択式・○×）。規則の数字や手順を問う */
+  z.object({ ...QuestionBase, kind: z.literal('text') }).strict(),
 ]);
 export type Question = z.infer<typeof Question>;
 export type QuestionInput = z.input<typeof Question>;

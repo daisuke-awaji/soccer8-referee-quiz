@@ -1,0 +1,33 @@
+# F-05 審判員の人数
+# 根拠: 8人制 第5/6条 主審／その他の審判員 ①3人制審判：主審1名／副審2名。第4の審判員（任意） ②1人制審判：主審1名。補助審判1名（必須）（P.4）
+id: F-05
+category: officials
+levels: [beginner, grade4]
+badges: []
+review: {status: draft}
+title: 審判員の人数
+kind: text
+steps:
+  - type: choice
+    question: 正しい？ 誤り？ ——「3人制審判（主審・副審2人）では、第4の審判員を必ず置く」
+    choices:
+      - id: o
+        text: 正しい
+        feedback: 3人制審判では、第4の審判員は任意です。置かなくてもかまいません。
+      - {id: x, text: 誤り}
+    answer: x
+  - type: choice
+    question: 正しい？ 誤り？ ——「1人制審判（主審1人）では、補助審判を必ず置く」
+    choices:
+      - {id: o, text: 正しい}
+      - id: x
+        text: 誤り
+        feedback: 1人制審判では、補助審判1名が必須です。
+    answer: o
+explain:
+  summary: 3人制審判では第4の審判員は任意、1人制審判では補助審判が必須です。
+  detail: 8人制の試合は、3人制審判（主審1名・副審2名、第4の審判員は任意）か、1人制審判（主審1名・補助審判1名は必須）のどちらかで運営します。11人制は、主審・副審2人・第4の審判員です。
+  overlays: []
+refs:
+  - {src: eight, article: 第5/6条 主審／その他の審判員（P.4）}
+  - {src: eight, article: 8人制サッカーと11人制サッカーの違い「審判」（P.6）}

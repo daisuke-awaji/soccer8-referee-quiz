@@ -303,6 +303,12 @@ a { color: var(--green-d); }
   .stage-3d { max-height: calc(100dvh - 180px); }
   .stage-caption { min-height: 2.2em; font-size: .8rem; }
   .actionbar { max-width: none; left: auto; width: 47%; background: none; }
+  /* 図のない問題は1列のまま */
+  .screen.quiz.is-text { max-width: 640px; margin: 0 auto; padding-bottom: calc(96px + var(--safe-b)); }
+  .screen.quiz.is-text .qmain { display: block; }
+  .screen.quiz.is-text .qmeta { display: flex; }
+  .screen.quiz.is-text .panel { max-height: none; overflow: visible; }
+  .screen.quiz.is-text .actionbar { left: 0; width: auto; max-width: 640px; }
 }
 @media (min-width: 600px) {
   .actionbar { border-radius: 0; }

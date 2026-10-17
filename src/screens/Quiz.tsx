@@ -55,8 +55,9 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   const steps = useMemo(() => stepsFor(q, level), [q, level]);
   const is3d = q.kind === '3d';
   const hasAnim = hasAnimation(q);
-  const pauseAt = q.kind === '3d' ? q.scene3d.pauseAt : q.scene.pauseAt;
-  const endAt = q.kind === '3d' ? q.scene3d.endAt : (q.scene.endAt ?? q.scene.pauseAt);
+  const hasStage = q.kind !== 'text';
+  const pauseAt = q.kind === '3d' ? q.scene3d.pauseAt : q.kind === '2d' ? q.scene.pauseAt : 0;
+  const endAt = q.kind === '3d' ? q.scene3d.endAt : q.kind === '2d' ? (q.scene.endAt ?? q.scene.pauseAt) : 0;
 
   const [phase, setPhaseState] = useState<Phase>('loading');
   const phaseRef = useRef<Phase>('loading');
@@ -100,9 +101,13 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
 
   /* ---------- エンジンの用意 */
   useEffect(() => {
-    const box = stageRef.current!;
     let cancelled = false;
     const ready = () => setPhase(hasAnim ? 'intro' : 'answering');
+    if (q.kind === 'text') {
+      ready();
+      return;
+    }
+    const box = stageRef.current!;
     if (q.kind === '2d') {
       engineRef.current = new Pitch2D(box, q.scene, {
         onCaption: setCaption,
@@ -357,8 +362,10 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
 
   const hasRed = q.kind === '2d' && q.scene.actors.some((a) => a.team === 'red' && a.role !== 'substitute');
   const hasCaptions =
-    q.kind === '3d' ? q.scene3d.captions.length > 0 : q.scene.timeline.some((k) => (k.events ?? []).some((e) => e.type === 'caption'));
-  const showTools = hasAnim || isFeedback;
+    q.kind === '3d'
+      ? q.scene3d.captions.length > 0
+      : q.kind === '2d' && q.scene.timeline.some((k) => (k.events ?? []).some((e) => e.type === 'caption'));
+  const showTools = hasStage && (hasAnim || isFeedback);
   const replayLabel = isFeedback
     ? '↺ 解説リプレイ'
     : left === Infinity
@@ -373,7 +380,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   const noGL = /WebGL/i.test(error ?? '');
 
   return (
-    <div className={'screen quiz' + (is3d ? ' is3d' : '')}>
+    <div className={'screen quiz' + (is3d ? ' is3d' : '') + (hasStage ? '' : ' is-text')}>
       <header className="qbar">
         <button type="button" className="icon-btn" aria-label={review ? '結果に戻る' : '中断する'} onClick={quit}>
           ×
@@ -415,62 +422,64 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
           {q.title}
         </h2>
 
-        <div className={'stage-wrap' + (isFeedback ? ' sticky' : '')} ref={stageWrapRef}>
-          <div className="stage-box">
-            <div className={'stage' + (is3d ? ' stage-3d' : '')} ref={stageRef} key={retryKey} />
-            {phase === 'loading' && (
-              <div className="loader">
-                <span className="spin" />
-                3Dを読み込み中…
-              </div>
-            )}
-            {phase === 'error' && (
-              <div className="loader fail">
-                <p>
-                  {noGL
-                    ? 'この端末・ブラウザでは3D表示が使えないようです。別のブラウザ（Chrome / Safari の最新版）でお試しください。'
-                    : '3Dを読み込めませんでした。通信環境を確認して、もう一度お試しください。'}
-                </p>
-                <small className="err-detail">詳細: {(error ?? '').slice(0, 160)}</small>
-                <div className="row">
-                  <button
-                    type="button"
-                    className="btn ghost"
-                    onClick={() => {
-                      setError(null);
-                      setRetryKey((k) => k + 1);
-                    }}
-                  >
-                    再試行
-                  </button>
-                  {!review && (
-                    <button type="button" className="btn ghost" onClick={skip}>
-                      この問題をとばす
-                    </button>
-                  )}
+        {hasStage && (
+          <div className={'stage-wrap' + (isFeedback ? ' sticky' : '')} ref={stageWrapRef}>
+            <div className="stage-box">
+              <div className={'stage' + (is3d ? ' stage-3d' : '')} ref={stageRef} key={retryKey} />
+              {phase === 'loading' && (
+                <div className="loader">
+                  <span className="spin" />
+                  3Dを読み込み中…
                 </div>
+              )}
+              {phase === 'error' && (
+                <div className="loader fail">
+                  <p>
+                    {noGL
+                      ? 'この端末・ブラウザでは3D表示が使えないようです。別のブラウザ（Chrome / Safari の最新版）でお試しください。'
+                      : '3Dを読み込めませんでした。通信環境を確認して、もう一度お試しください。'}
+                  </p>
+                  <small className="err-detail">詳細: {(error ?? '').slice(0, 160)}</small>
+                  <div className="row">
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => {
+                        setError(null);
+                        setRetryKey((k) => k + 1);
+                      }}
+                    >
+                      再試行
+                    </button>
+                    {!review && (
+                      <button type="button" className="btn ghost" onClick={skip}>
+                        この問題をとばす
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+              {hasRed && (
+                <div className="dir-chip" aria-hidden="true">
+                  赤の攻撃 ↑
+                </div>
+              )}
+              <div className="stage-badge" hidden={!frozen || isFeedback}>
+                ⏸ 判定の瞬間
               </div>
-            )}
-            {hasRed && (
-              <div className="dir-chip" aria-hidden="true">
-                赤の攻撃 ↑
-              </div>
-            )}
-            <div className="stage-badge" hidden={!frozen || isFeedback}>
-              ⏸ 判定の瞬間
+              <button type="button" className="stage-play" aria-label="プレーを再生する" hidden={phase !== 'intro'} onClick={watch}>
+                <span className="tri" aria-hidden="true" />
+                <span className="lbl">プレーを見る</span>
+              </button>
             </div>
-            <button type="button" className="stage-play" aria-label="プレーを再生する" hidden={phase !== 'intro'} onClick={watch}>
-              <span className="tri" aria-hidden="true" />
-              <span className="lbl">プレーを見る</span>
-            </button>
+            <div className={'stage-caption' + (hasCaptions ? '' : ' none') + (caption ? ' show' : '')} aria-live="polite">
+              {caption}
+            </div>
+            <div className="stage-progress">
+              <i ref={progRef} />
+            </div>
           </div>
-          <div className={'stage-caption' + (hasCaptions ? '' : ' none') + (caption ? ' show' : '')} aria-live="polite">
-            {caption}
-          </div>
-          <div className="stage-progress">
-            <i ref={progRef} />
-          </div>
-        </div>
+        )}
 
         {is3d && phase !== 'error' && phase !== 'loading' && (
           <div className="cam-tabs" role="tablist" aria-label="視点">

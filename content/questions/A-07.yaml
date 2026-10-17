@@ -1,0 +1,41 @@
+# A-07 競技者の用具
+# 根拠: 8人制 第4条 競技者の用具 ④靴の種類は問わない ⑤すね当てを着用する ⑦眼鏡は主審が安全と判断したものは着用できる（P.4）
+id: A-07
+category: basics
+levels: [beginner, grade4]
+badges: []
+review: {status: draft}
+title: 競技者の用具
+kind: text
+hint: 8人制の規則には「すね当て」「靴」「眼鏡」について、それぞれ書かれています。
+steps:
+  - type: choice
+    question: 正しい？ 誤り？ ——「競技者は、すね当てを着けなければならない」
+    choices:
+      - {id: o, text: 正しい}
+      - id: x
+        text: 誤り
+        feedback: すね当ては、8人制でも着けなければなりません。
+    answer: o
+  - type: choice
+    question: 正しい？ 誤り？ ——「靴は、スパイクでなければならない」
+    choices:
+      - id: o
+        text: 正しい
+        feedback: 8人制では、靴を履く必要はありますが、その種類は問いません。
+      - {id: x, text: 誤り}
+    answer: x
+  - type: choice
+    question: 正しい？ 誤り？ ——「眼鏡は、主審が安全だと判断したものなら着けてよい」
+    choices:
+      - {id: o, text: 正しい}
+      - id: x
+        text: 誤り
+        feedback: 8人制競技規則には「眼鏡は、主審が安全であると判断したものは、着用できる」とあります。
+    answer: o
+explain:
+  summary: すね当ては必ず着けます。靴は種類を問いません。眼鏡は、主審が安全と判断すれば着けられます。
+  detail: 8人制競技規則 第4条では、競技者は靴を履く必要があるが種類は問わない（④）、すね当てを着用する（⑤）、眼鏡は主審が安全であると判断したものは着用できる（⑦）、と定めています。用具は、その競技者と相手競技者にとって安全なものでなければなりません（⑥）。
+  overlays: []
+refs:
+  - {src: eight, article: 第4条 競技者の用具 ④⑤⑦（P.4）}

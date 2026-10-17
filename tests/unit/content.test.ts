@@ -63,6 +63,12 @@ describe('content の検査は壊れたデータを見つける', () => {
     const issues = withBrokenCopy((d) => edit(path.join(d, 'questions/A-02.yaml'), 'id: A-02', 'id: A-09'));
     expect(issues.join('\n')).toContain('ファイル名は「A-09.yaml」');
   });
+  it('図のない問題に、図に重ねる表示を書いた', () => {
+    const issues = withBrokenCopy((d) =>
+      edit(path.join(d, 'questions/J-05.yaml'), '  overlays: []', '  overlays:\n    - {type: marker, at: [10, 10]}'),
+    );
+    expect(issues.join('\n')).toContain('kind: text');
+  });
   it('スキーマ違反（知らない項目）', () => {
     const issues = withBrokenCopy((d) => edit(path.join(d, 'questions/A-02.yaml'), 'title: ', 'titel: x\ntitle: '));
     expect(issues.join('\n')).toMatch(/A-02\.yaml/);

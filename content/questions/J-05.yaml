@@ -1,0 +1,29 @@
+# J-05 延長戦
+# 根拠: 8人制 第10条 試合結果の決定 ①前、後半それぞれ5分間以内の延長戦を設けることができる（P.4）
+id: J-05
+category: matchTime
+levels: [grade4]
+badges: []
+review: {status: draft}
+title: 延長戦の時間
+kind: text
+steps:
+  - type: choice
+    question: 大会で勝者を決める必要があり、延長戦を行います。8人制の延長戦の時間は？
+    choices:
+      - id: m15
+        text: 前後半それぞれ15分以内
+        feedback: 15分以内は11人制の延長戦です。
+      - id: m5
+        text: 前後半それぞれ5分以内
+      - id: m10
+        text: 前後半それぞれ10分
+        feedback: 8人制の延長戦は、前後半それぞれ5分以内です。
+    answer: m5
+explain:
+  summary: 8人制の延長戦は、前後半それぞれ5分以内です。
+  detail: 8人制競技規則 第10条①の規定です。延長戦は、競技会として勝者を決定する必要がある場合に設けることができます。11人制は、前後半それぞれ15分以内です。
+  overlays: []
+refs:
+  - {src: eight, article: 第10条 試合結果の決定 ①（P.4）}
+  - {src: eight, article: 8人制サッカーと11人制サッカーの違い「延長戦」（P.6）}

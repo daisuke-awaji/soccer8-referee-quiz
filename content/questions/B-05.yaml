@@ -1,0 +1,29 @@
+# B-05 人数が足りない（5人）
+# 根拠: 8人制 第3条① 一方のチームが6人に満たない場合は試合を開始しない（P.4、黒字＝遵守すべき規則）
+id: B-05
+category: basics
+levels: [beginner, grade4]
+badges: []
+review: {status: draft}
+title: 人数が足りない
+kind: text
+steps:
+  - type: choice
+    question: 片方のチームが、5人しか集まりませんでした（相手は8人）。どうする？
+    choices:
+      - id: stop
+        text: 試合を開始しない
+      - id: five
+        text: 両チーム5人ずつにして、試合を始める
+        feedback: 一方のチームが6人に満たない場合は、試合を開始しません。人数を合わせても同じです。
+      - id: play
+        text: 5人対8人のまま、試合を始める
+        feedback: 一方のチームが6人に満たない場合は、試合を開始しません。
+    answer: stop
+explain:
+  summary: 一方のチームが6人に満たない場合は、試合を開始しません。
+  detail: 8人制競技規則 第3条①の規定です（11人制では7人未満）。一方のチームが8人に満たないとき（6人・7人）は、両チームの合意の上、できるだけ両チーム同じ人数にします。こちらは大会ごとに変えられる規則（規則書の赤字）です。
+  overlays: []
+refs:
+  - {src: eight, article: 第3条 競技者 ①（P.4）}
+  - {src: eight, article: 8人制サッカーと11人制サッカーの違い「試合成立人数」（P.6）}
