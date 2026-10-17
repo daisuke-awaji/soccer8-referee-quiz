@@ -267,11 +267,13 @@ export function makeLabel(text: string, color = '#ffeb3b', rel = 0.3): THREE.Spr
   return sp;
 }
 
+const tmpV = new THREE.Vector3();
 export function fitLabels(group: THREE.Object3D, camera: THREE.PerspectiveCamera): void {
   const th = Math.tan((camera.fov * Math.PI) / 360);
+  group.updateMatrixWorld();
   for (const o of group.children) {
     if (!(o instanceof THREE.Sprite)) continue;
-    const d = camera.position.distanceTo(o.position);
+    const d = camera.position.distanceTo(o.getWorldPosition(tmpV));
     const w = 2 * d * th * ((o.userData.rel as number) ?? 0.3) * Math.max(1, 1 / camera.aspect);
     o.scale.set(w, w / 4, 1);
   }

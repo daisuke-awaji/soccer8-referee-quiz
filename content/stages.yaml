@@ -17,5 +17,9 @@
   questions: [G-03, G-13, G-14, G-15, G-16, G-17, G-18, G-19, G-02, G-11]
 - id: restart
   icon: 🚩
-  title: 再開・オフサイド・位置
-  questions: [C-01, C-02, D-01, D-02, E-01, H-01]
+  title: 再開・オフサイド
+  questions: [C-01, C-02, D-01, D-02]
+- id: position
+  icon: 🧊
+  title: 審判の立ち位置
+  questions: [H-04, H-01, E-01]

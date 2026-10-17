@@ -4,10 +4,10 @@
  */
 import * as THREE from 'three';
 import type { Scene3DDef } from '../../content/schema';
-import type { PlayOptions } from '../../engine/stage';
-import type { CameraId, Scene3DEngine, Scene3DOptions } from '../index';
-import { applyPose, buildField, fitLabels, makeLabel, makePerson, type Person } from '../kit';
-import { lerp, poseIdle, poseJog, smooth } from '../pose';
+import { Scene3DBase, type Cam } from '../base';
+import type { Scene3DEngine, Scene3DOptions } from '../index';
+import { applyPose, fitLabels, makeLabel, makePerson, type Person } from '../kit';
+import { poseIdle, poseJog } from '../pose';
 import {
   ATTACKER_FOOT,
   BALL_R,
@@ -20,13 +20,7 @@ import {
   poseDefender,
 } from './slidingTackleMotion';
 
-type V3 = [number, number, number];
-interface Cam {
-  pos: V3;
-  target: V3;
-  fov: number;
-  up: V3;
-}
+type CameraId = 'referee' | 'assistant' | 'side' | 'top';
 const CAMS: Record<CameraId, Cam> = {
   referee: { pos: [-6.5, 1.65, -4.2], target: [8.6, 0.45, 0.3], fov: 36, up: [0, 1, 0] },
   assistant: { pos: [21.5, 1.6, -25.6], target: [8.4, 0.35, 0.2], fov: 15, up: [0, 1, 0] },
@@ -34,23 +28,24 @@ const CAMS: Record<CameraId, Cam> = {
   top: { pos: [9.0, 15, 0.01], target: [9.0, 0, 0], fov: 40, up: [1, 0, 0] },
 };
 
-class SlidingTackleScene implements Scene3DEngine {
-  readonly kind = '3d' as const;
-  private t = 0;
-  private camId: CameraId = 'referee';
-  private analysis = false;
-  private raf: number | null = null;
-  private isPlaying = false;
-  private from = 0;
-  private to = 0;
-  private speed = 1;
-  private onEnd: (() => void) | null = null;
-  private camAnim: { from: Cam; to: Cam; k: number; dur: number } | null = null;
-  private camCur!: Cam;
-  private readonly renderer: THREE.WebGLRenderer;
-  private readonly scene = new THREE.Scene();
-  private readonly camera = new THREE.PerspectiveCamera(36, 4 / 3, 0.1, 200);
-  private readonly ro: ResizeObserver;
+class SlidingTackleScene extends Scene3DBase {
+  readonly cameras = [
+    { id: 'referee', label: '主審の位置' },
+    { id: 'assistant', label: '副審の位置' },
+    { id: 'side', label: '真横' },
+    { id: 'top', label: '真上' },
+  ];
+  readonly initialCamera = 'referee';
+  readonly explainCamera = 'side';
+  readonly contactAt = CONTACT_T;
+  readonly contactLabel = '接触の瞬間';
+  readonly legend = [
+    { cls: 'd-red', label: '赤10番（攻撃）' },
+    { cls: 'd-blue', label: '青4番（守備）' },
+    { cls: 'd-gk', label: 'GK' },
+    { cls: 'd-ref', label: '黒＝審判' },
+    { cls: 'd-sole', label: '黄色＝スパイクの裏' },
+  ];
   private A!: Person;
   private D!: Person;
   private GK!: Person;
@@ -63,35 +58,15 @@ class SlidingTackleScene implements Scene3DEngine {
   private ana!: THREE.Group;
   private anaRing!: THREE.Mesh;
 
-  constructor(
-    private readonly container: HTMLElement,
-    private readonly def: Scene3DDef,
-    private readonly opts: Scene3DOptions,
-  ) {
-    const canvas = document.createElement('canvas');
-    canvas.className = 'scene3d-canvas';
-    canvas.setAttribute('aria-label', '3Dで再現したタックルの場面');
-    container.replaceChildren(canvas);
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'low-power' });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.scene.background = new THREE.Color('#cfe6fb');
-    this.scene.fog = new THREE.Fog('#cfe6fb', 45, 110);
-    this.applyCam(CAMS.referee);
-    this.scene.add(new THREE.HemisphereLight('#eef6ff', '#41633a', 1.1));
-    const dl = new THREE.DirectionalLight('#ffffff', 1.4);
-    dl.position.set(12, 22, 9);
-    this.scene.add(dl);
-    buildField(this.scene, GOAL_LINE_X);
+  constructor(container: HTMLElement, def: Scene3DDef, opts: Scene3DOptions) {
+    super(container, def, opts, '3Dで再現したタックルの場面', GOAL_LINE_X);
     this.buildPeople();
     this.buildAnalysis();
-    this.resize();
-    this.ro = new ResizeObserver(() => {
-      this.resize();
-      this.renderOnce();
-    });
-    this.ro.observe(container);
-    this.seek(0);
+    this.start();
+  }
+
+  protected cam(id: string): Cam {
+    return CAMS[id as CameraId] ?? CAMS.referee;
   }
 
   private buildPeople() {
@@ -157,8 +132,7 @@ class SlidingTackleScene implements Scene3DEngine {
     g.add(l2);
   }
 
-  private update(t: number) {
-    this.t = t;
+  protected pose(t: number) {
     applyPose(this.A, poseAttacker(t));
     applyPose(this.D, poseDefender(t));
     applyPose(this.GK, poseIdle({ x: GOAL_LINE_X - 0.8, z: 0 }, Math.PI, t));
@@ -174,122 +148,15 @@ class SlidingTackleScene implements Scene3DEngine {
     this.ball.rotation.z = -bx / BALL_R;
     this.ballShadow.position.set(bx + 0.03, 0.008, BALL_Z);
     this.ana.visible = this.analysis && t >= CONTACT_T - 0.02;
-    this.opts.onTime?.(t);
   }
-  private renderOnce() {
+  protected frame(now: number): boolean {
+    if (!this.analysis) return false;
+    const s = 1 + 0.18 * Math.sin(now / 160);
+    this.anaRing.scale.set(s, s, s);
+    return this.ana.visible;
+  }
+  protected beforeRender() {
     if (this.ana.visible) fitLabels(this.ana, this.camera);
-    this.renderer.render(this.scene, this.camera);
-  }
-  private resize() {
-    const w = this.container.clientWidth || 320;
-    const h = this.container.clientHeight || 240;
-    this.renderer.setSize(w, h, false);
-    this.camera.aspect = w / h;
-    this.camera.updateProjectionMatrix();
-  }
-  private applyCam(c: Cam) {
-    this.camera.position.set(...c.pos);
-    this.camera.up.set(...c.up);
-    this.camera.fov = c.fov;
-    this.camera.lookAt(...c.target);
-    this.camera.updateProjectionMatrix();
-    this.camCur = { pos: [...c.pos], target: [...c.target], fov: c.fov, up: [...c.up] };
-  }
-  private loop() {
-    if (this.raf) return;
-    let last = performance.now();
-    const step = (now: number) => {
-      const dt = Math.min(0.1, (now - last) / 1000);
-      last = now;
-      let busy = false;
-      if (this.isPlaying) {
-        busy = true;
-        const nt = Math.min(this.to, this.t + dt * this.speed);
-        this.update(nt);
-        this.opts.onProgress?.((nt - this.from) / Math.max(0.001, this.to - this.from));
-        if (nt >= this.to) {
-          this.isPlaying = false;
-          const cb = this.onEnd;
-          this.onEnd = null;
-          cb?.();
-        }
-      }
-      if (this.camAnim) {
-        busy = true;
-        const a = this.camAnim;
-        a.k = Math.min(1, a.k + dt / a.dur);
-        const e = smooth(a.k);
-        const mix = (p: V3, q: V3): V3 => [lerp(p[0], q[0], e), lerp(p[1], q[1], e), lerp(p[2], q[2], e)];
-        this.applyCam({ pos: mix(a.from.pos, a.to.pos), target: mix(a.from.target, a.to.target), fov: lerp(a.from.fov, a.to.fov, e), up: mix(a.from.up, a.to.up) });
-        if (a.k >= 1) this.camAnim = null;
-      }
-      if (this.analysis) {
-        const s = 1 + 0.18 * Math.sin(now / 160);
-        this.anaRing.scale.set(s, s, s);
-        busy = busy || this.ana.visible;
-      }
-      this.renderOnce();
-      this.raf = busy ? requestAnimationFrame(step) : null;
-    };
-    this.raf = requestAnimationFrame(step);
-  }
-
-  /* ---------------- 公開 API */
-  play(o: PlayOptions = {}) {
-    this.from = o.from ?? 0;
-    this.to = o.to ?? this.def.endAt;
-    this.speed = o.speed ?? 1;
-    this.onEnd = o.onEnd ?? null;
-    this.update(this.from);
-    this.isPlaying = true;
-    this.loop();
-  }
-  stop() {
-    this.isPlaying = false;
-    this.onEnd = null;
-  }
-  get playing() {
-    return this.isPlaying;
-  }
-  seek(t: number) {
-    this.stop();
-    this.update(t);
-    this.renderOnce();
-    this.loop();
-  }
-  setCamera(id: CameraId, animate = true) {
-    const c = CAMS[id];
-    this.camId = id;
-    this.update(this.t);
-    if (!animate) {
-      this.applyCam(c);
-      this.renderOnce();
-      return;
-    }
-    this.camAnim = { from: this.camCur, to: c, k: 0, dur: 0.7 };
-    this.loop();
-  }
-  setAnalysis(on: boolean) {
-    this.analysis = on;
-    this.update(this.t);
-    this.renderOnce();
-    this.loop();
-  }
-  get contactAt() {
-    return CONTACT_T;
-  }
-  destroy() {
-    this.stop();
-    if (this.raf) cancelAnimationFrame(this.raf);
-    this.raf = null;
-    this.ro.disconnect();
-    try {
-      this.renderer.dispose();
-      this.renderer.forceContextLoss();
-    } catch {
-      /* すでに破棄されている */
-    }
-    this.container.replaceChildren();
   }
 }
 

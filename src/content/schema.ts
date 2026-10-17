@@ -26,7 +26,9 @@ export const Category = z.enum(CATEGORY_IDS);
 export type Category = z.infer<typeof Category>;
 
 /** 登録済みの3Dシーン（src/scene3d/scenes/ に実装がある ID） */
-export const SCENE3D_IDS = ['slidingTackle'] as const;
+export const SCENE3D_IDS = ['slidingTackle', 'penaltyAreaPush'] as const;
+/** 立ち位置を選ぶ問題（type: position）に使える3Dシーン */
+export const POSITION_SCENE3D_IDS: ReadonlyArray<(typeof SCENE3D_IDS)[number]> = ['penaltyAreaPush'];
 
 export const QuestionId = z.string().regex(/^[A-K]-\d{2,3}$/, 'ID は「A-01」の形式（分野の英字 A〜K＋2〜3桁）');
 
@@ -106,6 +108,8 @@ const Scene3D = z
     endAt: z.number().positive(),
     contactAt: z.number().positive(),
     captions: z.array(z.object({ t: z.number().min(0), text: z.string() })).default([]),
+    /** 解説に出す「視点を切り替えてみよう」の案内 */
+    tip: z.string().optional(),
   })
   .strict();
 export type Scene3DDef = z.infer<typeof Scene3D>;
@@ -170,10 +174,26 @@ export type Placement = z.infer<typeof Placement>;
 
 const PlacementStep = z.object({ type: z.literal('placement'), ...StepBase, placement: Placement }).strict();
 
-const Step = z.discriminatedUnion('type', [ChoiceStep, PlacementStep]);
+/** 3D：主審の立ち位置を、フィールドに出した候補から選ぶ。at は 2D と同じフィールド座標 */
+const Position3DCandidate = z
+  .object({
+    id: z.string().regex(/^[A-F]$/, '候補の id は A〜F の1文字'),
+    at: Vec2,
+    text: z.string().min(1),
+    feedback: z.string().optional(),
+  })
+  .strict();
+export type Position3DCandidate = z.infer<typeof Position3DCandidate>;
+
+const PositionStep = z
+  .object({ type: z.literal('position'), ...StepBase, candidates: z.array(Position3DCandidate).min(2).max(6), answer: z.string() })
+  .strict();
+
+const Step = z.discriminatedUnion('type', [ChoiceStep, PlacementStep, PositionStep]);
 export type Step = z.infer<typeof Step>;
 export type ChoiceStep = z.infer<typeof ChoiceStep>;
 export type PlacementStep = z.infer<typeof PlacementStep>;
+export type PositionStep = z.infer<typeof PositionStep>;
 
 const ActorRef = z.union([z.string(), Vec2]);
 const Overlay = z.discriminatedUnion('type', [

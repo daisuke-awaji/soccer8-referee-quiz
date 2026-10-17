@@ -2,7 +2,7 @@
  * 問題データの「ファイルをまたいだ」検査。
  * スキーマ（schema.ts）で表せない整合性（参照先の存在・時刻の順序など）を確かめる。
  */
-import type { Categories, Glossary, Question, Sources, Stages } from './schema.ts';
+import { POSITION_SCENE3D_IDS, type Categories, type Glossary, type Question, type Sources, type Stages } from './schema.ts';
 
 export interface ContentBundle {
   questions: Question[];
@@ -28,6 +28,7 @@ export function textsOf(q: Question): string[] {
   for (const s of q.steps) {
     out.push(s.question);
     if (s.type === 'choice') for (const c of s.choices) out.push(c.text, c.feedback ?? '', c.note ?? '');
+    else if (s.type === 'position') for (const c of s.candidates) out.push(c.text, c.feedback ?? '');
     else for (const z of s.placement.zones) out.push(z.text);
   }
   return out;
@@ -64,6 +65,18 @@ export function validateContent(bundle: ContentBundle): ContentIssue[] {
         const ids = s.choices.map((c) => c.id);
         if (new Set(ids).size !== ids.length) add(`${at}: 選択肢の id が重複しています`);
         if (!ids.includes(s.answer)) add(`${at}: 正解「${s.answer}」が選択肢にありません`);
+      } else if (s.type === 'position') {
+        const ids = s.candidates.map((c) => c.id);
+        if (new Set(ids).size !== ids.length) add(`${at}: 候補の id が重複しています`);
+        if (ids.join('') !== 'ABCDEF'.slice(0, ids.length)) add(`${at}: 候補の id は A から順に付けてください`);
+        if (!ids.includes(s.answer)) add(`${at}: 正解「${s.answer}」が候補にありません`);
+        if (q.kind !== '3d' || !POSITION_SCENE3D_IDS.includes(q.scene3d.id))
+          add(`${at}: 立ち位置の問題は、立ち位置に対応した3Dシーン（${POSITION_SCENE3D_IDS.join(', ')}）でのみ使えます`);
+        if (i !== 0) add(`${at}: 立ち位置の問題は最初の手順にしてください`);
+        for (const c of s.candidates) {
+          const [x, y] = c.at;
+          if (x < 0 || x > 68 || y < -3 || y > 53) add(`${at}: 候補 ${c.id} の位置がフィールドの外です`);
+        }
       } else {
         const p = s.placement;
         if (q.kind !== '2d') add(`${at}: 配置問題は 2D の問題でのみ使えます`);

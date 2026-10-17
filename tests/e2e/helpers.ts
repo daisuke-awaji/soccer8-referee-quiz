@@ -54,6 +54,14 @@ export async function answerQuestion(page: Page, q: Question, correct = true): P
       const btn = page.locator(`.choices .choice[data-id="${pick}"]`);
       await expect(btn).toBeVisible({ timeout: 20_000 });
       await btn.click();
+    } else if (s.type === 'position') {
+      // フィールドに出た候補（黄色い丸）をタップする。一覧の選択も連動する
+      const pick = correct ? s.answer : s.candidates.find((c) => c.id !== s.answer)!.id;
+      if (pick !== s.answer) allOk = false;
+      const mark = page.locator(`.s3-cand[data-id="${pick}"]`);
+      await expect(mark).toBeVisible({ timeout: 20_000 });
+      await mark.click();
+      await expect(page.locator(`.choices .choice[data-id="${pick}"]`)).toHaveAttribute('aria-checked', 'true');
     } else {
       await expect(page.locator('.place-help')).toBeVisible({ timeout: 20_000 });
       const [x, y] = correct ? s.placement.target : [s.placement.target[0] - (s.placement.tolerance + 3), s.placement.target[1]];
