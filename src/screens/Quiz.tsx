@@ -80,7 +80,6 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   const [camsUnlocked, setCamsUnlocked] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
-  const [rating, setRating] = useState(state.ratings[q.id]);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const progRef = useRef<HTMLElement>(null);
@@ -322,11 +321,6 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
     }
     setCam(id);
     engine3d()?.setCamera(id, true);
-  };
-  const rate = (k: 'good' | 'hard') => {
-    setRating(k);
-    store.set((s) => ({ ratings: { ...s.ratings, [q.id]: k } }));
-    toast('ありがとうございます');
   };
 
   /* ---------- 表示 */
@@ -644,19 +638,6 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
                   </a>
                 ))}
               </div>
-              {!review && (
-                <div className="rating">
-                  <span className="muted">この問題はわかりやすかったですか</span>
-                  <div className="rate-row">
-                    <button type="button" className={'rate' + (rating === 'good' ? ' on' : '')} onClick={() => rate('good')}>
-                      わかりやすい
-                    </button>
-                    <button type="button" className={'rate' + (rating === 'hard' ? ' on' : '')} onClick={() => rate('hard')}>
-                      わかりにくい
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           )}
         </section>

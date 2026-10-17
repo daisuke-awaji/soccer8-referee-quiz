@@ -30,6 +30,7 @@ describe('migrate（保存形式の引き継ぎ）', () => {
     expect(s.idx).toBe(1);
     expect(s.settings.sound).toBe(false);
     expect(s.notes).toBe('メモ');
+    expect(s).not.toHaveProperty('ratings');
   });
   it('なくなった問題が出題中なら、出題をやめる（成績は残す）', () => {
     const s = migrate({ order: ['A-01', 'Z-99'], idx: 1, results: { 'A-01': { ok: true, at: 1 } } }, new Set(['A-01']));

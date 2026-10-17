@@ -25,7 +25,6 @@ export interface AppState {
   order: string[];
   idx: number;
   results: Record<string, QuestionResult>;
-  ratings: Record<string, 'good' | 'hard'>;
   notes: string;
   settings: { sound: boolean; haptics: boolean };
   round: 'main' | 'retry';
@@ -38,7 +37,6 @@ export const defaultState = (): AppState => ({
   order: [],
   idx: 0,
   results: {},
-  ratings: {},
   notes: '',
   settings: { sound: true, haptics: true },
   round: 'main',
@@ -56,7 +54,6 @@ export function migrate(raw: unknown, knownIds?: ReadonlySet<string>): AppState 
     order: Array.isArray(s.order) ? s.order.filter((x): x is string => typeof x === 'string') : [],
     idx: typeof s.idx === 'number' && s.idx >= 0 ? s.idx : 0,
     results: s.results && typeof s.results === 'object' ? s.results : {},
-    ratings: s.ratings && typeof s.ratings === 'object' ? s.ratings : {},
     notes: typeof s.notes === 'string' ? s.notes : '',
     settings: { sound: s.settings?.sound !== false, haptics: s.settings?.haptics !== false },
     round: s.round === 'retry' ? 'retry' : 'main',
