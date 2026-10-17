@@ -1,15 +1,16 @@
 # 問題の作り方
 
-問題は **1問 = 1ファイル**（`content/questions/<ID>.yaml`）です。ファイルを足して `npm run content:check` が通れば、アプリに出ます（コードの変更は要りません）。
+問題は **1問 = 1ファイル**（`content/questions/<ID>.yaml`）です。ファイルを足して `content/stages.yaml` のどれかのステージに ID を書き、`npm run content:check` が通れば、アプリに出ます（コードの変更は要りません）。
 
 ## 手順
 
 1. [question-backlog.md](./question-backlog.md) から作る問題を選び、Issue を立てる（1問 = 1 Issue）
 2. **一次資料で根拠を確かめる**（条文・ページ）。確かめられない問題は作らない
 3. 似た問題の YAML をコピーして `content/questions/<ID>.yaml` を作る
-4. `npm run dev` で開き、`http://localhost:5173/#/q/<ID>` で確認する
-5. `npm run content:check` と `npm run e2e` を通す（E2E は全問を自動で解くので、新しい問題も自動で確かめられる）
-6. PR を出す。`review.status` は `draft` のまま。監修者の確認後に `approved` にする
+4. `content/stages.yaml` のステージに ID を足す（ステージは約10問。多くなったら新しいステージを作る）
+5. `npm run dev` で開き、`http://localhost:5173/#/q/<ID>` で確認する
+6. `npm run content:check` と `npm run e2e` を通す（E2E は全問を自動で解くので、新しい問題も自動で確かめられる）
+7. PR を出す。`review.status` は `draft` のまま。監修者の確認後に `approved` にする
 
 ## ファイルの形
 
@@ -140,3 +141,4 @@ explain:
 - `pauseAt` / `endAt` が動きの長さの中にある
 - 解説の重ね表示・イベントが参照する登場人物がいる
 - 出典が `sources.yaml` に、用語が `glossary.yaml` にある
+- どの問題も、`stages.yaml` のちょうど1つのステージに入っている。ステージにない問題 ID を書いていない

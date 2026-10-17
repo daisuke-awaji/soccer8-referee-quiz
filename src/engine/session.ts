@@ -1,16 +1,17 @@
 /** 出題の順番と成績の集計（DOM・保存に依存しない） */
-import type { Category, Question } from '../content/schema';
+import type { Category, Question, Stage } from '../content/schema';
 import type { AppState, QuestionResult } from '../storage/store';
 
-/** 新しく始める（retry のときは、前の成績を残したまま間違えた問題だけを解き直す） */
-export function startRoundPatch(
-  all: readonly Question[],
+/** ステージを始める（retry のときは、前の成績を残したまま間違えた問題だけを解き直す） */
+export function startStagePatch(
+  stage: Stage,
   prev: AppState,
   ids?: string[],
   round: AppState['round'] = 'main',
 ): Partial<AppState> {
   return {
-    order: ids ?? all.map((q) => q.id),
+    stage: stage.id,
+    order: ids ?? [...stage.questions],
     idx: 0,
     results: round === 'retry' ? prev.results : {},
     round,
@@ -18,8 +19,19 @@ export function startRoundPatch(
   };
 }
 
+/** 最後の問題まで終えたとき。ステージ全体の正解数を記録する（とばした問題は不正解と同じ） */
+export function finishPatch(s: AppState, stages: Readonly<Record<string, Stage>>): Partial<AppState> {
+  const stage = s.stage ? stages[s.stage] : undefined;
+  if (!stage) return { finished: true };
+  const score = stage.questions.filter((id) => s.results[id]?.ok).length;
+  return {
+    finished: true,
+    stageScores: { ...s.stageScores, [stage.id]: { score, total: stage.questions.length, at: Date.now() } },
+  };
+}
+
 export function isInProgress(s: AppState): boolean {
-  return s.order.length > 0 && !s.finished && (s.idx > 0 || Object.keys(s.results).length > 0);
+  return !!s.stage && s.order.length > 0 && !s.finished && (s.idx > 0 || Object.keys(s.results).length > 0);
 }
 
 export interface Summary {

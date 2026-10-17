@@ -1,24 +1,30 @@
 /** ホームから結果まで、ふつうに使う流れ（すべての画面サイズで行う） */
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
-import { QUESTIONS, actionButton, answerQuestion, collectErrors } from './helpers';
+import { QUESTIONS, STAGES, actionButton, answerQuestion, collectErrors, qById } from './helpers';
 
-test('ホーム → 全問 → 結果 → 間違えた問題をもう一度', async ({ page }) => {
-  test.setTimeout(420_000);
+test('ホーム → ステージを選ぶ → 全問 → 結果 → 間違えた問題をもう一度', async ({ page }) => {
+  test.setTimeout(240_000);
   const errors = collectErrors(page);
   await page.goto('./');
-  await expect(page.locator('.home .meta')).toContainText(`${QUESTIONS.length}問`);
-  await page.locator('.screen.home .actionbar button').click();
+  await expect(page.locator('.home .meta')).toContainText(`${STAGES.length}ステージ・${QUESTIONS.length}問`);
+  await expect(page.locator('.stage-card')).toHaveCount(STAGES.length);
 
-  const qs = QUESTIONS;
+  // 1番目ではないステージも、最初から選べる
+  const st = STAGES[1]!;
+  const card = page.locator(`.stage-card[data-stage="${st.id}"]`);
+  await expect(card).toContainText(`${st.questions.length}問`);
+  await card.click();
+
+  const qs = st.questions.map(qById);
   for (let i = 0; i < qs.length; i++) {
-    const q = qs[i]!;
     await expect(page.locator('.qbar .count')).toHaveText(`${i + 1} / ${qs.length}`);
     // 1問目だけわざと間違える
-    await answerQuestion(page, q, i !== 0);
+    await answerQuestion(page, qs[i]!, i !== 0);
     await actionButton(page).click();
   }
   await expect(page.locator('.screen.result')).toBeVisible();
+  await expect(page.locator('.qbar .count')).toContainText(st.title);
   await expect(page.locator('.score-num strong')).toHaveText(String(qs.length - 1));
   await expect(page.locator('.res-list li.ng')).toHaveCount(1);
 
@@ -26,22 +32,35 @@ test('ホーム → 全問 → 結果 → 間違えた問題をもう一度', as
   await page.locator('.res-actions .btn.primary').click();
   await answerQuestion(page, qs[0]!, true);
   await actionButton(page).click();
-  await expect(page.locator('.screen.result')).toBeVisible();
   await expect(page.locator('.score-num strong')).toHaveText('1');
+
+  // ホームのカードに、ステージ全体の正解数が出る
+  await page.locator('.res-actions .btn', { hasText: 'ホームへ' }).click();
+  await expect(card).toContainText(`前回 ${qs.length}/${qs.length}`);
   expect(errors).toEqual([]);
 });
 
-test('途中でやめても、ホームから続きを再開できる', async ({ page }) => {
+test('途中でやめても、ホームから続きを再開できる。別のステージを選ぶと確かめる', async ({ page }) => {
+  const st = STAGES[0]!;
   await page.goto('./');
-  await page.locator('.screen.home .actionbar button').click();
-  await answerQuestion(page, QUESTIONS[0]!, true);
+  await page.locator(`.stage-card[data-stage="${st.id}"]`).click();
+  await answerQuestion(page, qById(st.questions[0]!), true);
   await actionButton(page).click();
   await page.locator('.qbar .icon-btn').first().click();
   await page.locator('.modal .btn.primary').click();
-  await expect(page.locator('.card.resume')).toContainText('2 / ');
+  const card = page.locator(`.stage-card[data-stage="${st.id}"]`);
+  await expect(card).toContainText(`続きから 2/${st.questions.length}`);
   await page.reload();
-  await page.locator('.card.resume .btn.primary').click();
+  await card.click();
   await expect(page.locator('.qbar .count')).toHaveText(/^2 \//);
+
+  // ほかのステージを選ぶと、途中であることを確かめる
+  await page.locator('.qbar .icon-btn').first().click();
+  await page.locator('.modal .btn.primary').click();
+  await page.locator(`.stage-card[data-stage="${STAGES[1]!.id}"]`).click();
+  await expect(page.locator('.modal')).toContainText(st.title);
+  await page.locator('.modal .btn.primary').click();
+  await expect(page.locator('.qbar .count')).toHaveText(`1 / ${STAGES[1]!.questions.length}`);
 });
 
 test('以前の形式の直接リンク（#q=...&lv=...）でも問題が開く', async ({ page }) => {

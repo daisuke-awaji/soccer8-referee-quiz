@@ -5,6 +5,8 @@ import { hasAnimation } from '../../src/engine/animation';
 
 export const CONTENT = loadContent().bundle;
 export const QUESTIONS = CONTENT.questions;
+export const STAGES = CONTENT.stages;
+export const qById = (id: string) => QUESTIONS.find((q) => q.id === id)!;
 
 /** コンソールのエラーを集める（テストの最後に空であることを確かめる） */
 export function collectErrors(page: Page): string[] {

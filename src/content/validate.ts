@@ -2,13 +2,14 @@
  * 問題データの「ファイルをまたいだ」検査。
  * スキーマ（schema.ts）で表せない整合性（参照先の存在・時刻の順序など）を確かめる。
  */
-import type { Categories, Glossary, Question, Sources } from './schema.ts';
+import type { Categories, Glossary, Question, Sources, Stages } from './schema.ts';
 
 export interface ContentBundle {
   questions: Question[];
   sources: Sources;
   glossary: Glossary;
   categories: Categories;
+  stages: Stages;
 }
 
 export interface ContentIssue {
@@ -39,6 +40,7 @@ export function termsIn(text: string): string[] {
 export function validateContent(bundle: ContentBundle): ContentIssue[] {
   const issues: ContentIssue[] = [];
   const seen = new Set<string>();
+  issues.push(...validateStages(bundle));
 
   for (const q of bundle.questions) {
     const add = (message: string) => issues.push({ where: q.id, message });
@@ -117,5 +119,26 @@ export function validateContent(bundle: ContentBundle): ContentIssue[] {
       if (q.explain.overlays.length) add('図のない問題（kind: text）では explain.overlays は使えません');
     }
   }
+  return issues;
+}
+
+/** どの問題も、ちょうど1つのステージに入っていること */
+function validateStages(bundle: ContentBundle): ContentIssue[] {
+  const issues: ContentIssue[] = [];
+  const add = (message: string) => issues.push({ where: 'stages.yaml', message });
+  const qids = new Set(bundle.questions.map((q) => q.id));
+  const stageIds = new Set<string>();
+  const placed = new Map<string, string>();
+  for (const st of bundle.stages) {
+    if (stageIds.has(st.id)) add(`ステージ「${st.id}」の id が重複しています`);
+    stageIds.add(st.id);
+    for (const id of st.questions) {
+      if (!qids.has(id)) add(`ステージ「${st.id}」の問題「${id}」がありません`);
+      const prev = placed.get(id);
+      if (prev) add(`問題「${id}」が、ステージ「${prev}」と「${st.id}」の両方に入っています`);
+      placed.set(id, st.id);
+    }
+  }
+  for (const id of qids) if (!placed.has(id)) add(`問題「${id}」が、どのステージにも入っていません`);
   return issues;
 }

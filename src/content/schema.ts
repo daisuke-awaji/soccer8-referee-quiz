@@ -28,6 +28,8 @@ export type Category = z.infer<typeof Category>;
 /** 登録済みの3Dシーン（src/scene3d/scenes/ に実装がある ID） */
 export const SCENE3D_IDS = ['slidingTackle'] as const;
 
+export const QuestionId = z.string().regex(/^[A-K]-\d{2,3}$/, 'ID は「A-01」の形式（分野の英字 A〜K＋2〜3桁）');
+
 const Vec2 = z.tuple([z.number(), z.number()]);
 export type Vec2 = z.infer<typeof Vec2>;
 
@@ -205,7 +207,7 @@ export type Overlay = z.infer<typeof Overlay>;
 export const ReviewStatus = z.enum(['draft', 'inReview', 'approved']);
 
 const QuestionBase = {
-  id: z.string().regex(/^[A-K]-\d{2,3}$/, 'ID は「A-01」の形式（分野の英字 A〜K＋2〜3桁）'),
+  id: QuestionId,
   category: Category,
   /** new2026 = 2026/27改正点 / provisional = 一部が監修前の暫定解答 */
   badges: z.array(z.enum(['new2026', 'provisional'])).default([]),
@@ -250,3 +252,14 @@ export type Glossary = z.infer<typeof Glossary>;
 
 export const Categories = z.record(Category, z.string());
 export type Categories = z.infer<typeof Categories>;
+
+/** ホームに並ぶステージ（content/stages.yaml） */
+export const Stage = z.object({
+  id: z.string().regex(/^[a-z][a-zA-Z0-9]*$/),
+  icon: z.string().min(1),
+  title: z.string().min(1),
+  questions: z.array(QuestionId).min(1),
+});
+export type Stage = z.infer<typeof Stage>;
+export const Stages = z.array(Stage).min(1);
+export type Stages = z.infer<typeof Stages>;

@@ -1,7 +1,8 @@
 import type { Nav } from '../App';
 import { useUi } from '../app/context';
-import { QUESTIONS, RULE_VERSION, SOURCES } from '../content';
-import { isInProgress, startRoundPatch } from '../engine/session';
+import { QUESTIONS, RULE_VERSION, SOURCES, STAGES, STAGE_MAP } from '../content';
+import type { Stage } from '../content/schema';
+import { isInProgress, startStagePatch } from '../engine/session';
 import type { AppState } from '../storage/store';
 
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
@@ -15,14 +16,18 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
 }
 
 export function Home({ state, nav }: { state: AppState; nav: Nav }) {
-  const { store, sound, buzz } = useUi();
+  const { store, sound, buzz, confirm } = useUi();
   const count = QUESTIONS.length;
   const inProgress = isInProgress(state);
-  const correct = Object.values(state.results).filter((r) => r?.ok).length;
+  const current = inProgress && state.stage ? STAGE_MAP[state.stage] : undefined;
 
-  const start = () => {
+  const start = async (stage: Stage) => {
     sound.unlock();
-    store.set((s) => startRoundPatch(QUESTIONS, s));
+    if (current && current.id !== stage.id) {
+      const ok = await confirm(`「${current.title}」の途中です。「${stage.title}」を始めますか？`, '始める', 'やめる');
+      if (!ok) return;
+    }
+    if (current?.id !== stage.id) store.set((s) => startStagePatch(stage, s));
     nav.next();
   };
   const setSetting = (key: 'sound' | 'haptics', v: boolean) => {
@@ -41,45 +46,30 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
         <h1>8人制 審判トレーニング</h1>
         <p className="lead">プレーを見て、判定の瞬間に答える練習問題です。保護者審判と4級審判員向け。</p>
         <p className="meta">
-          {count}問・約{Math.max(1, Math.round(count * 0.6))}分
+          {STAGES.length}ステージ・{count}問
         </p>
       </div>
 
-      {inProgress && (
-        <div className="card resume">
-          <div>
-            <strong>続きから</strong>
-            <span className="muted">
-              {'　'}
-              {state.idx + 1} / {state.order.length}問目
-            </span>
-          </div>
-          <button
-            type="button"
-            className="btn primary"
-            onClick={() => {
-              sound.unlock();
-              nav.next();
-            }}
-          >
-            続ける
-          </button>
-        </div>
-      )}
-      {state.finished && state.order.length > 0 && (
-        <div className="card resume">
-          <div>
-            <strong>前回の結果</strong>
-            <span className="muted">
-              {'　'}
-              {correct} / {state.order.length}問正解
-            </span>
-          </div>
-          <button type="button" className="btn ghost" onClick={nav.result}>
-            見る
-          </button>
-        </div>
-      )}
+      <h2 className="sec">ステージを選ぶ</h2>
+      <ul className="stages">
+        {STAGES.map((st) => {
+          const sc = state.stageScores[st.id];
+          const now = current?.id === st.id;
+          return (
+            <li key={st.id}>
+              <button type="button" className={`stage-card${now ? ' now' : ''}`} data-stage={st.id} onClick={() => void start(st)}>
+                <span className="stage-icon" aria-hidden="true">
+                  {st.icon}
+                </span>
+                <span className="stage-title">{st.title}</span>
+                <span className="stage-meta">
+                  {now ? `続きから ${state.idx + 1}/${state.order.length}` : sc ? `前回 ${sc.score}/${sc.total}` : `${st.questions.length}問`}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
 
       <div className="howto">
         <h2 className="sec">遊び方</h2>
@@ -132,11 +122,6 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
         </p>
       </div>
 
-      <div className="actionbar">
-        <button type="button" className="btn primary big" onClick={start}>
-          はじめる
-        </button>
-      </div>
     </div>
   );
 }
