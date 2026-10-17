@@ -1,13 +1,8 @@
-import { useState } from 'react';
 import type { Nav } from '../App';
 import { useUi } from '../app/context';
-import { QUESTIONS, RULE_VERSION, SOURCES, questionsFor } from '../content';
-import type { Level } from '../content/schema';
-import { LEVEL_CONFIG } from '../engine/levels';
+import { QUESTIONS, RULE_VERSION, SOURCES } from '../content';
 import { isInProgress, startRoundPatch } from '../engine/session';
 import type { AppState } from '../storage/store';
-
-const LEVEL_KEYS = Object.keys(LEVEL_CONFIG) as Level[];
 
 function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -21,16 +16,13 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
 
 export function Home({ state, nav }: { state: AppState; nav: Nav }) {
   const { store, sound, buzz } = useUi();
-  // はじめての方が迷わないよう「入門」を初期選択
-  const [sel, setSel] = useState<Level>(state.level ?? 'beginner');
-  const L = LEVEL_CONFIG[sel];
-  const count = questionsFor(sel).length;
+  const count = QUESTIONS.length;
   const inProgress = isInProgress(state);
   const correct = Object.values(state.results).filter((r) => r?.ok).length;
 
   const start = () => {
     sound.unlock();
-    store.set((s) => startRoundPatch(QUESTIONS, s, sel));
+    store.set((s) => startRoundPatch(QUESTIONS, s));
     nav.next();
   };
   const setSetting = (key: 'sound' | 'haptics', v: boolean) => {
@@ -49,17 +41,17 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
         <h1>8人制 審判トレーニング</h1>
         <p className="lead">プレーを見て、判定の瞬間に答える練習問題です。保護者審判と4級審判員向け。</p>
         <p className="meta">
-          {L.label}・{count}問・約{Math.max(1, Math.round(count * 0.6))}分
+          {count}問・約{Math.max(1, Math.round(count * 0.6))}分
         </p>
       </div>
 
-      {inProgress && state.level && (
+      {inProgress && (
         <div className="card resume">
           <div>
             <strong>続きから</strong>
             <span className="muted">
               {'　'}
-              {LEVEL_CONFIG[state.level].label}・{state.idx + 1} / {state.order.length}問目
+              {state.idx + 1} / {state.order.length}問目
             </span>
           </div>
           <button
@@ -74,13 +66,13 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
           </button>
         </div>
       )}
-      {state.finished && state.order.length > 0 && state.level && (
+      {state.finished && state.order.length > 0 && (
         <div className="card resume">
           <div>
             <strong>前回の結果</strong>
             <span className="muted">
               {'　'}
-              {LEVEL_CONFIG[state.level].label}・{correct} / {state.order.length}問正解
+              {correct} / {state.order.length}問正解
             </span>
           </div>
           <button type="button" className="btn ghost" onClick={nav.result}>
@@ -88,32 +80,6 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
           </button>
         </div>
       )}
-
-      <h2 className="sec">レベルを選ぶ</h2>
-      <div className="levels" role="radiogroup" aria-label="レベル">
-        {LEVEL_KEYS.map((k) => {
-          const c = LEVEL_CONFIG[k];
-          return (
-            <button
-              key={k}
-              type="button"
-              className={'level-card' + (sel === k ? ' on' : '')}
-              role="radio"
-              aria-checked={sel === k}
-              data-k={k}
-              onClick={() => setSel(k)}
-            >
-              <span className="lv-name">{c.label}</span>
-              <span className="lv-who">{c.who}</span>
-              <ul className="lv-points">
-                {c.points.map((p) => (
-                  <li key={p}>{p}</li>
-                ))}
-              </ul>
-            </button>
-          );
-        })}
-      </div>
 
       <div className="howto">
         <h2 className="sec">遊び方</h2>
@@ -168,7 +134,7 @@ export function Home({ state, nav }: { state: AppState; nav: Nav }) {
 
       <div className="actionbar">
         <button type="button" className="btn primary big" onClick={start}>
-          {L.label}ではじめる
+          はじめる
         </button>
       </div>
     </div>

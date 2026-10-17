@@ -2,7 +2,6 @@
 # 根拠: 8人制 第10条 試合結果の決定 ①前、後半それぞれ5分間以内の延長戦を設けることができる（P.4）
 id: J-05
 category: matchTime
-levels: [grade4]
 badges: []
 review: {status: draft}
 title: 延長戦の時間

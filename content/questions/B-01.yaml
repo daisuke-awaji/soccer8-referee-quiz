@@ -2,9 +2,6 @@
 # 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
 id: B-01
 category: substitution
-levels:
-  - beginner
-  - grade4
 badges: []
 review: {status: draft}
 title: インプレー中の交代

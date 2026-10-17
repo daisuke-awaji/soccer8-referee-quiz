@@ -32,21 +32,13 @@ export function App() {
   const { store } = useUi();
   const state = useAppState(store);
   const [screen, setScreen] = useState<Screen>(() => {
-    const s = screenFromHash();
-    const link = parseDirectLink(location.hash);
-    if (s && link?.level) store.set({ level: link.level });
-    else if (s && !store.get().level) store.set({ level: 'beginner' });
-    return s ?? { name: 'home' };
+    return screenFromHash() ?? { name: 'home' };
   });
 
   useEffect(() => {
     const onHash = () => {
       const s = screenFromHash();
-      const link = parseDirectLink(location.hash);
-      if (s) {
-        if (link?.level) store.set({ level: link.level });
-        setScreen(s);
-      }
+      if (s) setScreen(s);
     };
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);

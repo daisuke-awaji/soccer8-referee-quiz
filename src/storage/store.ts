@@ -3,7 +3,6 @@
  * 保存形式にはバージョンを付け、古い形式（試作版 v0.1）から引き継げるようにする。
  */
 import { useSyncExternalStore } from 'react';
-import type { Level } from '../content/schema';
 
 export const STORAGE_KEY = 'ref8quiz.v2';
 export const LEGACY_KEY = 'ref8quiz.v1';
@@ -21,7 +20,6 @@ export interface QuestionResult {
 
 export interface AppState {
   version: 2;
-  level: Level | null;
   order: string[];
   idx: number;
   results: Record<string, QuestionResult>;
@@ -33,7 +31,6 @@ export interface AppState {
 
 export const defaultState = (): AppState => ({
   version: 2,
-  level: null,
   order: [],
   idx: 0,
   results: {},
@@ -50,7 +47,6 @@ export function migrate(raw: unknown, knownIds?: ReadonlySet<string>): AppState 
   const s = raw as Partial<AppState>;
   const out: AppState = {
     ...base,
-    level: s.level === 'beginner' || s.level === 'grade4' ? s.level : null,
     order: Array.isArray(s.order) ? s.order.filter((x): x is string => typeof x === 'string') : [],
     idx: typeof s.idx === 'number' && s.idx >= 0 ? s.idx : 0,
     results: s.results && typeof s.results === 'object' ? s.results : {},

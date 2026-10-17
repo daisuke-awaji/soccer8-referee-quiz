@@ -2,7 +2,6 @@
 # 根拠: 8人制 第3条② 試合に出場できる人数は原則16名以内とし、ベンチには最大8人の交代要員が入ることができる。両チームが事前に合意すれば変更できる（P.4、赤字）
 id: B-06
 category: substitution
-levels: [grade4]
 badges: []
 review: {status: draft}
 title: ベンチに入れる交代要員

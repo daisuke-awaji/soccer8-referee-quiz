@@ -9,10 +9,6 @@
  */
 import { z } from 'zod';
 
-export const LEVELS = ['beginner', 'grade4'] as const;
-export const Level = z.enum(LEVELS);
-export type Level = z.infer<typeof Level>;
-
 export const CATEGORY_IDS = [
   'basics',
   'substitution',
@@ -115,7 +111,7 @@ const Choice = z
   })
   .strict();
 
-const StepBase = { levels: z.array(Level).optional(), question: z.string().min(1) };
+const StepBase = { question: z.string().min(1) };
 
 const ChoiceStep = z
   .object({ type: z.literal('choice'), ...StepBase, choices: z.array(Choice).min(2), answer: z.string() })
@@ -203,7 +199,6 @@ export const ReviewStatus = z.enum(['draft', 'inReview', 'approved']);
 const QuestionBase = {
   id: z.string().regex(/^[A-J]-\d{2,3}$/, 'ID は「A-01」の形式（分野の英字 A〜J＋2〜3桁）'),
   category: Category,
-  levels: z.array(Level).min(1),
   /** new2026 = 2026/27改正点 / provisional = 一部が監修前の暫定解答 */
   badges: z.array(z.enum(['new2026', 'provisional'])).default([]),
   review: z

@@ -2,9 +2,6 @@
 # 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
 id: H-01
 category: foul3d
-levels:
-  - beginner
-  - grade4
 badges:
   - provisional
 review: {status: draft, note: 懲戒（ステップ3）の正解は監修者の確認待ち}
@@ -42,9 +39,7 @@ steps:
         feedback: 反則があったので、反則をされた側のフリーキックで再開します。
     answer: dfk
   - type: choice
-    levels:
-      - grade4
-    question: （4級）懲戒はどうしますか？
+    question: 懲戒はどうしますか？
     choices:
       - id: none
         text: なし（不用意なファウル）

@@ -2,9 +2,6 @@
 # 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
 id: F-01
 category: officials
-levels:
-  - beginner
-  - grade4
 badges: []
 review: {status: draft}
 title: ベンチの間に座っている人
@@ -54,9 +51,7 @@ steps:
         note: × 任務ではない（判定を下すのは主審）
     answer: whistle
   - type: choice
-    levels:
-      - grade4
-    question: （4級）1人制審判の試合で、ベンチ横の補助審判。主審が警告する選手を間違えました。補助審判はどうしますか？
+    question: 1人制審判の試合で、ベンチ横の補助審判。主審が警告する選手を間違えました。補助審判はどうしますか？
     choices:
       - {id: tell, text: すぐに主審に知らせて援助する}
       - id: card

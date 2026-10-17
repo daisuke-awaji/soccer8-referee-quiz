@@ -55,14 +55,9 @@ export function validateContent(bundle: ContentBundle): ContentIssue[] {
     for (const t of textsOf(q))
       for (const term of termsIn(t)) if (!bundle.glossary[term]) add(`用語「${term}」が glossary.yaml にありません`);
 
-    // 手順とレベル
-    for (const lv of q.levels) {
-      const n = q.steps.filter((s) => !s.levels || s.levels.includes(lv)).length;
-      if (n === 0) add(`レベル「${lv}」で出す手順（steps）がありません`);
-    }
+    // 手順
     q.steps.forEach((s, i) => {
       const at = `steps[${i}]`;
-      for (const lv of s.levels ?? []) if (!q.levels.includes(lv)) add(`${at}: レベル「${lv}」は問題の levels に含まれていません`);
       if (s.type === 'choice') {
         const ids = s.choices.map((c) => c.id);
         if (new Set(ids).size !== ids.length) add(`${at}: 選択肢の id が重複しています`);

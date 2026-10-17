@@ -2,12 +2,12 @@
  * 問題画面。流れ: 問いを読む → 再生（判定の瞬間で停止）→ 回答 → 解説リプレイ。
  * 2D（SVG）・3D（three.js）の再生エンジンは命令的に操作し、React は問い・選択肢・解説を描く。
  */
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import type { Nav } from '../App';
 import { useUi } from '../app/context';
 import { CATEGORIES, QMAP, SOURCES } from '../content';
 import type { ChoiceStep, Question, Step, Vec2 } from '../content/schema';
-import { LEVEL_CONFIG, hasAnimation, stepsFor } from '../engine/levels';
+import { hasAnimation } from '../engine/animation';
 import { judgePlacement, type PlacementJudgement } from '../engine/placement';
 import type { StageEngine } from '../engine/stage';
 import { Pitch2D } from '../pitch2d/Pitch2D';
@@ -51,9 +51,7 @@ function Legend({ is3d }: { is3d: boolean }) {
 
 export function Quiz({ question: q, review, state, nav }: { question: Question; review: boolean; state: AppState; nav: Nav }) {
   const { store, sound, buzz, toast, confirm } = useUi();
-  const level = state.level ?? 'beginner';
-  const L = LEVEL_CONFIG[level];
-  const steps = useMemo(() => stepsFor(q, level), [q, level]);
+  const steps = q.steps;
   const is3d = q.kind === '3d';
   const hasAnim = hasAnimation(q);
   const hasStage = q.kind !== 'text';
@@ -188,7 +186,6 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   }, [phase, step]);
 
   /* ---------- 再生 */
-  const left = L.replays === Infinity ? Infinity : L.replays - (views - 1);
   const watch = () => {
     const e = engineRef.current;
     if (!e) return;
@@ -214,7 +211,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   };
   const replay = () => {
     if (isFeedback) playExplain();
-    else if (left > 0) watch();
+    else watch();
   };
   const toggleSpeed = () => {
     const seq = is3d ? [1, 0.5, 0.25] : [1, 0.5];
@@ -361,14 +358,8 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
       ? q.scene3d.captions.length > 0
       : q.kind === '2d' && q.scene.timeline.some((k) => (k.events ?? []).some((e) => e.type === 'caption'));
   const showTools = hasStage && (hasAnim || isFeedback);
-  const replayLabel = isFeedback
-    ? '解説リプレイ'
-    : left === Infinity
-      ? 'もう一度見る'
-      : left > 0
-        ? `もう一度見る（残り${left}回）`
-        : '見直しは1回まで';
-  const replayDisabled = !isFeedback && (phase === 'intro' || phase === 'watching' || phase === 'loading' || left <= 0);
+  const replayLabel = isFeedback ? '解説リプレイ' : 'もう一度見る';
+  const replayDisabled = !isFeedback && (phase === 'intro' || phase === 'watching' || phase === 'loading');
   const nOk = res.filter((r) => r.ok).length;
   const okAll = nOk === steps.length;
   const showChoices = phase === 'answering' || phase === 'stepResult' || phase === 'feedback';
@@ -411,7 +402,6 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
           <span className="chip">{CATEGORIES[q.category]}</span>
           {q.badges.includes('new2026') && <span className="chip">2026/27改正</span>}
           {q.badges.includes('provisional') && <span className="chip chip-warn">一部 監修前</span>}
-          <span className="chip chip-lv">{L.label}</span>
         </div>
         <h2 className="qtitle" tabIndex={-1} ref={titleRef}>
           {q.title}
@@ -505,7 +495,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
               {replayLabel}
             </button>
           )}
-          {hasAnim && (isFeedback || L.slow) && (
+          {hasAnim && (
             <button type="button" className="tool" aria-pressed={speed < 1} onClick={toggleSpeed}>
               {speed === 1 ? 'スロー' : `${speed}倍`}
             </button>
@@ -555,7 +545,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
               <p className="prompt">
                 <RichText text={step.question} />
               </p>
-              {L.hints && q.hint && stepIdx === 0 && !review && !submitted && (
+              {q.hint && stepIdx === 0 && !review && !submitted && (
                 <>
                   {!hintOpen && (
                     <button type="button" className="link-btn" onClick={() => setHintOpen(true)}>

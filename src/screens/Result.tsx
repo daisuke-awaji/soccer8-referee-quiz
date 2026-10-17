@@ -3,12 +3,11 @@ import type { Nav } from '../App';
 import { useUi } from '../app/context';
 import { Icon } from '../ui/Icon';
 import { CATEGORIES, QMAP, QUESTIONS } from '../content';
-import { LEVEL_CONFIG } from '../engine/levels';
 import { resultMessage, startRoundPatch, summarize } from '../engine/session';
 import type { AppState } from '../storage/store';
 
 export function buildReport(state: AppState): string {
-  const lines = ['【8人制審判トレーニング フィードバック】', `レベル: ${LEVEL_CONFIG[state.level ?? 'beginner'].label}`];
+  const lines = ['【8人制審判トレーニング フィードバック】'];
   for (const id of state.order) {
     const r = state.results[id];
     const q = QMAP[id];
@@ -23,7 +22,6 @@ export function buildReport(state: AppState): string {
 
 export function Result({ state, nav }: { state: AppState; nav: Nav }) {
   const { store, sound, buzz, toast } = useUi();
-  const level = state.level ?? 'beginner';
   const sum = summarize(state.order, state.results, QMAP);
 
   useEffect(() => {
@@ -60,7 +58,7 @@ export function Result({ state, nav }: { state: AppState; nav: Nav }) {
     ta.remove();
   };
   const restart = (ids?: string[], round: AppState['round'] = 'main') => {
-    store.set((s) => startRoundPatch(QUESTIONS, s, level, ids, round));
+    store.set((s) => startRoundPatch(QUESTIONS, s, ids, round));
     nav.next();
   };
 
@@ -74,7 +72,7 @@ export function Result({ state, nav }: { state: AppState; nav: Nav }) {
       </header>
       <main className="qmain">
         <div className="score">
-          <p className="score-lv">{LEVEL_CONFIG[level].label}・正解数</p>
+          <p className="score-label">正解数</p>
           <div className="score-num">
             <strong>{sum.score}</strong>
             <span>/ {sum.total}</span>
