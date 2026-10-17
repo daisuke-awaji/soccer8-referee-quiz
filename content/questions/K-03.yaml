@@ -1,0 +1,89 @@
+# K-03 コイントスの前に主審がすること
+# 根拠: 競技規則 第8条 1. キックオフ 進め方「主審がコインをトスし、トスに勝ったチームが、前半にどちらのゴールを攻めるのか、
+#       またはキックオフを行うのかを決める」
+#       大阪府サッカー協会「初心者のためのレフェリーズマニュアル」試合の進行「トス」（P.10）
+#       「①主審・副審・(第4の審判員)とキャプテンは握手する。②主審はコインをとり出し、どちらのチームが「表」で、
+#        どちらのチームが「裏」かを指示する。③コイントスを行う。」
+#       関西学生サッカー連盟「審判活動のガイドライン」（2）トス「どちらかのキャプテンに選ばせてもよい」
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: K-03
+category: matchStart
+badges: []
+review: {status: draft}
+title: コイントスの前に
+kind: 2d
+hint: コインを投げるのは誰か、第8条に書かれています。
+scene:
+  view: {x: 24, y: 15, w: 20, h: 20}
+  actors:
+    - {id: REF, role: referee}
+    - {id: AR1, role: assistant}
+    - {id: AR2, role: assistant}
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: B10, role: player, team: blue, label: "10"}
+  timeline:
+    - t: 0
+      positions:
+        REF: [34.5, 25]
+        AR1: [35.5, 22.2]
+        AR2: [35.5, 27.8]
+        R10: [27, 19]
+        B10: [27, 31]
+      events:
+        - {type: caption, text: 主審が両チームのキャプテンを呼ぶ}
+    - t: 2
+      positions:
+        R10: [32, 23.4]
+        B10: [32, 26.6]
+      events:
+        - {type: caption, text: 主審・副審とキャプテンが握手}
+        - {type: highlight, actor: R10, dur: 1}
+        - {type: highlight, actor: B10, dur: 1}
+    - t: 3
+      events:
+        - {type: caption, text: コインを投げる前に、主審がすることは？}
+    - t: 4
+      events:
+        - {type: caption, text: 主審「赤チームが表、青チームが裏です」}
+        - {type: highlight, actor: REF, dur: 1}
+    - t: 5
+      events:
+        - {type: caption, text: 主審がコインをトス}
+        - {type: coin, by: REF, result: heads, dur: 3.5}
+    - t: 6.4
+      events:
+        - {type: caption, text: 表が出た。トスに勝ったのは赤チーム}
+        - {type: highlight, actor: R10, dur: 2}
+    - t: 8.5
+      events:
+        - {type: caption, text: 赤チームが「前半に攻めるゴール」か「キックオフ」を選ぶ}
+  pauseAt: 3
+  endAt: 8.5
+steps:
+  - type: choice
+    question: コインを投げる前に、主審がすることは？
+    choices:
+      - id: assign
+        text: どちらのチームが「表」で、どちらが「裏」かを決めて伝える
+        note: キャプテンに表か裏かを選ばせてもよい、とする資料もあります。
+      - id: janken
+        text: 両キャプテンにじゃんけんをしてもらい、勝ったほうにコインを投げさせる
+        feedback: 競技規則 第8条では、コインをトスするのは主審です。キャプテンにはコインを投げさせません。
+      - id: ar
+        text: 副審にコインを渡し、副審に投げてもらう
+        feedback: 競技規則 第8条では、コインをトスするのは主審です。副審も握手に加わりますが、コインを投げるのは主審です。
+    answer: assign
+explain:
+  summary: 主審は、どちらのチームが「表」で、どちらが「裏」かを先に伝えてから、自分でコインをトスします。
+  detail: |-
+    トスの流れ（大阪府サッカー協会のマニュアル）
+    ① 主審・副審とキャプテンが握手する。
+    ② 主審がコインを取り出し、どちらのチームが「表」で、どちらが「裏」かを伝える。
+    ③ 主審がコインをトスする。
+    ④ トスに勝ったチームが、前半に攻めるゴールか、キックオフかを決める（K-04）。
+    表か裏かを、どちらかのキャプテンに選ばせてもよいとする資料もあります。コインは、表と裏がはっきりわかるものなら何でもかまいません。
+  overlays: []
+refs:
+  - {src: laws, article: 第8条 プレーの開始および再開 1. キックオフ 進め方}
+  - {src: osakaFA, article: 試合の進行「トス」①〜④（P.10）}
+  - {src: kansaiUniv, article: 試合の進行（2）トス}

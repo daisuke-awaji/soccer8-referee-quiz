@@ -1,0 +1,92 @@
+# K-08 キックオフのときの副審の位置
+# 根拠: JFA「審判員のための実践的ガイドライン」副審 ポジショニング「キックオフ 副審は、後方から2人目の守備側競技者のラインに位置する」
+#       大阪府サッカー協会「初心者のためのレフェリーズマニュアル」試合の進行（P.10）の図「AR2（副審2）バックスタンド側 最終ラインと同じレベルに」
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: K-08
+category: matchStart
+badges: [provisional]
+review: {status: draft, note: 正解とする範囲（±1.5m）は監修で決める}
+title: キックオフのときの副審の位置
+kind: 2d
+hint: GKも「守備側競技者」に数えます。
+scene:
+  actors:
+    - {id: REF, role: referee}
+    - {id: AR1, role: assistant}
+    - {id: AR2, role: assistant}
+    - {id: R1, role: goalkeeper, team: red, label: "1"}
+    - {id: R2, role: player, team: red, label: "2"}
+    - {id: R3, role: player, team: red, label: "3"}
+    - {id: R4, role: player, team: red, label: "4"}
+    - {id: R5, role: player, team: red, label: "5"}
+    - {id: R6, role: player, team: red, label: "6"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R8, role: player, team: red, label: "8"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: B2, role: player, team: blue, label: "2"}
+    - {id: B3, role: player, team: blue, label: "3"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B7, role: player, team: blue, label: "7"}
+    - {id: B8, role: player, team: blue, label: "8"}
+    - {id: ball, role: ball}
+  timeline:
+    - t: 0
+      positions:
+        REF: [29, 16]
+        AR1: [11, -1.4]
+        AR2: [36, 51.4]
+        ball: [34, 25]
+        R1: [3, 25]
+        R2: [12, 14]
+        R3: [11, 25]
+        R4: [12, 36]
+        R5: [25, 10]
+        R6: [24, 25]
+        R7: [25, 40]
+        R8: [33.1, 25.5]
+        B1: [65, 25]
+        B2: [54, 14]
+        B3: [56.5, 26]
+        B4: [53, 37]
+        B5: [46, 10]
+        B6: [44, 25]
+        B7: [46, 40]
+        B8: [43.5, 30]
+      events:
+        - {type: caption, text: 赤チームのキックオフ。青チームが守備側}
+    - t: 1
+      events:
+        - {type: caption, text: 副審（右）を正しい位置へ動かそう}
+  pauseAt: 1
+steps:
+  - type: placement
+    question: 右側の副審を、タッチライン沿いにドラッグ（またはタップ）して、キックオフのときの正しい位置に動かしてください。
+    placement:
+      mode: line
+      actor: AR2
+      fixedY: 51.4
+      min: 34.5
+      max: 68
+      target: [56.5, 51.4]
+      tolerance: 1.5
+      describe: {kind: lineOffset}
+      zones:
+        - lineX: 65
+          r: 2
+          text: そこは最後尾（GK）のラインです。基準はGKを含めて「後方から2人目」の守備側競技者です。
+        - lineX: 53.5
+          r: 1
+          text: そこは青2番・4番のあたりです。いちばん後ろにいるフィールドの選手は青3番です。
+        - lineX: 36
+          r: 2
+          text: ハーフウェーラインのあたりです。キックオフのときも、副審は後方から2人目の守備側競技者のラインに立ちます。
+explain:
+  summary: キックオフのときも、副審は{{後方から2人目の守備側競技者}}のラインに立ちます。
+  detail: ここでは GK（青1番）が最後尾、青3番が後方から2人目です。JFA の「審判員のための実践的ガイドライン」に「キックオフ 副審は、後方から2人目の守備側競技者のラインに位置する」とあります。キックオフの直後からオフサイドを判定できるように、この位置で待ちます。
+  overlays:
+    - {type: offsideLine, actor: B3, label: 後方から2人目（青3番）}
+refs:
+  - {src: guidelines, article: 副審 ポジショニング キックオフ}
+  - {src: osakaFA, article: 試合の進行 キックオフの図（P.10）}

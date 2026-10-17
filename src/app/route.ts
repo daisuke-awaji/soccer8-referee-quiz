@@ -8,7 +8,7 @@
 export type DirectLink = { id: string };
 
 export function parseDirectLink(hash: string): DirectLink | null {
-  const m = hash.match(/^#\/q\/([A-J]-\d{2,3})(?:\?.*)?$/) ?? hash.match(/^#q=([A-J]-\d{2,3})(?:&.*)?$/);
+  const m = hash.match(/^#\/q\/([A-K]-\d{2,3})(?:\?.*)?$/) ?? hash.match(/^#q=([A-K]-\d{2,3})(?:&.*)?$/);
   return m ? { id: m[1]! } : null;
 }
 
