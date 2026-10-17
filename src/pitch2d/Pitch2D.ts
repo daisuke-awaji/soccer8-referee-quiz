@@ -349,7 +349,7 @@ export class Pitch2D implements StageEngine {
       } else if (ev.type === 'whistle' && age <= 0.9) this.bubble('REF', 'ピッ！', 'bub-whistle');
       else if (ev.type === 'countdown' && age <= ev.dur + 0.5) {
         const n = Math.max(0, Math.ceil(ev.from - age));
-        this.bubble(ev.by, `✋ ${n}`, 'bub-count' + (n === 0 ? ' bub-zero' : ''));
+        this.bubble(ev.by, String(n), 'bub-count' + (n === 0 ? ' bub-zero' : ''));
       } else if (ev.type === 'flag') {
         const a = this.actorEls[ev.by];
         if (a?.flag) a.flag.setAttribute('opacity', age <= (ev.dur ?? 99) ? '1' : '0');

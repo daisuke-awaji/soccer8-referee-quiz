@@ -62,7 +62,7 @@ export async function answerQuestion(page: Page, q: Question, level: Level, corr
     await expect(actionButton(page)).toHaveText('判定する');
     await actionButton(page).click();
     if (i < steps.length - 1) {
-      await expect(actionButton(page)).toHaveText('次の質問へ →');
+      await expect(actionButton(page)).toHaveText('次の質問へ');
       await actionButton(page).click();
     }
   }

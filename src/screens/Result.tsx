@@ -1,40 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import type { Nav } from '../App';
 import { useUi } from '../app/context';
+import { Icon } from '../ui/Icon';
 import { CATEGORIES, QMAP, QUESTIONS } from '../content';
 import { LEVEL_CONFIG } from '../engine/levels';
 import { resultMessage, startRoundPatch, summarize } from '../engine/session';
 import type { AppState } from '../storage/store';
-
-function ScoreRing({ score, total }: { score: number; total: number }) {
-  const ref = useRef<SVGCircleElement>(null);
-  const r = 52;
-  const c = 2 * Math.PI * r;
-  const k = total ? score / total : 0;
-  useEffect(() => {
-    const id = setTimeout(() => ref.current?.setAttribute('stroke-dashoffset', String(c * (1 - k))), 60);
-    return () => clearTimeout(id);
-  }, [c, k]);
-  return (
-    <svg viewBox="0 0 120 120" className="ring" aria-hidden="true">
-      <circle cx="60" cy="60" r={r} fill="none" stroke="#e3e8e3" strokeWidth="12" />
-      <circle
-        ref={ref}
-        className="ring-val"
-        cx="60"
-        cy="60"
-        r={r}
-        fill="none"
-        stroke="#2e7d32"
-        strokeWidth="12"
-        strokeLinecap="round"
-        strokeDasharray={c}
-        strokeDashoffset={c}
-        transform="rotate(-90 60 60)"
-      />
-    </svg>
-  );
-}
 
 export function buildReport(state: AppState): string {
   const lines = ['【8人制審判トレーニング フィードバック】', `レベル: ${LEVEL_CONFIG[state.level ?? 'beginner'].label}`];
@@ -98,20 +69,22 @@ export function Result({ state, nav }: { state: AppState; nav: Nav }) {
     <div className="screen result">
       <header className="qbar plain">
         <button type="button" className="icon-btn" aria-label="ホームへ" onClick={nav.home}>
-          ×
+          <Icon name="close" />
         </button>
         <span className="count">結果</span>
       </header>
       <main className="qmain">
         <div className="score">
-          <ScoreRing score={sum.score} total={sum.total} />
+          <p className="score-lv">{LEVEL_CONFIG[level].label}・正解数</p>
           <div className="score-num">
             <strong>{sum.score}</strong>
-            <span> / {sum.total}</span>
+            <span>/ {sum.total}</span>
           </div>
-          <p className="score-lv">{LEVEL_CONFIG[level].label}レベル</p>
+          <div className="score-bar" aria-hidden="true">
+            <i style={{ width: `${Math.round(sum.ratio * 100)}%` }} />
+          </div>
+          <p className="score-msg">{resultMessage(sum.ratio)}</p>
         </div>
-        <p className="score-msg">{resultMessage(sum.ratio)}</p>
 
         {sum.categories.length > 0 && (
           <div className="card">
@@ -137,7 +110,7 @@ export function Result({ state, nav }: { state: AppState; nav: Nav }) {
               const q = QMAP[id];
               if (!q) return null;
               const r = state.results[id];
-              const mk = !r || r.skipped ? '–' : r.ok ? '✓' : r.n ? '△' : '✗';
+              const mk = !r || r.skipped ? '–' : r.ok ? '○' : r.n ? '△' : '×';
               const cls = !r || r.skipped ? 'skip' : r.ok ? 'ok' : 'ng';
               return (
                 <li key={id} className={cls}>
@@ -170,7 +143,7 @@ export function Result({ state, nav }: { state: AppState; nav: Nav }) {
             onChange={(e) => store.set({ notes: e.target.value })}
           />
           <button type="button" className="btn ghost" onClick={copy}>
-            📋 結果と感想をコピー
+            結果と感想をコピー
           </button>
         </div>
 
