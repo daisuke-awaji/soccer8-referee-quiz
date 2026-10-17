@@ -1,0 +1,13 @@
+# 出典（一次資料）。問題の refs[].src から ID で参照する
+eight:
+  label: JFA 8人制サッカー競技規則
+  url: https://www.jfa.jp/documents/pdf/eight/rules.pdf
+laws2627:
+  label: JFA 2026/27 競技規則 変更の概要と詳細
+  url: https://www.jfa.jp/documents/pdf/soccer/law_soccer_260528_01.pdf
+apply2627:
+  label: JFA 2026/27 競技規則の適用開始日
+  url: https://www.jfa.jp/documents/pdf/soccer/law_soccer_260528_02.pdf
+laws:
+  label: JFA サッカー競技規則
+  url: https://www.jfa.jp/laws/soccer/2025_26

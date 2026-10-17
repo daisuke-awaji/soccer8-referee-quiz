@@ -1,0 +1,81 @@
+# E-01 副審はどこに立つ？
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: E-01
+category: positioning
+levels:
+  - beginner
+  - grade4
+badges: []
+review: {status: draft}
+title: 副審はどこに立つ？
+kind: 2d
+hint: GKも「守備側競技者」に数えます。
+scene:
+  view: {x: 34, y: 0, w: 35, h: 52}
+  actors:
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        R10: [40, 30]
+        ball: [40.9, 30]
+        R9: [52, 17]
+        R7: [50, 41]
+        B4: [55, 21]
+        B5: [53, 33]
+        B6: [47, 27]
+        B1: [66, 25]
+        REF: [35, 22]
+        AR2: [45, 51.4]
+      events:
+        - {type: caption, text: 赤10番がドリブルで攻め上がる}
+    - t: 2
+      positions:
+        R10: [48, 28]
+        ball: [48.9, 28]
+        R9: [56, 18]
+        R7: [54, 40]
+        B4: [57.5, 21]
+        B5: [55, 32]
+        B6: [50, 27]
+        B1: [65.5, 25.5]
+        REF: [42, 21]
+      events:
+        - {type: caption, text: 副審（右）を正しい位置へ動かそう}
+  pauseAt: 2
+steps:
+  - type: placement
+    question: 右側の副審を、タッチライン沿いにドラッグ（またはタップ）して、正しい位置に動かしてください。
+    placement:
+      mode: line
+      actor: AR2
+      fixedY: 51.4
+      min: 34.5
+      max: 68
+      target: [57.5, 51.4]
+      tolerance: 1.5
+      describe: {kind: lineOffset}
+      zones:
+        - lineX: 65.5
+          r: 2
+          text: そこは最後尾（GK）のラインです。基準はGKを含めて「後方から2人目」の守備側競技者です。
+        - {lineX: 55, r: 1, text: そこは青5番のラインで、後方から3人目です。}
+        - lineX: 48.9
+          r: 2
+          text: そこはボールのラインです。ボールより前に守備側競技者がいるときは、後方から2人目の守備側競技者に合わせます。
+explain:
+  summary: 副審は、{{後方から2人目の守備側競技者}}と同じライン（ボールのほうがゴールラインに近ければボールのライン）に立ちます。
+  detail: このラインにいることで、オフサイドラインを真横から見られます。ここでは GK（青1番）が最後尾、青4番が後方から2人目です。
+  overlays:
+    - {type: offsideLine, actor: B4, label: 後方から2人目（青4番）}
+refs:
+  - {src: laws, article: 第6条 その他の審判員／第11条 オフサイド}

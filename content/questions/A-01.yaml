@@ -1,0 +1,53 @@
+# A-01 ペナルティーマークはどこ？
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: A-01
+category: basics
+levels:
+  - beginner
+  - grade4
+badges: []
+review: {status: draft}
+title: ペナルティーマークはどこ？
+kind: 2d
+hint: 11人制（11m）より短く、ゴールエリア（4m）より遠い位置です。
+scene:
+  view: {x: 47, y: 0, w: 22, h: 50}
+  pad: 1.2
+  pitch: {hidePenaltyMark: true, hidePenaltyArc: true}
+  actors:
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+  timeline:
+    - t: 0
+      positions:
+        B1: [67.3, 25]
+  pauseAt: 0
+steps:
+  - type: placement
+    question: 8人制のペナルティーマークは、どこにありますか？ ピッチをタップして置いてください。
+    placement:
+      mode: free
+      marker: PKマーク
+      target: [60, 25]
+      tolerance: 1
+      describe: {kind: distanceFromGoalLine, answerText: 8m}
+      zones:
+        - at: [57, 25]
+          r: 0.9
+          text: そこは11人制の距離（11m）です。8人制はピッチが小さいので短くなります。
+        - lineX: 56
+          r: 0.6
+          text: そこはペナルティーエリアのライン（12m）です。ペナルティーマークはその内側です。
+        - {lineX: 64, r: 0.8, text: そこはゴールエリアのライン（4m）です。もっと遠くです。}
+explain:
+  summary: 8人制のペナルティーマークは、ゴールラインの中央から8mです。
+  detail: 8人制はピッチが約半分（68m×50m推奨）なので、主な距離も11人制より短くなっています。ペナルティーエリアはゴールポストの内側から12m、ゴールエリアは4m、ペナルティーアークとセンターサークルの半径は7mです。
+  overlays:
+    - type: marker
+      at: [60, 25]
+      label: 8m
+    - type: ruler
+      from: [68, 15]
+      to: [60, 15]
+      label: 8m
+refs:
+  - {src: eight, article: 第1条 競技のフィールド}

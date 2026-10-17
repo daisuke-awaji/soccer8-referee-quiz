@@ -1,0 +1,120 @@
+# A-02 フリーキックの壁の距離
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: A-02
+category: basics
+levels:
+  - beginner
+  - grade4
+badges: []
+review: {status: draft}
+title: フリーキックの壁の距離
+kind: 2d
+hint: 8人制のフリーキック・コーナーキックの距離は、11人制とは違います。
+scene:
+  view: {x: 36, y: 0, w: 33, h: 50}
+  actors:
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B7, role: player, team: blue, label: "7"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        R10: [42, 27]
+        ball: [42.9, 27]
+        R9: [54, 16]
+        R7: [53, 38]
+        B6: [51, 21]
+        B4: [56, 22]
+        B5: [56, 30]
+        B7: [52, 33]
+        B1: [66.5, 25]
+        REF: [39, 19]
+        AR2: [56, 50.9]
+      events:
+        - {type: caption, text: 赤10番がドリブルで攻め上がる}
+    - t: 1.2
+      positions:
+        R10: [47.6, 25.6]
+        ball: [48.5, 25.3]
+        B6: [48.3, 24.4]
+    - t: 1.3
+      positions:
+        R10: [47.9, 25.5]
+      events:
+        - {type: whistle}
+        - {type: caption, text: 青6番のファウル。赤チームの直接フリーキック}
+    - t: 1.9
+      positions:
+        ball: [48.5, 25]
+        R10: [47.2, 25.3]
+        REF: [42, 20]
+    - t: 2.8
+      positions:
+        B4: [53.5, 22.5]
+        B5: [53.5, 25]
+        B7: [53.5, 27.5]
+        B6: [50, 19]
+        REF: [44, 21]
+      events:
+        - {type: caption, text: 青チームは、ボールから約5mのところに壁を作った}
+    - t: 3.3
+      positions: {}
+    - t: 4.1
+      positions:
+        REF: [51.5, 22]
+      events:
+        - {type: caption, text: 主審が壁を7mまで下げさせる}
+    - t: 5.1
+      positions:
+        B4: [56.2, 22.5]
+        B5: [56.2, 25]
+        B7: [56.2, 27.5]
+        REF: [54.6, 20.6]
+    - t: 5.7
+      positions:
+        REF: [46, 20]
+    - t: 6.3
+      positions: {}
+      events:
+        - {type: whistle}
+        - {type: caption, text: 主審の笛の合図で再開}
+    - t: 6.9
+      positions: {}
+  pauseAt: 3.3
+  endAt: 6.9
+steps:
+  - type: choice
+    question: 壁はボールから約5m。主審はどうしますか？
+    choices:
+      - id: ok5
+        text: そのままでよい（8人制は5m）
+        feedback: 8人制でも5mではありません。フリーキックのとき、相手競技者はボールから7m以上離れなければなりません。
+      - {id: m7, text: 7mまで下げさせる}
+      - id: m915
+        text: 9.15mまで下げさせる
+        feedback: 9.15mは11人制の距離です。8人制のフリーキックとコーナーキックは7mです。
+    answer: m7
+explain:
+  summary: 8人制のフリーキックでは、相手競技者はボールから7m以上離れます（コーナーキックも7m）。
+  detail: 攻撃側が{{クイックリスタート}}を選んだ場合は、相手が7m離れていなくても蹴ることができます。主審が距離をとらせて再開を管理したときは、笛の合図で再開します。
+  overlays:
+    - type: distanceCircle
+      center: ball
+      radius: 7
+      label: 7m（8人制）
+    - type: distanceCircle
+      center: ball
+      radius: 9.15
+      label: 9.15m（11人制）
+      dashed: true
+      muted: true
+refs:
+  - {src: eight, article: 第13条 フリーキック}

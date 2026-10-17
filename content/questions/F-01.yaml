@@ -1,0 +1,75 @@
+# F-01 ベンチの間に座っている人
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: F-01
+category: officials
+levels:
+  - beginner
+  - grade4
+badges: []
+review: {status: draft}
+title: ベンチの間に座っている人
+kind: 2d
+hint: 最後の判断を下すのは誰でしょう？
+scene:
+  view: {x: 23, y: -9, w: 22, h: 20}
+  pad: 0.4
+  pitch: {showBench: true, showFourthTable: true}
+  actors:
+    - {id: FOURTH, role: fourth}
+    - {id: S12, role: substitute, team: red, label: "12"}
+    - {id: S14, role: substitute, team: blue, label: "14"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: AR1, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        FOURTH: [34, -4.6]
+        S12: [29.5, -4.4]
+        S14: [38.5, -4.4]
+        R7: [37, 6]
+        B6: [30, 8.5]
+        AR1: [27, -0.9]
+  pauseAt: 0
+  static: true
+  spotlight: FOURTH
+steps:
+  - type: choice
+    question: 3人制審判の試合で、ベンチの間に座っている「第4の審判員」。その任務として正しくないものはどれ？
+    choices:
+      - id: sub
+        text: 交代の手続きを管理する
+        note: ○ 第4の審判員の任務
+        feedback: これは第4の審判員の任務です。
+      - id: equip
+        text: 競技者と交代要員の用具を点検する
+        note: ○ 第4の審判員の任務
+        feedback: これは第4の審判員の任務です。
+      - id: time
+        text: アディショナルタイムを表示する
+        note: ○ 第4の審判員の任務
+        feedback: これは第4の審判員の任務です。主審が決めた最小限の時間を表示します。
+      - id: whistle
+        text: 自分の判断で笛を吹き、プレーを止める
+        note: × 任務ではない（判定を下すのは主審）
+    answer: whistle
+  - type: choice
+    levels:
+      - grade4
+    question: （4級）1人制審判の試合で、ベンチ横の補助審判。主審が警告する選手を間違えました。補助審判はどうしますか？
+    choices:
+      - {id: tell, text: すぐに主審に知らせて援助する}
+      - id: card
+        text: 自分で正しい選手にカードを示す
+        feedback: 補助審判はカードを示しません。判定を下すのは主審です。
+      - id: after
+        text: 試合後に報告するだけにする
+        feedback: 人違いは、試合中に主審に知らせて援助する任務です。
+    answer: tell
+explain:
+  summary: "{{第4の審判員}}は主審を援助する役で、最終決定は常に主審が下します。"
+  detail: 第4の審判員の主な任務：交代の手続きの管理／競技者と交代要員の用具の点検／主審の合図を受けた後の競技者の再入場／ボール交換の管理／アディショナルタイムの表示／テクニカルエリアで責任ある行動をとらなかった人について主審に伝える。8人制の3人制審判では、第4の審判員は任意です。1人制審判では{{補助審判}}が必須で、人違いの警告、2枚目の警告なのに退場が命じられていない、主審が見ていない乱暴な行為などのときに主審を援助します。
+  overlays: []
+refs:
+  - {src: laws, article: 第6条 その他の審判員}
+  - {src: eight, article: 主審／その他の審判員・補助審判の役割}

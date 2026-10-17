@@ -1,0 +1,103 @@
+# C-02 ゴールキックを遅らせる
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: C-02
+category: restart
+levels:
+  - beginner
+  - grade4
+badges:
+  - new2026
+review: {status: draft}
+title: ゴールキックを遅らせる
+kind: 2d
+hint: スローインの遅延と似たルールですが、再開方法が違います。
+scene:
+  view: {x: 44, y: 0, w: 25, h: 52}
+  actors:
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        B1: [66, 22]
+        ball: [65, 20.5]
+        B4: [60, 13]
+        B5: [61, 35]
+        R9: [55, 27]
+        R10: [51, 19]
+        R7: [57, 39]
+        REF: [52, 30]
+        AR2: [64, 51.4]
+      events:
+        - {type: caption, text: 青チームが1点リード。青チームのゴールキック}
+    - t: 1.2
+      positions:
+        B1: [66.6, 24]
+      events:
+        - {type: caption, text: GKはボールを置いたまま、なかなか蹴らない}
+        - {type: highlight, actor: B1, dur: 1.6}
+    - t: 2.2
+      positions:
+        B1: [65.8, 22.3]
+    - t: 2.4
+      positions: {}
+      events:
+        - {type: whistle}
+        - {type: caption, text: 主審が笛を吹き、5秒のカウントダウンを始めた}
+    - t: 2.6
+      positions: {}
+      events:
+        - {type: countdown, by: REF, from: 5, dur: 5}
+    - t: 5
+      positions:
+        B1: [66.3, 23]
+    - t: 7.4
+      positions:
+        B1: [65.9, 22.2]
+    - t: 7.8
+      positions: {}
+    - t: 8.2
+      positions: {}
+      events:
+        - {type: whistle}
+        - {type: caption, text: 5秒経過。赤チームのコーナーキックで再開}
+    - t: 9.6
+      positions:
+        ball: [67.7, 49.7]
+        R7: [67.2, 50.8]
+        REF: [58, 36]
+        R9: [62, 30]
+        R10: [60, 22]
+    - t: 10
+      positions: {}
+  pauseAt: 7.8
+  endAt: 10
+steps:
+  - type: choice
+    question: 5秒のカウントダウンが終わっても、GKはゴールキックを蹴りません。再開方法は？
+    choices:
+      - {id: ck, text: 相手チーム（赤）のコーナーキック}
+      - id: ifk
+        text: 赤チームの間接フリーキック
+        feedback: 2026/27版では、ゴールキックを遅らせた場合は相手チームのコーナーキックです。
+      - id: ycretake
+        text: GKに警告し、ゴールキックをやり直す
+        feedback: まず相手チームのコーナーキックになります。警告は、その後も過度に遅らせた場合だけです。
+      - id: ckyc
+        text: 赤チームのコーナーキック＋GKに警告
+        feedback: 再開方法は正しいですが、カウントダウンを過ぎただけでは警告しません。警告は、コーナーキックになった後も過度に遅らせた場合です。
+    answer: ck
+explain:
+  summary: ゴールキックを不当に遅らせると、5秒のカウントダウンの後、相手チームのコーナーキックになります。
+  detail: GKが手や腕でボールを8秒を超えてコントロールした場合も、相手チームのコーナーキックです（主審は残り5秒を合図でカウントします）。「時間かせぎ → 相手のチャンス」と覚えると整理しやすいです。
+  overlays: []
+refs:
+  - {src: laws2627, article: 第16条 ゴールキック／第17条 コーナーキック（2026/27改正）}
+  - {src: apply2627, article: 適用開始日}
