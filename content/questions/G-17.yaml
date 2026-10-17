@@ -1,0 +1,123 @@
+# G-17 ゴールエリアの中で、バックパスを手で取った
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+# 根拠: 第13条2 進め方（相手チームのゴールエリア内の反則で攻撃側の間接FK → 最も近い、ゴールラインに平行なゴールエリアのライン上）
+#       第13条2（自分のゴールポスト間のゴールライン上に立つ場合を除き、ボールから離れる）／第13条1（間接FKが直接相手ゴールに入ったらゴールキック。合図を怠ったらやり直し）
+#       8人制 第1条（ゴールエリアはゴールポストの内側から4m）・第13条（7m）
+id: G-17
+category: foul
+badges: []
+review: {status: draft}
+title: ゴールエリアの中で、バックパスを手で取った
+kind: 2d
+hint: ゴールエリアの中の反則で、攻撃側に間接FKが与えられたときは、置く場所の決まりがあります。
+scene:
+  view: {x: 47, y: 0, w: 22, h: 50}
+  pad: 1.2
+  actors:
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+  timeline:
+    - t: 0
+      positions:
+        B5: [60, 30]
+        ball: [60.6, 29.7]
+        B4: [59, 16]
+        B1: [66.5, 25]
+        R9: [55, 27]
+        R7: [56, 15]
+        REF: [52, 33]
+      events:
+        - {type: caption, text: 青5番が、足でGKへパス}
+        - {type: highlight, actor: B5, dur: 1}
+    - t: 0.3
+      positions:
+        ball: [60.9, 29.4]
+    - t: 1.8
+      positions:
+        ball: [66, 22.4]
+        B1: [66.3, 22.3]
+        R9: [58.5, 26]
+      events:
+        - {type: caption, text: GKが、ゴールエリアの中で手で取った}
+        - {type: highlight, actor: B1, dur: 1.2}
+    - t: 2.1
+      positions:
+        ball: [66.2, 22.3]
+    - t: 2.7
+      positions:
+        REF: [57, 29]
+        ball: [66.2, 22.3]
+        B1: [66.3, 22.3]
+        B4: [59.5, 17]
+        B5: [60.5, 29.5]
+        R9: [59, 25.5]
+      events:
+        - {type: whistle}
+        - {type: caption, text: 主審が笛を吹き、片腕を上に上げる。赤チームの間接フリーキック}
+    - t: 3.6
+      positions:
+        ball: [64, 22.3]
+        B1: [67.9, 25]
+        B4: [67.9, 22.9]
+        B5: [67.9, 27.1]
+        R9: [61, 26.5]
+      events:
+        - {type: caption, text: ボールはゴールエリアのライン上。青チームはゴールライン上に並んだ}
+  pauseAt: 2.7
+  endAt: 3.6
+steps:
+  - type: placement
+    question: 赤チームの間接フリーキックです。ボールを置く位置をタップしてください。
+    placement:
+      mode: free
+      marker: ボール
+      target: [64, 22.3]
+      tolerance: 1.2
+      describe: {kind: distanceFromGoalLine, answerText: 4m（ゴールエリアのライン上）}
+      zones:
+        - at: [66.2, 22.3]
+          r: 1.3
+          text: そこは反則の起きた地点です。相手チームのゴールエリアの中の反則で攻撃側に間接FKが与えられたときは、ゴールエリアのライン上から行います。
+        - at: [60, 25]
+          r: 1.2
+          text: そこはペナルティーマークです。PKではありません。
+        - lineX: 64
+          r: 1.2
+          text: ゴールエリアのライン上なのは正しいです。ただし、反則の起きた地点に最も近いところに置きます。
+  - type: choice
+    question: ボールからゴールラインまでは4mしかありません。青チームの選手は、どこなら7mより近くに立てますか？
+    choices:
+      - {id: goalline, text: 自分のゴールポストの間のゴールライン上}
+      - id: area
+        text: ゴールエリアの中なら、どこでも
+        feedback: 7mより近くに立てるのは、自分のゴールポストの間のゴールライン上だけです。
+      - id: nowhere
+        text: どこにも立てない
+        feedback: 自分のゴールポストの間のゴールライン上なら、7mより近くに立てます。
+    answer: goalline
+  - type: choice
+    question: 赤チームのキックが、誰にも触れずに直接ゴールに入りました。
+    choices:
+      - id: goal
+        text: 得点
+        feedback: 間接フリーキックは、ほかの競技者が触れないと得点になりません。
+      - {id: gk, text: 青チームのゴールキック}
+      - id: retake
+        text: キックをやり直す
+        feedback: 主審が間接の合図（片腕を上げる）をしていれば、やり直しにはなりません。ゴールキックです。
+    answer: gk
+explain:
+  summary: 相手チームのゴールエリアの中の反則で攻撃側に{{間接フリーキック}}が与えられたら、反則の起きた地点に最も近い、ゴールラインに平行なゴールエリアのライン上から行います。
+  detail: 8人制のゴールエリアは、ゴールポストの内側から4mです。守備側はボールから7m以上離れますが、自分のゴールポストの間のゴールライン上なら近くに立てます。間接フリーキックが誰にも触れずに相手ゴールに入った場合は、ゴールキックです（主審が間接の合図を怠っていた場合は、やり直し）。
+  overlays:
+    - {type: zone, x1: 64, x2: 68, y1: 18.5, y2: 31.5, label: ゴールエリア}
+    - {type: marker, at: [64, 22.3]}
+    - {type: ruler, from: [68, 16.5], to: [64, 16.5], label: 4m}
+refs:
+  - {src: laws, article: 第13条 フリーキック 1.フリーキックの種類／2.進め方}
+  - {src: eight, article: 第1条 競技のフィールド・第13条 フリーキック}

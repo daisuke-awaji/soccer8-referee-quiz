@@ -1,0 +1,80 @@
+# G-18 けり返そうとして空振り。そのあと手で拾った
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+# 根拠: 第12条2 間接フリーキック（「ただし、ゴールキーパーがボールをプレーに戻すため、明らかにボールをけった、またはけろうとした場合を除く」）
+id: G-18
+category: foul
+badges: []
+review: {status: draft, note: 空振りのあとに手で拾う場面の扱いは、条文の「けろうとした場合を除く」に基づく。監修で確認する}
+title: けり返そうとして空振り。そのあと手で拾った
+kind: 2d
+hint: GKは、まず何をしようとしましたか？
+scene:
+  view: {x: 42, y: 0, w: 27, h: 50}
+  actors:
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+  timeline:
+    - t: 0
+      positions:
+        B4: [57, 22]
+        ball: [57.6, 22.4]
+        B5: [56, 34]
+        B1: [66, 25]
+        R9: [52, 24]
+        R7: [50, 36]
+        REF: [48, 30]
+      events:
+        - {type: caption, text: 青4番が、足でGKへパス}
+        - {type: highlight, actor: B4, dur: 1}
+    - t: 0.3
+      positions:
+        ball: [57.9, 22.5]
+    - t: 1.6
+      positions:
+        ball: [63.5, 24.6]
+        B1: [63.9, 24.7]
+        R9: [58, 24]
+      events:
+        - {type: caption, text: GKがけり返そうとして、空振り}
+        - {type: highlight, actor: B1, dur: 1}
+    - t: 2.1
+      positions:
+        ball: [64.7, 25]
+        B1: [64.2, 24.8]
+        R9: [59.5, 24.4]
+    - t: 2.5
+      positions:
+        ball: [64.8, 25]
+        B1: [64.6, 25]
+      events:
+        - {type: caption, text: 後ろへ転がったボールを、GKが手で拾った}
+    - t: 2.6
+      positions: {}
+    - t: 3.3
+      positions:
+        R9: [60.5, 24.6]
+      events:
+        - {type: caption, text: 反則ではない。プレーは続く}
+  pauseAt: 2.6
+  endAt: 3.3
+steps:
+  - type: choice
+    question: GKは味方のパスをけり返そうとして空振りし、そのあと手で拾いました。どう判定しますか？
+    choices:
+      - {id: play, text: 反則ではない。プレーを続ける}
+      - id: ifk
+        text: 赤チームの間接フリーキック
+        feedback: GKがボールをプレーに戻すために、明らかにけった、またはけろうとした後は、手で扱っても反則になりません。
+    answer: play
+explain:
+  summary: 味方が足でけって返したボールでも、GKがプレーに戻すために明らかにけった、またはけろうとした後なら、手で扱っても反則ではありません。
+  detail: 第12条には「ゴールキーパーがボールをプレーに戻すため、明らかにボールをけった、またはけろうとした場合を除く」と書かれています。最初から手で取りにいった場合は、相手チームの{{間接フリーキック}}です。
+  overlays:
+    - {type: zone, x1: 56, x2: 68, y1: 10.5, y2: 39.5, label: ペナルティーエリア}
+refs:
+  - {src: laws, article: 第12条 ファウルと不正行為 2.間接フリーキック}

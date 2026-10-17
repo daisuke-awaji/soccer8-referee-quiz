@@ -1,0 +1,90 @@
+# G-13 味方のスローインを、GKが手で受けた
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+# 根拠: 第12条2 間接フリーキック（GKが自分のPA内で、味方競技者によってスローインされたボールを直接受けて手で触れる）
+id: G-13
+category: foul
+badges: []
+review: {status: draft}
+title: 味方のスローインを、GKが手で受けた
+kind: 2d
+hint: 誰が投げたスローインか、に注目しましょう。
+scene:
+  view: {x: 42, y: 0, w: 27, h: 52}
+  actors:
+    - {id: B3, role: player, team: blue, label: "3"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+  timeline:
+    - t: 0
+      positions:
+        B3: [59, 50.9]
+        ball: [59, 50.5]
+        B4: [55, 40]
+        B1: [64, 33]
+        R9: [57, 44]
+        R7: [54, 32]
+        REF: [50, 36]
+      events:
+        - {type: caption, text: 青チームのスローイン}
+    - t: 0.8
+      positions:
+        ball: [59, 50.3]
+        B1: [64, 34]
+      events:
+        - {type: caption, text: 青3番が、GKへ向けてスローイン}
+        - {type: highlight, actor: B3, dur: 0.8}
+    - t: 1.9
+      positions:
+        ball: [63.6, 37.3]
+        B1: [63.8, 37]
+        R9: [59, 42]
+      events:
+        - {type: caption, text: GKが手でキャッチした}
+        - {type: highlight, actor: B1, dur: 1.2}
+    - t: 2
+      positions: {}
+    - t: 2.6
+      positions:
+        REF: [55, 38]
+        R9: [60, 41]
+      events:
+        - {type: whistle}
+        - {type: caption, text: 主審が笛を吹き、片腕を上に上げる（間接フリーキック）}
+    - t: 3.4
+      positions: {}
+  pauseAt: 2
+  endAt: 3.4
+steps:
+  - type: choice
+    question: 味方のスローインを、GKが直接手で受けました。どう判定しますか？
+    choices:
+      - id: play
+        text: 反則ではない。プレーを続ける
+        feedback: 味方がスローインしたボールを直接受けた場合、GKは自分のペナルティーエリアの中でも手で扱えません。
+      - {id: ifk, text: 赤チームの間接フリーキック}
+      - id: retake
+        text: 青チームのスローインをやり直す
+        feedback: スローインは正しく行われています。反則は「GKが手で受けたこと」です。
+      - id: redthrow
+        text: 赤チームのスローイン
+        feedback: 投げ方の反則ではありません。GKの反則なので、相手チームの間接FKです。
+    answer: ifk
+  - type: choice
+    question: もしGKが手を使わず、足でボールを止めてそのまま足でプレーしていたら？
+    choices:
+      - {id: play, text: 反則ではない。プレーを続ける}
+      - id: ifk
+        text: 赤チームの間接フリーキック
+        feedback: 制限されているのは、手や腕で扱うことです。足でプレーするのは自由です。
+    answer: play
+explain:
+  summary: 味方のスローインを直接受けたボールを、GKが自分のペナルティーエリアの中で手で扱うと、相手チームの{{間接フリーキック}}です。
+  detail: 味方が足でけって返したボール（{{バックパス}}）と同じ扱いで、懲戒はありません。どちらの場合も、GKが足でプレーするのはかまいません。また、相手チームのスローインのボールなら、GKは手で取れます。
+  overlays:
+    - {type: zone, x1: 56, x2: 68, y1: 10.5, y2: 39.5, label: ペナルティーエリア}
+refs:
+  - {src: laws, article: 第12条 ファウルと不正行為 2.間接フリーキック}

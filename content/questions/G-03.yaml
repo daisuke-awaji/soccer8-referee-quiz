@@ -1,0 +1,122 @@
+# G-03 バックパスを手で取った
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+# 根拠: 第12条2 間接フリーキック（GKが自分のPA内で、味方が意図的にキックしたボールを手で触れる）・懲戒なし（第12条1 ハンドの反則）・退場の対象外（第12条4 懲戒処置）／第13条2 進め方
+id: G-03
+category: foul
+badges: []
+review: {status: draft}
+title: バックパスを手で取った
+kind: 2d
+hint: 味方が「足で」けったボールか、に注目しましょう。
+scene:
+  view: {x: 42, y: 0, w: 27, h: 50}
+  actors:
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+  timeline:
+    - t: 0
+      positions:
+        R9: [49, 22]
+        R7: [50, 36]
+        B4: [54, 20]
+        ball: [54.6, 20.3]
+        B5: [57, 32]
+        B1: [65.5, 25]
+        REF: [47, 30]
+      events:
+        - {type: caption, text: 青4番が、赤9番に寄せられる}
+    - t: 1
+      positions:
+        R9: [52, 21]
+        B4: [54.3, 20.2]
+        ball: [54.9, 20.5]
+      events:
+        - {type: caption, text: 青4番が、足でGKへパス}
+        - {type: highlight, actor: B4, dur: 1}
+    - t: 2.2
+      positions:
+        R9: [55, 21.6]
+        ball: [62.8, 23.6]
+        B1: [63.2, 23.8]
+        REF: [50, 28]
+    - t: 2.5
+      positions:
+        ball: [63.4, 23.9]
+        B1: [63.5, 23.9]
+      events:
+        - {type: caption, text: GKが手でボールを取った}
+        - {type: highlight, actor: B1, dur: 1.2}
+    - t: 2.6
+      positions: {}
+    - t: 3.2
+      positions:
+        R9: [56, 22]
+        REF: [53, 27]
+        B4: [55, 20.5]
+        B5: [57, 31.5]
+        B1: [63.5, 23.9]
+      events:
+        - {type: whistle}
+        - {type: caption, text: 主審が笛を吹き、片腕を上に上げる}
+    - t: 4.4
+      positions:
+        B1: [67.9, 25]
+        B4: [67.9, 22.9]
+        B5: [67.9, 27.1]
+        ball: [63.4, 23.9]
+      events:
+        - {type: caption, text: 赤チームの間接フリーキック。GKが手で触れた地点から。青チームはゴールライン上に並んだ}
+  pauseAt: 2.6
+  endAt: 4.4
+steps:
+  - type: choice
+    question: 味方が足でけって返したボールを、GKが手で取りました。どう判定しますか？
+    choices:
+      - id: play
+        text: 反則ではない。プレーを続ける
+        feedback: 味方が意図的に足でけってGKに渡したボールは、GKが自分のペナルティーエリアの中でも手で扱えません。
+      - {id: ifk, text: 赤チームの間接フリーキック}
+      - id: dfk
+        text: 赤チームの直接フリーキック
+        feedback: ハンドの反則（直接FK）ではありません。GKが自分のペナルティーエリアの中で手で扱う反則は、間接FKです。
+      - id: pk
+        text: 赤チームのペナルティーキック
+        feedback: ペナルティーエリアの中で起きても、PKにはなりません。間接FKです。
+    answer: ifk
+  - type: choice
+    question: GK（青1番）に、警告などの懲戒は必要ですか？
+    choices:
+      - {id: none, text: 懲戒はない}
+      - id: yc
+        text: 警告する
+        feedback: GKが自分のペナルティーエリアの中で手で扱ったことに対しては、懲戒の罰則は与えられません。
+      - id: rc
+        text: 決定的な得点の機会の阻止で退場させる
+        feedback: 自分のペナルティーエリアの中でGKが手で扱った場合は、ハンドによる得点の機会の阻止（退場）の対象から除かれています。
+    answer: none
+  - type: choice
+    question: 間接フリーキックは、どこから行いますか？
+    choices:
+      - {id: spot, text: GKが手でボールに触れた地点}
+      - id: pass
+        text: 青4番がパスを出した地点
+        feedback: 反則は「GKが手で触れたこと」です。フリーキックは反則の起きた場所から行います。
+      - id: pkmark
+        text: ペナルティーマーク
+        feedback: PKではないので、ペナルティーマークからは行いません。
+    answer: spot
+explain:
+  summary: 味方が意図的に足でけってGKに渡したボール（{{バックパス}}）を、GKが自分のペナルティーエリアの中で手で扱うと、相手チームの{{間接フリーキック}}です。懲戒はありません。
+  detail: フリーキックは反則の起きた場所（GKが手で触れた地点）から行います。8人制では、相手競技者はボールから7m以上離れます（自分のゴールポストの間のゴールライン上に立つ場合を除く）。主審は、けられたボールがほかの競技者に触れるか、アウトオブプレーになるまで片腕を上げ続けます。なお、ペナルティーエリアの外でGKが手で扱えば、ほかの競技者と同じハンドの反則（直接FK）です。
+  overlays:
+    - {type: zone, x1: 56, x2: 68, y1: 10.5, y2: 39.5, label: ペナルティーエリア}
+    - {type: marker, at: [63.4, 23.9]}
+refs:
+  - {src: laws, article: 第12条 ファウルと不正行為 2.間接フリーキック}
+  - {src: laws, article: 第13条 フリーキック 2.進め方}
+  - {src: eight, article: 第13条 フリーキック（P.5）}
