@@ -42,7 +42,7 @@ class SlidingTackleScene extends Scene3DBase {
   readonly legend = [
     { cls: 'd-red', label: '赤10番（攻撃）' },
     { cls: 'd-blue', label: '青4番（守備）' },
-    { cls: 'd-gk', label: 'GK' },
+    { cls: 'd-gk', label: 'GK（青のチーム）' },
     { cls: 'd-ref', label: '黒＝審判' },
     { cls: 'd-sole', label: '黄色＝スパイクの裏' },
   ];
@@ -70,12 +70,12 @@ class SlidingTackleScene extends Scene3DBase {
   }
 
   private buildPeople() {
-    const red = { shirt: '#e53935', shorts: '#ffffff', socks: '#e53935' };
-    const blue = { shirt: '#1e63d6', shorts: '#0d2b66', socks: '#1e63d6' };
+    const red = { shirt: '#e53935', shorts: '#ffffff', socks: '#e53935', disc: '#e53935' };
+    const blue = { shirt: '#1e63d6', shorts: '#0d2b66', socks: '#1e63d6', disc: '#1e63d6' };
     const black = { shirt: '#151515', shorts: '#151515', socks: '#151515', number: null };
     this.A = makePerson(this.scene, { ...red, number: 10 });
     this.D = makePerson(this.scene, { ...blue, number: 4 });
-    this.GK = makePerson(this.scene, { shirt: '#ffb300', shorts: '#222', socks: '#ffb300', number: 1, numColor: '#222', longSleeve: true });
+    this.GK = makePerson(this.scene, { shirt: '#ffb300', shorts: '#222', socks: '#ffb300', number: 1, numColor: '#222', longSleeve: true, disc: blue.disc });
     this.B5 = makePerson(this.scene, { ...blue, number: 5 });
     this.R9 = makePerson(this.scene, { ...red, number: 9 });
     this.REF = makePerson(this.scene, black);

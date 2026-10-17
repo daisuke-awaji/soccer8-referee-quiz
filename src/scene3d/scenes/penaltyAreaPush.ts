@@ -54,7 +54,7 @@ class PenaltyAreaPushScene extends Scene3DBase {
   readonly legend = [
     { cls: 'd-red', label: '赤（攻撃）' },
     { cls: 'd-blue', label: '青（守備）' },
-    { cls: 'd-gk', label: 'GK' },
+    { cls: 'd-gk', label: 'GK（青のチーム）' },
     { cls: 'd-ref', label: '黒＝審判（旗は副審）' },
     { cls: 'd-cand', label: '黄色の丸＝主審の立ち位置の候補' },
   ];
@@ -100,8 +100,8 @@ class PenaltyAreaPushScene extends Scene3DBase {
   }
 
   private buildPeople() {
-    const red = { shirt: '#e53935', shorts: '#ffffff', socks: '#e53935' };
-    const blue = { shirt: '#1e63d6', shorts: '#0d2b66', socks: '#1e63d6' };
+    const red = { shirt: '#e53935', shorts: '#ffffff', socks: '#e53935', disc: '#e53935' };
+    const blue = { shirt: '#1e63d6', shorts: '#0d2b66', socks: '#1e63d6', disc: '#1e63d6' };
     const black = { shirt: '#151515', shorts: '#151515', socks: '#151515', number: null };
     const P = this.people;
     P.R7 = makePerson(this.scene, { ...red, number: 7 });
@@ -110,7 +110,7 @@ class PenaltyAreaPushScene extends Scene3DBase {
     P.B2 = makePerson(this.scene, { ...blue, number: 2 });
     P.B3 = makePerson(this.scene, { ...blue, number: 3 });
     P.B5 = makePerson(this.scene, { ...blue, number: 5 });
-    P.GK = makePerson(this.scene, { shirt: '#ffb300', shorts: '#222', socks: '#ffb300', number: 1, numColor: '#222', longSleeve: true });
+    P.GK = makePerson(this.scene, { shirt: '#ffb300', shorts: '#222', socks: '#ffb300', number: 1, numColor: '#222', longSleeve: true, disc: blue.disc });
     P.AR = makePerson(this.scene, black);
     P.REF = makePerson(this.scene, black);
     const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.32, 0.24), new THREE.MeshBasicMaterial({ color: '#ffd600', side: THREE.DoubleSide }));
