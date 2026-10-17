@@ -34,7 +34,8 @@ import {
   type ViewCheck,
 } from './penaltyAreaPushMotion';
 
-const OVERVIEW: Cam = { pos: [3, 32, -8], target: [17.5, 0, -8], fov: 50, hfov: 72, up: [0, 1, 0] };
+/** 全体の視点。人物は 1.4 倍で表示する（候補の位置から見る視点は実寸） */
+const OVERVIEW: Cam = { pos: [-1, 23, -6.5], target: [15, 0, -6.5], fov: 50, hfov: 72, up: [0, 1, 0], people: 1.4 };
 const COLORS = { pick: '#ffd600', ok: '#2e7d32', ng: '#d32f2f', dim: '#9e9e9e' };
 
 interface Cand {
@@ -126,6 +127,7 @@ class PenaltyAreaPushScene extends Scene3DBase {
     );
     this.ballShadow.rotation.x = -Math.PI / 2;
     this.scene.add(this.ballShadow);
+    this.scalable.push(...Object.values(P).map((x) => x.root), this.ball, this.ballShadow);
   }
 
   /** 解説用：押した位置の印・ボールのコース */
