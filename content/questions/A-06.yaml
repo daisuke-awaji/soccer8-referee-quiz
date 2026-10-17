@@ -1,0 +1,29 @@
+# A-06 U-12で使うボール
+# 根拠: 8人制 第2条 ボール（P.4）「U-12年代の場合は、４号球とする」（赤字＝大会／試合ごとに変更できる規則）
+id: A-06
+category: basics
+levels: [beginner, grade4]
+badges: []
+review: {status: draft}
+title: U-12で使うボール
+kind: text
+hint: 11人制（大人）で使うボールより、ひとまわり小さいボールです。
+steps:
+  - type: choice
+    question: U-12 の8人制の試合で使うボールは、何号球？
+    choices:
+      - id: b3
+        text: 3号球
+        feedback: 3号球は U-12 の規定ではありません。8人制競技規則では、U-12 は4号球です。
+      - id: b4
+        text: 4号球
+      - id: b5
+        text: 5号球
+        feedback: 5号球は11人制（大人）のボールです。
+    answer: b4
+explain:
+  summary: U-12 の8人制では、4号球を使います。
+  detail: 8人制競技規則では「年代によって使用するボールのサイズを決定する」とされ、U-12 年代は4号球です。この条文は大会ごとに変えられる規則（規則書の赤字）なので、U-12 以外の大会では大会要項を確認します。11人制は5号球です。
+  overlays: []
+refs:
+  - {src: eight, article: 第2条 ボール（P.4）}

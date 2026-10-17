@@ -113,11 +113,13 @@ export function validateContent(bundle: ContentBundle): ContentIssue[] {
         if (o.type === 'distanceCircle' && typeof o.center === 'string') refs.push(o.center);
         for (const r of refs) if (!actorIds.has(r)) add(`explain.overlays[${i}]: 登場人物「${r}」が actors にありません`);
       });
-    } else {
+    } else if (q.kind === '3d') {
       const s3 = q.scene3d;
       if (s3.pauseAt > s3.endAt) add('scene3d.pauseAt は endAt 以下にしてください');
       if (s3.contactAt > s3.endAt) add('scene3d.contactAt は endAt 以下にしてください');
       if (q.explain.overlays.length) add('3D の問題では explain.overlays は使えません');
+    } else {
+      if (q.explain.overlays.length) add('図のない問題（kind: text）では explain.overlays は使えません');
     }
   }
   return issues;

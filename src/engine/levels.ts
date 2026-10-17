@@ -32,8 +32,9 @@ export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
 /** そのレベルで出す手順 */
 export const stepsFor = (q: Question, level: Level): Step[] => q.steps.filter((s) => !s.levels || s.levels.includes(level));
 
-/** 2D の問題で再生があるか（3D は常にある） */
+/** 再生があるか（3D は常にある。図のない問題にはない） */
 export function hasAnimation(q: Question): boolean {
   if (q.kind === '3d') return true;
+  if (q.kind === 'text') return false;
   return q.scene.pauseAt > 0 && !q.scene.static;
 }

@@ -1,0 +1,28 @@
+# B-06 ベンチに入れる交代要員
+# 根拠: 8人制 第3条② 試合に出場できる人数は原則16名以内とし、ベンチには最大8人の交代要員が入ることができる。両チームが事前に合意すれば変更できる（P.4、赤字）
+id: B-06
+category: substitution
+levels: [grade4]
+badges: []
+review: {status: draft}
+title: ベンチに入れる交代要員
+kind: text
+steps:
+  - type: choice
+    question: 8人制競技規則では、ベンチに入れる交代要員は原則として最大何人？
+    choices:
+      - id: n5
+        text: 5人
+        feedback: 8人制競技規則では、ベンチには最大8人の交代要員が入れます（試合に出場できるのは原則16名以内）。
+      - id: n8
+        text: 8人
+      - id: free
+        text: 決まりはない
+        feedback: 原則として、ベンチには最大8人の交代要員が入れます。
+    answer: n8
+explain:
+  summary: 試合に出場できる人数は原則16名以内で、ベンチには最大8人の交代要員が入れます。
+  detail: 8人制競技規則 第3条②の規定です。当日参加できる選手の数に合わせて、両チームが事前に合意すれば、試合に出場できる人数やベンチに入れる人数を変えられます（大会ごとに変えられる規則）。
+  overlays: []
+refs:
+  - {src: eight, article: 第3条 競技者 ②（P.4）}

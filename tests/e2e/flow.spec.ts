@@ -6,7 +6,7 @@ import { QUESTIONS, actionButton, answerQuestion, collectErrors } from './helper
 
 for (const level of ['beginner', 'grade4'] as const) {
   test(`ホーム → 全問 → 結果 → 間違えた問題をもう一度（${level}）`, async ({ page }) => {
-    test.setTimeout(240_000);
+    test.setTimeout(420_000);
     const errors = collectErrors(page);
     await page.goto('./');
     await expect(page.locator('.level-card[data-k="beginner"]')).toHaveAttribute('aria-checked', 'true');

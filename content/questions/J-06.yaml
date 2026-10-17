@@ -1,0 +1,43 @@
+# J-06 ペナルティーマークからのキック
+# 根拠: 8人制 第10条② (1)両チームとも試合終了時にピッチにいる8人からキックを行う競技者を選ぶ (2)3人の競技者がキックを行う (3)3人ずつ行ったのち同点なら、交互に順序を変えることなく続ける（P.4）
+id: J-06
+category: matchTime
+levels: [beginner, grade4]
+badges: []
+review: {status: draft}
+title: ペナルティーマークからのキック
+kind: text
+hint: 11人制より少ない人数です。
+steps:
+  - type: choice
+    question: 試合が同点で終わり、ペナルティーマークからのキック（PK戦）で勝者を決めます。8人制では、まず何人ずつ蹴る？
+    choices:
+      - id: n3
+        text: 3人ずつ
+      - id: n5
+        text: 5人ずつ
+        feedback: 5人ずつは11人制です。8人制は3人ずつです。
+      - id: n8
+        text: 8人全員
+        feedback: 8人の中から選んだ3人が蹴ります。
+    answer: n3
+  - type: choice
+    levels: [grade4]
+    question: （4級）キックを行う競技者は、どこから選ぶ？
+    choices:
+      - id: all
+        text: ベンチの交代要員も含めた、登録されている全員から
+        feedback: 選べるのは、試合終了時にピッチにいる8人だけです。
+      - id: ref
+        text: 主審が指名する
+        feedback: 主審は指名しません。各チームが、試合終了時にピッチにいる8人から選びます。
+      - id: pitch
+        text: 試合終了時にピッチにいる8人から
+    answer: pitch
+explain:
+  summary: 8人制のPK戦は、試合終了時にピッチにいる8人から選んだ3人ずつが蹴ります。
+  detail: 8人制競技規則 第10条②の規定です。両チーム3人ずつが蹴ったあと、得点が同じなら、同じ数のキックで一方のチームが多く得点するまで、交互に、順番を変えずにキックを続けます。11人制は5人ずつです。
+  overlays: []
+refs:
+  - {src: eight, article: 第10条 試合結果の決定 ②（P.4）}
+  - {src: eight, article: 8人制サッカーと11人制サッカーの違い「ペナルティーマークからのキック」（P.6）}

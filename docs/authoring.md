@@ -20,7 +20,7 @@ levels: [beginner, grade4]
 badges: []               # new2026 = 2026/27改正点 / provisional = 一部が監修前の暫定解答
 review: {status: draft}  # draft → inReview → approved
 title: 自分の陣地でパスを受けた
-kind: 2d                 # 2d または 3d
+kind: 2d                 # 2d / 3d / text（図なし）
 hint: どこでボールを受けたかに注目しましょう。   # 入門だけで表示
 scene: ...               # 2D の動き（下の「2D のシーン」）
 steps: ...               # 問い（1つ以上。レベルごとに出し分けられる）
@@ -108,6 +108,26 @@ steps:
 | `sightLine` | `{type: sightLine, from: B1, to: ball, label: GKの視線}` |
 | `zone` | `{type: zone, x1: 31, x2: 37, y1: -1.6, y2: 1.6, label: 交代ゾーン}` |
 | `marker` / `ruler` | `{type: marker, at: [60, 25]}` / `{type: ruler, from: [68, 15], to: [60, 15], label: 8m}` |
+
+### 図のない問題（kind: text）
+
+規則の数字や手順を問う問題は、図を作らずに書けます。`scene` は書きません。
+
+```yaml
+kind: text
+steps:
+  - type: choice
+    question: 正しい？ 誤り？ ——「3人制審判では、第4の審判員を必ず置く」
+    choices:
+      - {id: o, text: 正しい, feedback: 3人制審判では、第4の審判員は任意です。}
+      - {id: x, text: 誤り}
+    answer: x
+explain:
+  summary: ...
+  overlays: []        # 図がないので、重ね表示は使えない
+```
+
+○×問題は、選択肢を「正しい」「誤り」の2つにした選択式で書きます。選択肢は書いた順に表示されるので、正解の位置が偏らないようにします。
 
 ### 3D
 

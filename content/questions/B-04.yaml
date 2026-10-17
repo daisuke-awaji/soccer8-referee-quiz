@@ -1,0 +1,30 @@
+# B-04 退場のあと
+# 根拠: 8人制 第12条 ファウルと不正行為 競技者が退場を命じられた場合、その競技者のチームは競技のフィールドでプレーする競技者を補充することができる（P.4）
+id: B-04
+category: substitution
+levels: [beginner, grade4]
+badges: []
+review: {status: draft}
+title: 退場のあと
+kind: text
+hint: 8人制と11人制で違うところです。
+steps:
+  - type: choice
+    question: 8人制の試合で、競技者が退場を命じられました。そのチームはどうなる？
+    choices:
+      - id: refill
+        text: ほかの競技者を補充して、8人で続けられる
+      - id: seven
+        text: 7人で試合を続ける（補充はできない）
+        feedback: それは11人制のルールです。8人制では、退場があっても競技者を補充できます。
+      - id: forfeit
+        text: そのチームの負けになる
+        feedback: 退場があっても試合は続きます。8人制では、競技者を補充することもできます。
+    answer: refill
+explain:
+  summary: 8人制では、競技者が退場を命じられても、そのチームは競技者を補充できます。
+  detail: 8人制競技規則 第12条の規定です。11人制では、退場を命じられた競技者の分を補充することはできません。8人制では、退場を命じられた競技者の代わりに、ほかの競技者がフィールドに入ってプレーできます。
+  overlays: []
+refs:
+  - {src: eight, article: 第12条 ファウルと不正行為（P.4）}
+  - {src: eight, article: 8人制サッカーと11人制サッカーの違い「退場後の措置」（P.6）}
