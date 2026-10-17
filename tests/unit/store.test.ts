@@ -26,7 +26,7 @@ describe('migrate（保存形式の引き継ぎ）', () => {
     };
     const s = migrate(v1, new Set(['A-01', 'A-02']));
     expect(s.version).toBe(2);
-    expect(s.level).toBe('grade4');
+    expect(s).not.toHaveProperty('level');
     expect(s.idx).toBe(1);
     expect(s.settings.sound).toBe(false);
     expect(s.notes).toBe('メモ');
@@ -41,15 +41,15 @@ describe('migrate（保存形式の引き継ぎ）', () => {
 });
 
 describe('session', () => {
-  it('そのレベルの問題を出題順にする', () => {
-    const p = startRoundPatch(bundle.questions, defaultState(), 'beginner');
-    expect(p.order!.length).toBe(bundle.questions.filter((q) => q.levels.includes('beginner')).length);
+  it('すべての問題を出題順にする', () => {
+    const p = startRoundPatch(bundle.questions, defaultState());
+    expect(p.order).toEqual(bundle.questions.map((q) => q.id));
     expect(p.idx).toBe(0);
   });
   it('間違えた問題の解き直しでは、前の成績を残す', () => {
     const prev = { ...defaultState(), results: { 'A-01': { ok: false, at: 1 } } };
-    expect(startRoundPatch(bundle.questions, prev, 'beginner', ['A-01'], 'retry').results).toEqual(prev.results);
-    expect(startRoundPatch(bundle.questions, prev, 'beginner').results).toEqual({});
+    expect(startRoundPatch(bundle.questions, prev, ['A-01'], 'retry').results).toEqual(prev.results);
+    expect(startRoundPatch(bundle.questions, prev).results).toEqual({});
   });
   it('集計：とばした問題は数えない', () => {
     const sum = summarize(
@@ -68,9 +68,11 @@ describe('session', () => {
 
 describe('parseDirectLink', () => {
   it('新しい形式と試作版の形式の両方を読む', () => {
-    expect(parseDirectLink('#/q/H-01?lv=grade4')).toEqual({ id: 'H-01', level: 'grade4' });
-    expect(parseDirectLink('#q=D-01&lv=beginner')).toEqual({ id: 'D-01', level: 'beginner' });
-    expect(parseDirectLink('#/q/A-01')).toEqual({ id: 'A-01', level: null });
+    expect(parseDirectLink('#/q/A-01')).toEqual({ id: 'A-01' });
+    expect(parseDirectLink('#q=D-01')).toEqual({ id: 'D-01' });
+    // 以前のレベル指定が付いたリンクも開ける
+    expect(parseDirectLink('#/q/H-01?lv=grade4')).toEqual({ id: 'H-01' });
+    expect(parseDirectLink('#q=D-01&lv=beginner')).toEqual({ id: 'D-01' });
     expect(parseDirectLink('#/')).toBeNull();
   });
 });

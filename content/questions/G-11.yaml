@@ -2,7 +2,6 @@
 # 根拠: サッカー競技規則 第12条（同じ試合で2つ目の警告を受けた競技者は退場）／8人制 第12条 退場を命じられた場合、競技者を補充できる（P.4）
 id: G-11
 category: foul
-levels: [grade4]
 badges: []
 review: {status: draft}
 title: 2枚目の警告

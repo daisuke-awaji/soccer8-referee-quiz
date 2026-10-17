@@ -2,7 +2,6 @@
 # 根拠: 8人制 第10条② (1)両チームとも試合終了時にピッチにいる8人からキックを行う競技者を選ぶ (2)3人の競技者がキックを行う (3)3人ずつ行ったのち同点なら、交互に順序を変えることなく続ける（P.4）
 id: J-06
 category: matchTime
-levels: [beginner, grade4]
 badges: []
 review: {status: draft}
 title: ペナルティーマークからのキック
@@ -22,8 +21,7 @@ steps:
         feedback: 8人の中から選んだ3人が蹴ります。
     answer: n3
   - type: choice
-    levels: [grade4]
-    question: （4級）キックを行う競技者は、どこから選ぶ？
+    question: キックを行う競技者は、どこから選ぶ？
     choices:
       - id: all
         text: ベンチの交代要員も含めた、登録されている全員から

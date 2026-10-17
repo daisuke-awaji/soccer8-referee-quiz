@@ -10,10 +10,8 @@ describe('content（リポジトリの問題データ）', () => {
   it('検査で問題が見つからない', () => {
     expect(issues).toEqual([]);
   });
-  it('すべての問題に出典があり、両方のレベルで1問以上ある', () => {
+  it('すべての問題に出典がある', () => {
     for (const q of bundle.questions) expect(q.refs.length).toBeGreaterThan(0);
-    expect(bundle.questions.some((q) => q.levels.includes('beginner'))).toBe(true);
-    expect(bundle.questions.some((q) => q.levels.includes('grade4'))).toBe(true);
   });
   it('H-01：接触の瞬間、ボールは足から2m以上前にある（解説の前提）', () => {
     expect(ballGapAtContact()).toBeGreaterThan(2);

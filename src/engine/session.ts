@@ -1,18 +1,16 @@
 /** 出題の順番と成績の集計（DOM・保存に依存しない） */
-import type { Category, Level, Question } from '../content/schema';
+import type { Category, Question } from '../content/schema';
 import type { AppState, QuestionResult } from '../storage/store';
 
 /** 新しく始める（retry のときは、前の成績を残したまま間違えた問題だけを解き直す） */
 export function startRoundPatch(
   all: readonly Question[],
   prev: AppState,
-  level: Level,
   ids?: string[],
   round: AppState['round'] = 'main',
 ): Partial<AppState> {
   return {
-    level,
-    order: ids ?? all.filter((q) => q.levels.includes(level)).map((q) => q.id),
+    order: ids ?? all.map((q) => q.id),
     idx: 0,
     results: round === 'retry' ? prev.results : {},
     round,

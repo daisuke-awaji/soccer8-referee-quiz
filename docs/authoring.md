@@ -7,7 +7,7 @@
 1. [question-backlog.md](./question-backlog.md) から作る問題を選び、Issue を立てる（1問 = 1 Issue）
 2. **一次資料で根拠を確かめる**（条文・ページ）。確かめられない問題は作らない
 3. 似た問題の YAML をコピーして `content/questions/<ID>.yaml` を作る
-4. `npm run dev` で開き、`http://localhost:5173/#/q/<ID>?lv=beginner` で確認する
+4. `npm run dev` で開き、`http://localhost:5173/#/q/<ID>` で確認する
 5. `npm run content:check` と `npm run e2e` を通す（E2E は全問を自動で解くので、新しい問題も自動で確かめられる）
 6. PR を出す。`review.status` は `draft` のまま。監修者の確認後に `approved` にする
 
@@ -16,14 +16,13 @@
 ```yaml
 id: D-05                 # ファイル名と同じ。分野の英字（A〜J）＋2〜3桁
 category: offside        # content/categories.yaml の ID
-levels: [beginner, grade4]
 badges: []               # new2026 = 2026/27改正点 / provisional = 一部が監修前の暫定解答
 review: {status: draft}  # draft → inReview → approved
 title: 自分の陣地でパスを受けた
 kind: 2d                 # 2d / 3d / text（図なし）
-hint: どこでボールを受けたかに注目しましょう。   # 入門だけで表示
+hint: どこでボールを受けたかに注目しましょう。   # 最初の質問で「ヒントを見る」から開ける
 scene: ...               # 2D の動き（下の「2D のシーン」）
-steps: ...               # 問い（1つ以上。レベルごとに出し分けられる）
+steps: ...               # 問い（1つ以上。上から順に出す）
 explain:
   summary: 1〜2文の結論。{{用語}} と書くとタップで説明が出る（content/glossary.yaml）
   detail: くわしい解説
@@ -75,9 +74,8 @@ steps:
         text: オフサイド
         feedback: 間違えたときに、この選択肢の下に出る「なぜ違うか」
     answer: goal
-  - type: choice
-    levels: [grade4]          # 4級だけで出す手順
-    question: （4級）懲戒は？
+  - type: choice              # 手順は続けて足せる
+    question: 懲戒は？
     ...
 ```
 
@@ -138,7 +136,6 @@ explain:
 - スキーマ（項目名・型）に合っている。知らない項目があればエラー
 - ファイル名と ID が同じ。ID が重複していない
 - 正解の選択肢がある。選択肢の ID が重複していない
-- 各レベルで出す手順が1つ以上ある
 - キーフレームの時刻が順に並んでいる。登場人物がすべて定義され、一度は位置が出てくる
 - `pauseAt` / `endAt` が動きの長さの中にある
 - 解説の重ね表示・イベントが参照する登場人物がいる

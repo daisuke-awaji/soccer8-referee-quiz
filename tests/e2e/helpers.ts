@@ -1,11 +1,10 @@
 import { expect, type Page } from '@playwright/test';
 import { loadContent } from '../../plugins/content';
-import type { Level, Question } from '../../src/content/schema';
-import { hasAnimation, stepsFor } from '../../src/engine/levels';
+import type { Question } from '../../src/content/schema';
+import { hasAnimation } from '../../src/engine/animation';
 
 export const CONTENT = loadContent().bundle;
 export const QUESTIONS = CONTENT.questions;
-export const LEVELS: Level[] = ['beginner', 'grade4'];
 
 /** コンソールのエラーを集める（テストの最後に空であることを確かめる） */
 export function collectErrors(page: Page): string[] {
@@ -36,14 +35,14 @@ export const actionButton = (page: Page) => page.locator('.screen.quiz .actionba
  * 問題画面で、プレーを見て正解（correct=false なら最初の誤答）を選び、解説まで進める。
  * 戻り値は「すべて正解したか」。
  */
-export async function answerQuestion(page: Page, q: Question, level: Level, correct = true): Promise<boolean> {
+export async function answerQuestion(page: Page, q: Question, correct = true): Promise<boolean> {
   await expect(page.locator('.screen.quiz .qtitle')).toHaveText(q.title);
   if (hasAnimation(q)) {
     const play = page.locator('.stage-play');
     await expect(play).toBeVisible({ timeout: 30_000 }); // 3D は読み込みを待つ
     await play.click();
   }
-  const steps = stepsFor(q, level);
+  const steps = q.steps;
   let allOk = true;
   for (let i = 0; i < steps.length; i++) {
     const s = steps[i]!;

@@ -2,7 +2,6 @@
 # 根拠: 8人制 第7条 試合時間 ①前、後半それぞれ15〜20分間を標準とする（年代によって変更できる。赤字） ②ハーフタイムのインターバルは、10分間を超えない（黒字）（P.4）
 id: J-03
 category: matchTime
-levels: [beginner, grade4]
 badges: []
 review: {status: draft}
 title: 試合時間とハーフタイム
