@@ -173,7 +173,7 @@ a { color: inherit; text-decoration: underline; text-decoration-color: var(--lin
 .stage-play .lbl { display: inline-flex; align-items: center; gap: 8px; background: var(--bg); color: var(--ink); border-radius: var(--r-sm); padding: 10px 16px; font-weight: 500; }
 .stage-play .lbl svg { width: 12px; height: 12px; }
 .stage-play:active .lbl { background: var(--bg-3); }
-.stage-badge { position: absolute; top: 8px; right: 8px; background: var(--ink); color: #fff; font-family: var(--mono); font-size: .72rem; padding: 2px 8px; border-radius: 4px; }
+.stage-badge { position: absolute; top: 8px; right: 8px; background: var(--ink); color: #fff; font-family: var(--mono); font-size: .72rem; padding: 2px 8px; border-radius: 4px; pointer-events: none; }
 .dir-chip { position: absolute; top: 8px; left: 8px; background: rgba(255,255,255,.92); color: var(--ink); font-size: .72rem; font-weight: 500; padding: 1px 7px; border-radius: 4px; pointer-events: none; }
 .stage-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; z-index: 2; background: rgba(0,0,0,.06); }
 .stage-progress i { display: block; height: 100%; width: 0; background: var(--ink); }
