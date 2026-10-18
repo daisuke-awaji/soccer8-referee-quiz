@@ -23,6 +23,8 @@ export interface Cam {
    * 分かるように大きくする。審判の目の高さの視点は、隠れ方が変わらないよう実寸にする
    */
   people?: number;
+  /** ボールだけをさらに大きくする倍率（people に掛け合わせる。既定 1） */
+  ball?: number;
 }
 
 export const vfovFromH = (hfov: number, aspect: number) =>
@@ -54,6 +56,8 @@ export abstract class Scene3DBase implements Scene3DEngine {
   private ro: ResizeObserver | null = null;
   /** 視点の people に合わせて大きさを変えるもの（人物・ボール） */
   protected readonly scalable: THREE.Object3D[] = [];
+  /** 視点の people × ball に合わせて大きさを変えるもの（ボール） */
+  protected readonly ballScalable: THREE.Object3D[] = [];
 
   constructor(
     protected readonly container: HTMLElement,
@@ -119,6 +123,8 @@ export abstract class Scene3DBase implements Scene3DEngine {
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
   }
+  /** 視点の拡大率が変わったとき（視点の移動中も毎フレーム）に呼ばれる */
+  protected onCamScale(_people: number, _ball: number): void {}
   private resolve(c: Cam): Cam {
     return c.hfov ? { ...c, fov: vfovFromH(c.hfov, this.camera.aspect) } : c;
   }
@@ -130,8 +136,11 @@ export abstract class Scene3DBase implements Scene3DEngine {
     this.camera.lookAt(...c.target);
     this.camera.updateProjectionMatrix();
     const s = c.people ?? 1;
+    const bs = c.ball ?? 1;
     for (const o of this.scalable) o.scale.setScalar(s);
-    this.camCur = { pos: [...c.pos], target: [...c.target], fov: c.fov, up: [...c.up], people: s };
+    for (const o of this.ballScalable) o.scale.setScalar(s * bs);
+    this.onCamScale(s, bs);
+    this.camCur = { pos: [...c.pos], target: [...c.target], fov: c.fov, up: [...c.up], people: s, ball: bs };
   }
   protected loop() {
     if (this.raf) return;
@@ -159,7 +168,7 @@ export abstract class Scene3DBase implements Scene3DEngine {
         const e = smooth(a.k);
         const mix = (p: V3, q: V3): V3 => [lerp(p[0], q[0], e), lerp(p[1], q[1], e), lerp(p[2], q[2], e)];
         const to = this.resolve(a.to);
-        this.applyCam({ pos: mix(a.from.pos, to.pos), target: mix(a.from.target, to.target), fov: lerp(a.from.fov, to.fov, e), up: mix(a.from.up, to.up), people: lerp(a.from.people ?? 1, to.people ?? 1, e) });
+        this.applyCam({ pos: mix(a.from.pos, to.pos), target: mix(a.from.target, to.target), fov: lerp(a.from.fov, to.fov, e), up: mix(a.from.up, to.up), people: lerp(a.from.people ?? 1, to.people ?? 1, e), ball: lerp(a.from.ball ?? 1, to.ball ?? 1, e) });
         if (a.k >= 1) this.camAnim = null;
       }
       if (this.frame(now)) busy = true;
