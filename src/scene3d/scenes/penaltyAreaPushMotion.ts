@@ -6,7 +6,7 @@
 import { HIP_H, basePose, blend, clamp, lerp, poseIdle, runPose, smooth, yawOf, type Pose, type XZ } from '../pose';
 
 export const GOAL_LINE_X = 26;
-export const BALL_R = 0.12;
+export const BALL_R = 0.17; // 4号球（直径約20cm）より大きめに表示して見やすくする
 /** 判定の瞬間（クロスの直前。ここで止めて立ち位置を選ぶ） */
 export const PAUSE_T = 2.4;
 export const CROSS_T = 2.7;

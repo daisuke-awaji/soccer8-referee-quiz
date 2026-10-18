@@ -6,15 +6,15 @@ import { HIP_H, basePose, blend, clamp, lerp, runPose, smooth, yawOf, type Pose 
 
 /** 接触の瞬間（秒） */
 export const CONTACT_T = 1.6;
-export const BALL_R = 0.12; // 4号球（少し大きめに表示）
+export const BALL_R = 0.17; // 4号球（直径約20cm）より大きめに表示して見やすくする
 export const BALL_Z = 0.06;
 export const GOAL_LINE_X = 26;
 
 /** ボールの位置。最後のタッチは t=1.1、初速 9m/s、減速 2.4m/s² */
 export function ballX(t: number): number {
   const t0 = 1.1;
-  if (t <= t0) return 5 * t + 0.45 + 0.3 * ((t * 2.5) % 1);
-  const b0 = 5 * t0 + 0.45 + 0.3 * ((t0 * 2.5) % 1);
+  if (t <= t0) return 5 * t + 0.52 + 0.3 * ((t * 2.5) % 1);
+  const b0 = 5 * t0 + 0.52 + 0.3 * ((t0 * 2.5) % 1);
   const dt = Math.min(t - t0, 9 / 2.4);
   return b0 + 9 * dt - 1.2 * dt * dt;
 }

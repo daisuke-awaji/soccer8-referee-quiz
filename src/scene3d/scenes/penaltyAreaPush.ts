@@ -35,7 +35,7 @@ import {
 } from './penaltyAreaPushMotion';
 
 /** 全体の視点。人物は 1.4 倍で表示する（候補の位置から見る視点は実寸） */
-const OVERVIEW: Cam = { pos: [-1, 23, -6.5], target: [15, 0, -6.5], fov: 50, hfov: 72, up: [0, 1, 0], people: 1.4 };
+const OVERVIEW: Cam = { pos: [-1, 23, -6.5], target: [15, 0, -6.5], fov: 50, hfov: 72, up: [0, 1, 0], people: 1.4, ball: 1.5 };
 const COLORS = { pick: '#ffd600', ok: '#2e7d32', ng: '#d32f2f', dim: '#9e9e9e' };
 
 interface Cand {
@@ -60,6 +60,8 @@ class PenaltyAreaPushScene extends Scene3DBase {
   ];
   private people: Record<string, Person> = {};
   private ball!: THREE.Mesh;
+  private readonly ballRoot = new THREE.Group();
+  private ballXray!: THREE.Mesh;
   private ballShadow!: THREE.Mesh;
   private cands: Cand[] = [];
   private selected: string | null = null;
@@ -92,6 +94,13 @@ class PenaltyAreaPushScene extends Scene3DBase {
     return [{ id: 'overview', label: '全体' }, ...this.cands.map((c) => ({ id: c.def.id, label: `${c.def.id}から` }))];
   }
 
+  protected onCamScale(_people: number, ball: number) {
+    if (!this.ballXray) return;
+    // ボールを大きくする視点（全体）でだけ透かす。目の高さの視点では隠れたら見えないまま
+    const k = Math.min(1, Math.max(0, (ball - 1) / 0.5));
+    this.ballXray.visible = k > 0.01;
+    (this.ballXray.material as THREE.MeshBasicMaterial).opacity = 0.6 * k;
+  }
   protected cam(id: string): Cam {
     const c = this.cands.find((x) => x.def.id === id);
     if (!c) return OVERVIEW;
@@ -120,14 +129,25 @@ class PenaltyAreaPushScene extends Scene3DBase {
     this.scene.add(this.arTag);
     this.ball = new THREE.Mesh(new THREE.IcosahedronGeometry(BALL_R, 1), new THREE.MeshLambertMaterial({ color: '#ffffff', flatShading: true }));
     this.ball.add(new THREE.Mesh(new THREE.IcosahedronGeometry(BALL_R * 1.003, 0), new THREE.MeshBasicMaterial({ color: '#222', wireframe: true })));
-    this.scene.add(this.ball);
+    // 拡大しても地面にめり込まないよう、ボールの一番下を基準点にして大きさを変える
+    this.ballRoot.add(this.ball);
+    // 見下ろす視点では、ボールが選手の体の陰に入っても透けて見えるようにする
+    this.ballXray = new THREE.Mesh(
+      new THREE.SphereGeometry(BALL_R, 16, 12),
+      new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.6, depthTest: false, depthWrite: false }),
+    );
+    this.ballXray.renderOrder = 8;
+    this.ball.add(this.ballXray);
+    this.ball.position.y = BALL_R;
+    this.scene.add(this.ballRoot);
     this.ballShadow = new THREE.Mesh(
       new THREE.CircleGeometry(BALL_R * 1.2, 16),
       new THREE.MeshBasicMaterial({ color: '#000', transparent: true, opacity: 0.25, depthWrite: false }),
     );
     this.ballShadow.rotation.x = -Math.PI / 2;
     this.scene.add(this.ballShadow);
-    this.scalable.push(...Object.values(P).map((x) => x.root), this.ball, this.ballShadow);
+    this.scalable.push(...Object.values(P).map((x) => x.root));
+    this.ballScalable.push(this.ballRoot, this.ballShadow);
   }
 
   /** 解説用：押した位置の印・ボールのコース */
@@ -283,7 +303,7 @@ class PenaltyAreaPushScene extends Scene3DBase {
       applyPose(P.REF!, r);
     }
     const b = ballAt(t);
-    this.ball.position.set(b.x, b.y, b.z);
+    this.ballRoot.position.set(b.x, b.y - BALL_R, b.z);
     this.ball.rotation.z = -b.x / BALL_R;
     this.ballShadow.position.set(b.x + 0.03, 0.008, b.z);
     const overview = !view;
