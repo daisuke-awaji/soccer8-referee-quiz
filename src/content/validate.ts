@@ -65,6 +65,9 @@ export function validateContent(bundle: ContentBundle): ContentIssue[] {
         const ids = s.choices.map((c) => c.id);
         if (new Set(ids).size !== ids.length) add(`${at}: 選択肢の id が重複しています`);
         if (!ids.includes(s.answer)) add(`${at}: 正解「${s.answer}」が選択肢にありません`);
+        const nFig = s.choices.filter((c) => c.figure).length;
+        if (nFig && q.kind !== 'signal') add(`${at}: 絵の選択肢（figure）は kind: signal の問題でのみ使えます`);
+        if (nFig && nFig !== s.choices.length) add(`${at}: 絵の選択肢は、すべての選択肢に figure を書いてください`);
       } else if (s.type === 'position') {
         const ids = s.candidates.map((c) => c.id);
         if (new Set(ids).size !== ids.length) add(`${at}: 候補の id が重複しています`);
@@ -129,7 +132,9 @@ export function validateContent(bundle: ContentBundle): ContentIssue[] {
       if (s3.contactAt > s3.endAt) add('scene3d.contactAt は endAt 以下にしてください');
       if (q.explain.overlays.length) add('3D の問題では explain.overlays は使えません');
     } else {
-      if (q.explain.overlays.length) add('図のない問題（kind: text）では explain.overlays は使えません');
+      if (q.explain.overlays.length) add(`図のない問題（kind: ${q.kind}）では explain.overlays は使えません`);
+      if (q.kind === 'signal' && !q.figure && !q.steps.some((s) => s.type === 'choice' && s.choices.some((c) => c.figure)))
+        add('合図の問題（kind: signal）には、問いの絵（figure）か、絵の選択肢（choices[].figure）が必要です');
     }
   }
   return issues;
