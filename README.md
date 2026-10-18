@@ -26,6 +26,7 @@ npm run check          # lint・型チェック・問題データの検査・単
 npm run e2e            # E2E（Playwright。初回は npx playwright install chromium）
 BASE_URL=https://daisuke-awaji.github.io/soccer8-referee-quiz/ npx playwright test --project=phone   # 公開済みのサイトを確かめる
 npm run build          # dist/ に静的サイトを出力
+npm run og:image       # LINE・SNS 共有用の画像 public/og-image.png を作り直す（scripts/og-image.html を撮影）
 ```
 
 問題を1問だけ開く（監修・確認用。成績には記録しない）: `/#/q/H-01`
@@ -48,6 +49,8 @@ tests/e2e/          E2E（全問を自動で解く・画面の流れ・アクセ
 
 `main` に入ると GitHub Actions が検査とビルドを行い、GitHub Pages に公開します（`.github/workflows/pages.yml`）。
 ビルドは相対パスで出力するので、同じ成果物を S3 + CloudFront などにも置けます。
+
+共有時のプレビュー（OGP）は `index.html` に書いています。`og:image` は GitHub Pages の絶対 URL で固定しているので、別の URL で公開するときは書き換えてください。画像を変えたら `?v=` の数字を上げると、LINE などのキャッシュに残った古い画像が使われにくくなります。
 
 ## 準拠する規則
 

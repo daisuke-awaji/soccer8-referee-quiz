@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=block" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; }
+      body {
+        width: 1200px; height: 630px; overflow: hidden;
+        background: #fff; color: #171717;
+        font-family: 'Noto Sans JP', sans-serif; letter-spacing: .01em;
+      }
+      .wrap { display: flex; height: 100%; padding: 64px 72px; gap: 56px; align-items: center; }
+      .text { flex: 1; display: flex; flex-direction: column; height: 100%; }
+      .eyebrow { font-size: 26px; font-weight: 500; color: #666; margin: 0; }
+      h1 { margin: 18px 0 0; font-weight: 900; line-height: 1.15; font-size: 80px; letter-spacing: -.01em; white-space: nowrap; }
+      h1 .num { font-size: 96px; }
+      .lead { margin: 26px 0 0; font-size: 34px; font-weight: 700; line-height: 1.4; }
+      .tags { display: flex; gap: 12px; margin-top: 28px; }
+      .tag { font-size: 24px; font-weight: 700; padding: 6px 16px; border-radius: 8px; border: 2px solid #171717; }
+      .url { margin-top: auto; font-size: 22px; font-weight: 500; color: #8f8f8f; }
+      .pitch { flex: none; width: 330px; height: 470px; border-radius: 16px; overflow: hidden; }
+      .pitch svg { display: block; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="text">
+        <p class="eyebrow">JFA 8人制サッカー競技規則に準拠</p>
+        <h1><span class="num">8</span>人制<br />審判トレーニング</h1>
+        <p class="lead">プレーを見て、判定の瞬間に答えるクイズ</p>
+        <div class="tags">
+          <span class="tag">保護者審判</span>
+          <span class="tag">4級審判員</span>
+          <span class="tag">スマホで練習</span>
+        </div>
+        <p class="url">daisuke-awaji.github.io/soccer8-referee-quiz</p>
+      </div>
+      <div class="pitch" aria-hidden="true">
+        <svg viewBox="0 0 66 94" xmlns="http://www.w3.org/2000/svg">
+          <rect width="66" height="94" fill="#2f7d33" />
+          <g fill="#348838">
+            <rect y="3" width="66" height="11" /><rect y="25" width="66" height="11" />
+            <rect y="47" width="66" height="11" /><rect y="69" width="66" height="11" />
+          </g>
+          <g fill="none" stroke="#fff" stroke-width=".6" opacity=".9">
+            <rect x="3" y="3" width="60" height="88" />
+            <line x1="3" y1="47" x2="63" y2="47" />
+            <circle cx="33" cy="47" r="7" />
+            <rect x="17" y="3" width="32" height="12" /><rect x="25" y="3" width="16" height="4" />
+            <rect x="17" y="79" width="32" height="12" /><rect x="25" y="87" width="16" height="4" />
+            <rect x="29" y="1.2" width="8" height="1.8" /><rect x="29" y="91" width="8" height="1.8" />
+          </g>
+          <g fill="#fff"><circle cx="33" cy="47" r=".6" /><circle cx="33" cy="12" r=".5" /><circle cx="33" cy="82" r=".5" /></g>
+          <g stroke="#fff" stroke-width=".5">
+            <g fill="#e53935">
+              <circle cx="20" cy="24" r="2.2" /><circle cx="44" cy="22" r="2.2" /><circle cx="31" cy="35" r="2.2" />
+              <circle cx="14" cy="42" r="2.2" /><circle cx="50" cy="40" r="2.2" /><circle cx="27" cy="55" r="2.2" />
+            </g>
+            <circle cx="33" cy="8" r="2.2" fill="#8e24aa" />
+            <g fill="#1e63d6">
+              <circle cx="38" cy="58" r="2.2" /><circle cx="18" cy="66" r="2.2" /><circle cx="48" cy="68" r="2.2" />
+              <circle cx="35" cy="73" r="2.2" /><circle cx="24" cy="78" r="2.2" /><circle cx="44" cy="80" r="2.2" />
+            </g>
+            <circle cx="33" cy="87" r="2.2" fill="#ffb300" stroke="#1e63d6" />
+          </g>
+          <circle cx="30" cy="57.6" r="1.1" fill="#fff" stroke="#222" stroke-width=".3" />
+          <circle cx="42" cy="50" r="2.4" fill="#111" stroke="#ffeb3b" stroke-width=".7" />
+          <path d="M43.6 48.4 L47 46 L48.3 47.8 Z" fill="#ffeb3b" />
+          <g transform="translate(46 44) rotate(12)">
+            <rect x="0" y="-8.5" width="5" height="7" rx=".6" fill="#ffd600" stroke="#171717" stroke-width=".35" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>
