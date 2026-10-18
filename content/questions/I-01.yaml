@@ -1,0 +1,32 @@
+# I-01 片腕を真上に上げた合図
+# 根拠: 第5条 主審「6. 主審のシグナル」の図（間接フリーキック）
+#       第13条 フリーキック「間接フリーキックのシグナル 主審は、片腕を頭上に上げて間接フリーキックであることを示す」
+id: I-01
+category: signals
+badges: []
+review: {status: draft}
+title: 片腕を真上に上げた合図
+kind: signal
+figure: {pose: ref.indirectFreeKick}
+steps:
+  - type: choice
+    question: 主審が笛を吹いてプレーを止め、この合図をしました。再開の方法は？
+    choices:
+      - id: dfk
+        text: 直接フリーキック
+        feedback: 直接フリーキックの合図は、片腕を横に伸ばして方向を指します。腕を真上に上げたままにはしません。
+      - {id: ifk, text: 間接フリーキック}
+      - id: db
+        text: ドロップボール
+        feedback: ドロップボールに決まった腕の合図はありません。
+      - id: pk
+        text: ペナルティーキック
+        feedback: ペナルティーキックの合図は、ペナルティーマークを指します。
+    answer: ifk
+explain:
+  summary: 片腕を頭の上に上げる合図は{{間接フリーキック}}です。
+  detail: 主審は、片腕を頭上に上げて間接フリーキックであることを示します。キックが行われ、ほかの競技者がボールに触れるか、ボールがアウトオブプレーになるか、直接得点できないと明らかに分かるまで、この合図を続けます。
+  overlays: []
+refs:
+  - {src: laws, article: 第5条 主審 6.主審のシグナル（間接フリーキック）}
+  - {src: laws, article: 第13条 フリーキック 間接フリーキックのシグナル}

@@ -1,0 +1,35 @@
+# I-09 直接フリーキックの合図
+# 根拠: 第5条 主審「6. 主審のシグナル」の図（直接フリーキック／間接フリーキック／アドバンテージ／ペナルティーキック）
+id: I-09
+category: signals
+badges: []
+review: {status: draft}
+title: 直接フリーキックの合図
+kind: signal
+steps:
+  - type: choice
+    question: ペナルティーエリアの外で、相手をつまずかせる反則があった。主審が笛を吹いたあとにする「直接フリーキック」の合図はどれ？
+    choices:
+      - id: ifk
+        text: 片腕を真上に上げる
+        figure: {pose: ref.indirectFreeKick}
+        feedback: これは間接フリーキックの合図です。
+      - id: pk
+        text: 地面の一点を指す
+        figure: {pose: ref.penaltyKick}
+        feedback: これはペナルティーマークを指す、ペナルティーキックの合図です。反則はペナルティーエリアの外です。
+      - id: dfk
+        text: 片腕を横に伸ばして指す
+        figure: {pose: ref.directFreeKick}
+      - id: adv
+        text: 両腕を前に伸ばす
+        figure: {pose: ref.advantage}
+        feedback: これはアドバンテージ（プレーを続けさせる）の合図です。笛を吹いて止めたあとには使いません。
+    answer: dfk
+explain:
+  summary: 直接フリーキックの合図は、片腕を横に伸ばして、フリーキックを行うチームが攻める方向を指します。
+  detail: 間接フリーキックは片腕を真上に上げたまま、ペナルティーキックはペナルティーマークを指します。合図は、競技者や観客に「何で再開するのか」を伝えるためのものです。判定の理由を説明するための身ぶりはしません。
+  overlays: []
+refs:
+  - {src: laws, article: 第5条 主審 6.主審のシグナル（直接フリーキック）}
+  - {src: guidelines, article: ボディーランゲージ、コミュニケーションと笛（ボディーランゲージ）}

@@ -20,7 +20,7 @@ category: offside        # content/categories.yaml の ID
 badges: []               # new2026 = 2026/27改正点 / provisional = 一部が監修前の暫定解答
 review: {status: draft}  # draft → inReview → approved
 title: 自分の陣地でパスを受けた
-kind: 2d                 # 2d / 3d / text（図なし）
+kind: 2d                 # 2d / 3d / text（図なし）/ signal（合図の絵）
 hint: どこでボールを受けたかに注目しましょう。   # 最初の質問で「ヒントを見る」から開ける
 scene: ...               # 2D の動き（下の「2D のシーン」）
 steps: ...               # 問い（1つ以上。上から順に出す）
@@ -128,6 +128,53 @@ explain:
 
 ○×問題は、選択肢を「正しい」「誤り」の2つにした選択式で書きます。`question` には判定してほしい文だけを書きます。選択肢で○×問題だと分かるので、「正しい？ 誤り？」のような前置きやかぎかっこは付けません。選択肢は書いた順に表示されるので、正解の位置が偏らないようにします。
 
+### 合図の問題（kind: signal）
+
+主審の腕の合図や副審の旗の合図は、合図の絵で出題します。問いに絵を出す（`figure`）か、選択肢を絵にする（`choices[].figure`）か、その両方を使えます。`scene` は書きません。
+
+```yaml
+kind: signal
+figure: {pose: ar.direction, left: 青チームが攻める方向, right: 赤チームが攻める方向}   # 問いの絵（省略できる）
+steps:
+  - type: choice
+    question: 副審がこの合図をしました。どちらのチームのスローイン？
+    choices:
+      - {id: red, text: 赤チーム}
+      - {id: blue, text: 青チーム, feedback: ...}
+    answer: red
+  - type: choice
+    question: ゴールキックの合図はどれ？
+    choices:                         # 絵で選ぶ。text には動作だけを書く（意味は書かない）
+      - {id: gk, text: 旗を水平にして指す, figure: {pose: ar.goalKick, mirror: true}}
+      - {id: ck, text: 旗を斜め下に向ける, figure: {pose: ar.cornerKick, mirror: true}, feedback: ...}
+    answer: gk
+```
+
+| 項目 | 内容 |
+|---|---|
+| `pose` | 合図の形。`ref.〜` は主審、`ar.〜` は副審（旗を持つ）。下の一覧 |
+| `mirror` | 左右を入れ替える。正面の絵の右腕（絵の右側）は、本人の左手。副審が右手で上げる合図（オフサイド・CK・GK）は `mirror: true` にする |
+| `left` / `right` | 絵の下の左右に出す説明（例: 赤チームが攻める方向）。向きで答えが決まる問題では必ず書く |
+
+| pose | 形 |
+|---|---|
+| `ref.rest` | 主審・腕を下ろす |
+| `ref.indirectFreeKick` | 片腕を真上に上げる（間接FK） |
+| `ref.directFreeKick` | 片腕を横に伸ばして指す（直接FK） |
+| `ref.advantage` | 横向き・両腕を前に伸ばす（アドバンテージ） |
+| `ref.penaltyKick` | 地面の一点（ペナルティーマーク）を指す |
+| `ref.cornerKick` / `ref.goalKick` | 腕を斜め上（コーナーアーク）／斜め下（ゴールエリア）に向ける |
+| `ref.countdown` | 片手を上げて指を開く（カウントダウン） |
+| `ar.rest` | 副審・旗を下ろして持つ |
+| `ar.raise` | 旗を真上に上げる（オフサイドの最初の合図など） |
+| `ar.direction` | 旗を斜め上に上げる（スローイン・FKの方向） |
+| `ar.cornerKick` / `ar.goalKick` | 旗を斜め下に向ける（CK）／水平にする（GK） |
+| `ar.substitution` | 両手で旗を頭の上に横にする（交代） |
+| `ar.wave` | 旗を左右に振る（ファウル） |
+| `ar.offsideNear` / `ar.offsideMiddle` / `ar.offsideFar` | 横向き・旗を斜め下／水平／斜め上（オフサイドの位置） |
+
+形は `src/signals/poses.ts` にあります（角度で書く。three.js も DOM も使わない）。新しい形を足したら `src/content/schema.ts` の `SIGNAL_POSES` にも足し、`npm test` で絵の中に収まることを確かめます（`tests/unit/signals.test.ts`）。絵は JFA 競技規則 第5条・第6条の「承認されているシグナル」の図に合わせます。
+
 ### 3D
 
 3D のシーンは動きをコードで作ります（`src/scene3d/scenes/`）。YAML では `scene3d.id` で使うシーンを選び、止める時刻と字幕を書きます。
@@ -171,4 +218,5 @@ scene3d:
 - `pauseAt` / `endAt` が動きの長さの中にある
 - 解説の重ね表示・イベントが参照する登場人物がいる
 - 出典が `sources.yaml` に、用語が `glossary.yaml` にある
+- 合図の問題：問いの絵か絵の選択肢がある。絵の選択肢は、その手順のすべての選択肢に絵がある。絵の選択肢は `kind: signal` でだけ使う
 - どの問題も、`stages.yaml` のちょうど1つのステージに入っている。ステージにない問題 ID を書いていない

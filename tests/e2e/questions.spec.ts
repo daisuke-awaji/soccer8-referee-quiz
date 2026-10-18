@@ -68,3 +68,18 @@ test('立ち位置の問題：選んだ位置から見え方が出る。ほか�
   await expect(page.locator('.s3-check')).toBeHidden();
   expect(errors).toEqual([]);
 });
+
+test('合図の問題：問いの絵と、絵の選択肢が出る', async ({ page }, info) => {
+  test.skip(info.project.name !== 'phone');
+  const errors = collectErrors(page);
+  await page.goto('./#/q/I-01');
+  await expect(page.locator('.sig-stage .sig-svg')).toBeVisible();
+  await page.goto('./#/q/I-02');
+  await expect(page.locator('.choices.fig-grid .choice.has-fig')).toHaveCount(4);
+  await expect(page.locator('.choice[data-id="adv"] .sig-svg')).toBeVisible();
+  // 誤答すると、絵の選択肢の下にも「なぜ違うか」が出る
+  await page.locator('.choice[data-id="ifk"]').click();
+  await actionButton(page).click();
+  await expect(page.locator('.choice.is-wrong + .choice-fb')).toContainText('間接フリーキック');
+  expect(errors).toEqual([]);
+});

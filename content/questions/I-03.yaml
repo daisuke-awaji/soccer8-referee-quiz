@@ -1,0 +1,42 @@
+# I-03 ペナルティーマークを指す合図
+# 根拠: 第5条 主審「6. 主審のシグナル」の図（ペナルティーキック）
+#       8人制 第1条 競技のフィールド「ペナルティーマーク ＝ 8m」
+id: I-03
+category: signals
+badges: []
+review: {status: draft}
+title: ペナルティーマークを指す合図
+kind: signal
+figure: {pose: ref.penaltyKick}
+steps:
+  - type: choice
+    question: 自分のペナルティーエリアの中で、守備側の競技者が相手をけった。主審は笛を吹き、地面の一点を指すこの合図をしました。再開の方法は？
+    choices:
+      - id: ifk
+        text: 間接フリーキック
+        feedback: 間接フリーキックの合図は、片腕を真上に上げます。
+      - {id: pk, text: ペナルティーキック}
+      - id: gk
+        text: ゴールキック
+        feedback: ゴールキックは、攻撃側が最後に触れたボールがゴールラインを越えたときの再開です。
+    answer: pk
+  - type: choice
+    question: 主審が指している8人制のペナルティーマークは、ゴールラインから何mのところ？
+    choices:
+      - {id: m8, text: 8m}
+      - id: m11
+        text: 11m
+        feedback: 11mは11人制の距離です。
+      - id: m12
+        text: 12m
+        feedback: 12mはペナルティーエリアのラインです。ペナルティーマークはその内側です。
+    answer: m8
+explain:
+  summary: ペナルティーキックの合図は、ペナルティーマークを指します。8人制のペナルティーマークは、ゴールラインの中央から8mです。
+  detail: 自分のペナルティーエリアの中で、直接フリーキックになる反則をした場合は、ペナルティーキックになります。ペナルティーキックを行うときは、主審は笛を吹いて合図します。
+  overlays: []
+refs:
+  - {src: laws, article: 第5条 主審 6.主審のシグナル（ペナルティーキック）}
+  - {src: eight, article: 第1条 競技のフィールド}
+  - {src: laws, article: 第14条 ペナルティーキック}
+  - {src: guidelines, article: ボディーランゲージ、コミュニケーションと笛（笛）}

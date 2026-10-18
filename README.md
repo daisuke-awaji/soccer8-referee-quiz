@@ -11,7 +11,7 @@
 | 文書 | 内容 |
 |---|---|
 | [docs/plan.md](./docs/plan.md) | 開発計画書（目的・技術構成・マイルストーン・テスト・リスク） |
-| [docs/question-backlog.md](./docs/question-backlog.md) | 問題候補の一覧（96問。第1弾は67問） |
+| [docs/question-backlog.md](./docs/question-backlog.md) | 問題候補の一覧（115問。第1弾は76問） |
 | [docs/authoring.md](./docs/authoring.md) | 問題の作り方（YAML の書き方と、自動で検査されること） |
 | [prototype/](./prototype/) | 試作版 v0.1（1ファイル HTML 版。参照用） |
 
@@ -39,6 +39,7 @@ src/content/        スキーマ（Zod）と、ファイルをまたいだ検査
 src/engine/         採点・出題・集計（画面に依存しない）
 src/pitch2d/        2D ピッチ（SVG）の描画・アニメーション・配置問題
 src/scene3d/        3D シーン（three.js。3D の問題を開いたときだけ読み込む）
+src/signals/        合図の絵（SVG の棒人形。kind: signal の問題）
 src/screens/        ホーム・問題・結果の画面（React）
 plugins/content.ts  ビルド時に content/ を読み込み、検査してアプリに渡す
 tests/unit/         単体テスト（Vitest）
