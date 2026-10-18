@@ -22,4 +22,12 @@
 - id: position
   icon: 🧊
   title: 審判の立ち位置
-  questions: [H-04, H-01, E-01]
+  questions: [H-04, H-01, E-01, E-02, E-07, E-09, E-05, E-03, E-04]
+- id: refSignals
+  icon: 🙋
+  title: 主審の合図と笛
+  questions: [I-01, I-09, I-02, I-03, I-10, I-07, I-11, I-12]
+- id: flagSignals
+  icon: 🏳️
+  title: 副審の旗
+  questions: [I-16, I-04, I-05, I-14, I-06, I-13, I-15, I-17]

@@ -1,0 +1,76 @@
+# E-03 コーナーキックのときの副審の位置
+# 根拠: JFA「審判員のための実践的ガイドライン」ポジショニング 2.ポジショニングとチームワーク「コーナーキック
+#       コーナーキックのときの副審のポジションは、ゴールラインの延長上でコーナーフラッグの後方であるが、コーナーキックを行う競技者を妨害してはならない。
+#       また、コーナーエリア内にボールが正しく置かれているかチェックしなければならない」
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: E-03
+category: positioning
+badges: [provisional]
+review: {status: draft, note: 正解とする範囲（±1.2m）は監修で決める}
+title: コーナーキックのときの副審の位置
+kind: 2d
+hint: 副審が見たいのは、ボールがコーナーエリアに正しく置かれているかと、ゴールラインです。
+scene:
+  view: {x: 41, y: 0, w: 33, h: 53}
+  actors:
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: R8, role: player, team: red, label: "8"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        R7: [62, 46]
+        ball: [63, 47]
+        R9: [61, 28]
+        R10: [60, 22]
+        R8: [52, 30]
+        B4: [62, 27]
+        B5: [61, 23]
+        B6: [58, 36]
+        B1: [67, 25]
+        REF: [55, 18]
+        AR2: [60, 51.4]
+      events:
+        - {type: caption, text: 青チームが最後に触れたボールが、副審側のゴールラインを越えた}
+    - t: 1.8
+      positions:
+        R7: [67.2, 49.4]
+        ball: [67.7, 49.7]
+      events:
+        - {type: caption, text: 赤チームのコーナーキック。副審（右）を正しい位置へ動かそう}
+  pauseAt: 1.8
+steps:
+  - type: placement
+    question: 右側の副審を、タッチラインの外に沿ってドラッグ（またはタップ）して、コーナーキックのときの正しい位置に動かしてください。
+    placement:
+      mode: line
+      actor: AR2
+      fixedY: 51.4
+      min: 42.5
+      max: 70.5
+      target: [68, 51.4]
+      tolerance: 1.2
+      describe: {kind: lineOffset}
+      zones:
+        - lineX: 62
+          r: 2.5
+          text: そこは後方から2人目の守備側競技者のあたりです。コーナーキックでは、ボールが置かれたコーナーエリアとゴールラインを見られる位置に移ります。
+        - lineX: 70
+          r: 0.8
+          text: ゴールラインより後ろに下がりすぎです。ゴールラインの延長上に立ちます。
+explain:
+  summary: コーナーキックのときの副審は、ゴールラインの延長上で、コーナーフラッグの後方に立ちます。キッカーのじゃまにならないようにします。
+  detail: この位置から、ボールがコーナーエリアに正しく置かれているかと、ボールがゴールラインを越えるかどうか（得点・ゴールキック）を見ます。8人制では、コーナーキックのときも相手競技者はボールから7m以上離れます。
+  overlays:
+    - {type: marker, at: [68, 51.4], label: ゴールラインの延長上}
+refs:
+  - {src: guidelines, article: ポジショニング（位置取り）、動き方とチームワーク 2.（コーナーキック）}
+  - {src: eight, article: 第17条 コーナーキック}

@@ -1,0 +1,89 @@
+# E-09 GKがボールを手で持ったときの副審の位置
+# 根拠: JFA「審判員のための実践的ガイドライン」ポジショニング 2.「ゴールキーパーがボールを放す時 副審は、ペナルティーエリアの端のところにポジションを取り、
+#       ゴールキーパーがペナルティーエリアの外でボールを手で触れていないかどうかチェックしなければならない。
+#       ゴールキーパーがボールを放したら、オフサイドラインのチェックができるポジションを取らなければならない」
+#       （バックログでは 3D の H-05 として挙げていた問題を、2D の配置問題にした）
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: E-09
+category: positioning
+badges: [provisional]
+review: {status: draft, note: 正解とする範囲（±1.5m）は監修で決める}
+title: GKがボールを持ったときの副審の位置
+kind: 2d
+hint: GKがボールを手で持ったまま、ペナルティーエリアの外に出てしまうかもしれません。
+scene:
+  view: {x: 36, y: 0, w: 33, h: 52}
+  actors:
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        R10: [50, 38]
+        ball: [51, 38]
+        R9: [58, 30]
+        R7: [55, 22]
+        B4: [60, 33]
+        B5: [57, 20]
+        B6: [52, 30]
+        B1: [65, 27]
+        REF: [46, 26]
+        AR2: [60, 51.4]
+      events:
+        - {type: caption, text: 赤10番のクロスを、青GKが手でキャッチ}
+    - t: 1.2
+      positions:
+        ball: [62.5, 31]
+        B1: [62.8, 30.5]
+        R9: [61, 31]
+        B4: [61.5, 33.5]
+    - t: 2.6
+      positions:
+        ball: [60.2, 35]
+        B1: [60.5, 34.5]
+        R9: [53, 29]
+        R7: [50, 23]
+        R10: [47, 37]
+        B4: [56, 22]
+        B5: [53, 16]
+        B6: [48, 31]
+        REF: [44, 27]
+      events:
+        - {type: caption, text: GKはボールを持ったまま、前に出て味方を探している}
+  pauseAt: 2.6
+steps:
+  - type: placement
+    question: 右側の副審を、タッチライン沿いにドラッグ（またはタップ）して、GKがボールを手で持っているときの正しい位置に動かしてください。
+    placement:
+      mode: line
+      actor: AR2
+      fixedY: 51.4
+      min: 34.5
+      max: 68
+      target: [56, 51.4]
+      tolerance: 1.5
+      describe: {kind: lineOffset}
+      zones:
+        - lineX: 60.5
+          r: 1.5
+          text: そこはGK（ボール）のラインです。GKがボールを持っている間は、GKがペナルティーエリアの外で手を使わないかを見るため、ペナルティーエリアの端に立ちます。
+        - lineX: 64
+          r: 1.2
+          text: そこはゴールエリアのラインです。GKがボールを持っているときは、ペナルティーエリアの端に立ちます。
+explain:
+  summary: GKがボールを手で持っている間、副審はペナルティーエリアの端に立ち、GKがペナルティーエリアの外でボールを手で扱わないかを見ます。
+  detail: GKがボールを放したら、オフサイドラインをチェックできる位置（{{後方から2人目の守備側競技者}}のライン）に移ります。8人制のペナルティーエリアは、ゴールラインから12mです。
+  overlays:
+    - {type: marker, at: [56, 51.4], label: ペナルティーエリアの端}
+    - {type: zone, x1: 56, x2: 68, y1: 10.5, y2: 39.5, label: ペナルティーエリア}
+refs:
+  - {src: guidelines, article: ポジショニング（位置取り）、動き方とチームワーク 2.（ゴールキーパーがボールを放す時）}
+  - {src: eight, article: 第1条 競技のフィールド}

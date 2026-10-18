@@ -46,6 +46,16 @@ describe('content の検査は壊れたデータを見つける', () => {
     expect(issues).toContain('[stages.yaml] 問題「K-01」が、ステージ「field」と「kickoff」の両方に入っています');
     expect(issues.some((i) => i.includes('ステージ「field」の問題「J-99」がありません'))).toBe(true);
   });
+  it('合図の問題：絵がない／絵の選択肢が一部だけ／ほかの種類で絵の選択肢', () => {
+    const issues = withBrokenCopy((d) => {
+      edit(path.join(d, 'questions/I-01.yaml'), 'figure: {pose: ref.indirectFreeKick}\n', '');
+      edit(path.join(d, 'questions/I-02.yaml'), "        figure: {pose: ref.indirectFreeKick}\n", '');
+      edit(path.join(d, 'questions/F-05.yaml'), '      - {id: x, text: 誤り}\n    answer: x', '      - {id: x, text: 誤り, figure: {pose: ref.rest}}\n    answer: x');
+    }).join('\n');
+    expect(issues).toContain('[I-01] 合図の問題（kind: signal）には、問いの絵（figure）か、絵の選択肢（choices[].figure）が必要です');
+    expect(issues).toContain('[I-02] steps[0]: 絵の選択肢は、すべての選択肢に figure を書いてください');
+    expect(issues).toContain('[F-05] steps[0]: 絵の選択肢（figure）は kind: signal の問題でのみ使えます');
+  });
   it('正解が選択肢にない', () => {
     const issues = withBrokenCopy((d) => edit(path.join(d, 'questions/A-02.yaml'), 'answer: m7', 'answer: m8'));
     expect(issues.join('\n')).toContain('正解「m8」が選択肢にありません');

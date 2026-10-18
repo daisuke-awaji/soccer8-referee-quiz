@@ -1,0 +1,49 @@
+# I-06 オフサイドの最初の合図
+# 根拠: 第6条 その他の審判員「6. 副審のシグナル」の図（オフサイド）
+#       JFA「審判員のための実践的ガイドライン」2.副審「オフサイド 副審は、オフサイドと判定したならば、先ず旗を上げる。
+#       （良い視野を確保するため、旗を右手で上げなければならない）主審がプレーを停止したら、旗を用い、反則のあった地域を示す」
+#       「フラッグテクニック …通常、旗は主審に近い方の手で持つ」
+id: I-06
+category: signals
+badges: []
+review: {status: draft}
+title: オフサイドの最初の合図
+kind: signal
+steps:
+  - type: choice
+    question: オフサイドポジションにいた競技者が、パスを受けてプレーした。副審がオフサイドだと判断して、最初にする合図はどれ？
+    choices:
+      - id: wave
+        text: 旗を左右に振る
+        figure: {pose: ar.wave}
+        feedback: 旗を振るのは、ファウルを知らせるときです。
+      - id: raise
+        text: 旗を真上に上げる
+        figure: {pose: ar.raise, mirror: true}
+      - id: sub
+        text: 旗を両手で頭の上に横にする
+        figure: {pose: ar.substitution}
+        feedback: これは交代を知らせる合図です。
+      - id: dir
+        text: 旗を斜め上に上げる
+        figure: {pose: ar.direction}
+        feedback: これはスローインやフリーキックの方向を示す合図です。
+    answer: raise
+  - type: choice
+    question: オフサイドの合図で旗を上げるのは、どちらの手？
+    choices:
+      - {id: right, text: 右手}
+      - id: left
+        text: 左手
+        feedback: オフサイドの合図は、良い視野を確保するため右手で上げます。
+      - id: near
+        text: そのとき主審に近いほうの手
+        feedback: 旗を「持つ」のは、ふつう主審に近いほうの手です。ただ、オフサイドの合図は、良い視野を確保するため右手で上げます。
+    answer: right
+explain:
+  summary: 副審はオフサイドと判断したら、まず右手で旗を真上に上げます。主審が笛を吹いてプレーを止めたら、旗で反則のあった地域を示します。
+  detail: 主審がすぐに旗に気づかなかったときは、主審が気づくまで、または守備側のチームが明らかにボールをコントロールするまで合図を続けます。{{オフサイドポジション}}にいるだけでは反則ではないので、プレーに関わったときに旗を上げます。
+  overlays: []
+refs:
+  - {src: laws, article: 第6条 その他の審判員 6.副審のシグナル（オフサイド）}
+  - {src: guidelines, article: ボディーランゲージ、コミュニケーションと笛 2.副審（オフサイド／フラッグテクニック）}

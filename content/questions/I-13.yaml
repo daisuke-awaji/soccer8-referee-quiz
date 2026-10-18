@@ -1,0 +1,44 @@
+# I-13 オフサイドの位置を示す旗
+# 根拠: 第6条 その他の審判員「6. 副審のシグナル」の図（フィールドの近い側／中央／遠い側でのオフサイド）
+#       JFA「審判員のための実践的ガイドライン」2.副審「オフサイド …主審がプレーを停止したら、旗を用い、反則のあった地域を示す」
+id: I-13
+category: signals
+badges: []
+review: {status: draft}
+title: オフサイドの位置を示す旗
+kind: signal
+figure: {pose: ar.offsideNear, right: フィールドの中のほう}
+steps:
+  - type: choice
+    question: 副審がオフサイドの旗を上げ、主審が笛を吹いた。副審は横を向き、旗をフィールドの中に向けて、斜め下に下ろしました。反則があったのはどこ？
+    choices:
+      - {id: near, text: フィールドの近い側（副審に近いところ）}
+      - id: mid
+        text: フィールドの中央
+        feedback: 中央のときは、旗を水平にします。
+      - id: far
+        text: フィールドの遠い側（反対のタッチラインに近いところ）
+        feedback: 遠い側のときは、旗を斜め上に上げます。
+    answer: near
+  - type: choice
+    question: では、「フィールドの遠い側」でのオフサイドを示す合図はどれ？
+    choices:
+      - id: near
+        text: 旗を斜め下に向ける
+        figure: {pose: ar.offsideNear, right: フィールドの中}
+        feedback: これは近い側の合図です。
+      - id: mid
+        text: 旗を水平にする
+        figure: {pose: ar.offsideMiddle, right: フィールドの中}
+        feedback: これは中央の合図です。
+      - id: far
+        text: 旗を斜め上に上げる
+        figure: {pose: ar.offsideFar, right: フィールドの中}
+    answer: far
+explain:
+  summary: オフサイドで主審がプレーを止めたら、副審は旗の角度で反則のあった地域を示します。近い側は斜め下、中央は水平、遠い側は斜め上です。
+  detail: 主審は、示された地域にいる競技者の位置から、オフサイドの反則が起きた場所で間接フリーキックを与えます。最初の合図（旗を真上に上げる）と、位置を示す合図の2段階で知らせます。
+  overlays: []
+refs:
+  - {src: laws, article: 第6条 その他の審判員 6.副審のシグナル（オフサイド）}
+  - {src: guidelines, article: ボディーランゲージ、コミュニケーションと笛 2.副審（オフサイド）}

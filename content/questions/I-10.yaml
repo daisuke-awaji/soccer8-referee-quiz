@@ -1,0 +1,43 @@
+# I-10 コーナーキックとゴールキックの合図（主審）
+# 根拠: 第5条 主審「6. 主審のシグナル」の図（コーナーキック／ゴールキック）
+id: I-10
+category: signals
+badges: []
+review: {status: draft}
+title: コーナーキックとゴールキックの合図（主審）
+kind: signal
+figure: {pose: ref.cornerKick, left: ハーフウェーライン, right: ゴールライン}
+steps:
+  - type: choice
+    question: ボールがゴールラインを越えて出た。主審が腕を斜め上に上げて、この合図をしました。再開の方法は？
+    choices:
+      - {id: ck, text: コーナーキック}
+      - id: gk
+        text: ゴールキック
+        feedback: ゴールキックの合図は、腕を斜め下に向けてゴールエリアを指します。
+      - id: ti
+        text: スローイン
+        feedback: スローインは、ボールがタッチラインを越えたときの再開です。
+    answer: ck
+  - type: choice
+    question: では、主審の「ゴールキック」の合図はどれ？
+    choices:
+      - id: ck
+        text: 腕を斜め上に上げ、コーナーアークを指す
+        figure: {pose: ref.cornerKick}
+        feedback: これはコーナーキックの合図です。
+      - id: gk
+        text: 腕を斜め下に向け、ゴールエリアを指す
+        figure: {pose: ref.goalKick}
+      - id: ifk
+        text: 片腕を真上に上げる
+        figure: {pose: ref.indirectFreeKick}
+        feedback: これは間接フリーキックの合図です。
+    answer: gk
+explain:
+  summary: コーナーキックは腕を斜め上に上げてコーナーアークを、ゴールキックは腕を斜め下に向けてゴールエリアを指します。
+  detail: ゴールキック・コーナーキック・スローインでプレーが止まるときは、笛を吹く必要はありません。合図で、どちらのチームの何の再開かをはっきり示します。
+  overlays: []
+refs:
+  - {src: laws, article: 第5条 主審 6.主審のシグナル（コーナーキック／ゴールキック）}
+  - {src: guidelines, article: ボディーランゲージ、コミュニケーションと笛（笛）}

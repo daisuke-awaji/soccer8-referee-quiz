@@ -1,0 +1,44 @@
+# I-05 コーナーキックとゴールキックの旗
+# 根拠: 第6条 その他の審判員「6. 副審のシグナル」の図（コーナーキック／ゴールキック）
+#       JFA「審判員のための実践的ガイドライン」2.副審「コーナーキック／ゴールキック ボールの全体がゴールラインを越えたとき、（良い視野を得るため）副審は右手で旗を上げ」
+id: I-05
+category: signals
+badges: []
+review: {status: draft}
+title: コーナーキックとゴールキックの旗
+kind: signal
+figure: {pose: ar.cornerKick, mirror: true, left: ゴールライン（コーナーフラッグ）, right: ハーフウェーライン}
+steps:
+  - type: choice
+    question: ボールがゴールラインを越えた。副審が旗を斜め下に向けて、コーナーフラッグのほうを指しました。再開の方法は？
+    choices:
+      - {id: ck, text: コーナーキック}
+      - id: gk
+        text: ゴールキック
+        feedback: ゴールキックの合図は、旗を水平にしてゴールエリアを指します。
+      - id: off
+        text: オフサイド
+        feedback: オフサイドの合図は、まず旗を真上に上げます。
+    answer: ck
+  - type: choice
+    question: では、副審の「ゴールキック」の合図はどれ？
+    choices:
+      - id: ti
+        text: 旗を斜め上に上げる
+        figure: {pose: ar.direction}
+        feedback: これはスローイン（またはフリーキック）の方向を示す合図です。
+      - id: ck
+        text: 旗を斜め下に向ける
+        figure: {pose: ar.cornerKick, mirror: true}
+        feedback: これはコーナーキックの合図です。
+      - id: gk
+        text: 旗を水平にして指す
+        figure: {pose: ar.goalKick, mirror: true}
+    answer: gk
+explain:
+  summary: 副審のコーナーキックの合図は旗を斜め下に向けてコーナーフラッグのほうを、ゴールキックの合図は旗を水平にしてゴールエリアを指します。
+  detail: ボールの全体がゴールラインを越えたとき、副審は（良い視野を得るため）右手で旗を上げて、主審にボールが出たことを伝えます。副審に近いところで出たときは、ゴールキックかコーナーキックかを示します。遠いところで出たときは、主審を目で確認して主審の判定に合わせます。
+  overlays: []
+refs:
+  - {src: laws, article: 第6条 その他の審判員 6.副審のシグナル（コーナーキック／ゴールキック）}
+  - {src: guidelines, article: ボディーランゲージ、コミュニケーションと笛 2.副審（コーナーキック／ゴールキック）}

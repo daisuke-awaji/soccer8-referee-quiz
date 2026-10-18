@@ -30,6 +30,43 @@ export const SCENE3D_IDS = ['slidingTackle', 'penaltyAreaPush'] as const;
 /** 立ち位置を選ぶ問題（type: position）に使える3Dシーン */
 export const POSITION_SCENE3D_IDS: ReadonlyArray<(typeof SCENE3D_IDS)[number]> = ['penaltyAreaPush'];
 
+/** 合図の絵（src/signals/poses.ts に形がある ID）。ref.〜 = 主審、ar.〜 = 副審 */
+export const SIGNAL_POSES = [
+  'ref.rest',
+  'ref.indirectFreeKick',
+  'ref.directFreeKick',
+  'ref.advantage',
+  'ref.penaltyKick',
+  'ref.cornerKick',
+  'ref.goalKick',
+  'ref.countdown',
+  'ar.rest',
+  'ar.raise',
+  'ar.direction',
+  'ar.cornerKick',
+  'ar.goalKick',
+  'ar.substitution',
+  'ar.wave',
+  'ar.offsideNear',
+  'ar.offsideMiddle',
+  'ar.offsideFar',
+] as const;
+export const SignalPose = z.enum(SIGNAL_POSES);
+export type SignalPose = z.infer<typeof SignalPose>;
+
+/** 合図の絵。正面（または横）から見た審判員1人と、左右の向きの説明 */
+export const SignalFigure = z
+  .object({
+    pose: SignalPose,
+    /** 左右を入れ替える（指す向きを反対にする） */
+    mirror: z.boolean().optional(),
+    /** 絵の左・右の下に出す説明（例: 赤が攻める方向） */
+    left: z.string().optional(),
+    right: z.string().optional(),
+  })
+  .strict();
+export type SignalFigure = z.infer<typeof SignalFigure>;
+
 export const QuestionId = z.string().regex(/^[A-K]-\d{2,3}$/, 'ID は「A-01」の形式（分野の英字 A〜K＋2〜3桁）');
 
 const Vec2 = z.tuple([z.number(), z.number()]);
@@ -122,6 +159,8 @@ const Choice = z
     feedback: z.string().optional(),
     /** 解答後に、選択肢の中に小さく表示する注記 */
     note: z.string().optional(),
+    /** 合図の絵で選ぶ選択肢（kind: signal の問題だけ） */
+    figure: SignalFigure.optional(),
   })
   .strict();
 
@@ -259,6 +298,8 @@ export const Question = z.discriminatedUnion('kind', [
   z.object({ ...QuestionBase, kind: z.literal('3d'), scene3d: Scene3D }).strict(),
   /** 図のない問題（選択式・○×）。規則の数字や手順を問う */
   z.object({ ...QuestionBase, kind: z.literal('text') }).strict(),
+  /** 合図（シグナル）の問題。問いに合図の絵を出す（figure）か、選択肢を絵にする（choices[].figure） */
+  z.object({ ...QuestionBase, kind: z.literal('signal'), figure: SignalFigure.optional() }).strict(),
 ]);
 export type Question = z.infer<typeof Question>;
 export type QuestionInput = z.input<typeof Question>;

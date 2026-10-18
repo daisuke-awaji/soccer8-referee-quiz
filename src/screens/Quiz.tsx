@@ -6,11 +6,12 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNo
 import type { Nav } from '../App';
 import { useUi } from '../app/context';
 import { CATEGORIES, QMAP, SOURCES } from '../content';
-import type { Question, Step, Vec2 } from '../content/schema';
+import type { Question, SignalFigure as SignalFigureDef, Step, Vec2 } from '../content/schema';
 import { hasAnimation } from '../engine/animation';
 import { judgePlacement, type PlacementJudgement } from '../engine/placement';
 import type { StageEngine } from '../engine/stage';
 import { Pitch2D } from '../pitch2d/Pitch2D';
+import { SignalFigure } from '../signals/SignalFigure';
 import { createScene3D, preloadScene3D, type CameraTab, type LegendItem, type Scene3DEngine } from '../scene3d';
 import type { AppState } from '../storage/store';
 import { Icon } from '../ui/Icon';
@@ -56,7 +57,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   const steps = q.steps;
   const is3d = q.kind === '3d';
   const hasAnim = hasAnimation(q);
-  const hasStage = q.kind !== 'text';
+  const hasStage = q.kind === '2d' || q.kind === '3d';
   const pauseAt = q.kind === '3d' ? q.scene3d.pauseAt : q.kind === '2d' ? q.scene.pauseAt : 0;
   const endAt = q.kind === '3d' ? q.scene3d.endAt : q.kind === '2d' ? (q.scene.endAt ?? q.scene.pauseAt) : 0;
 
@@ -110,7 +111,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
   useEffect(() => {
     let cancelled = false;
     const ready = () => setPhase(hasAnim ? 'intro' : 'answering');
-    if (q.kind === 'text') {
+    if (q.kind === 'text' || q.kind === 'signal') {
       ready();
       return;
     }
@@ -537,6 +538,12 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
           </div>
         )}
 
+        {q.kind === 'signal' && q.figure && (
+          <div className="sig-stage">
+            <SignalFigure figure={q.figure} />
+          </div>
+        )}
+
         {is3d && phase !== 'error' && phase !== 'loading' && (
           <div className="cam-tabs" role="tablist" aria-label="視点">
             {cams.map((c) => {
@@ -735,7 +742,7 @@ export function Quiz({ question: q, review, state, nav }: { question: Question; 
 }
 
 interface ChoiceListStep {
-  choices: ReadonlyArray<{ id: string; text: string; feedback?: string; note?: string }>;
+  choices: ReadonlyArray<{ id: string; text: string; feedback?: string; note?: string; figure?: SignalFigureDef }>;
   answer: string;
 }
 
@@ -753,10 +760,11 @@ function ChoiceList({
   onPick: (id: string) => void;
 }) {
   const done = !!result;
+  const figs = step.choices.some((c) => c.figure);
   return (
-    <div className="choices" role="radiogroup" aria-label="選択肢">
+    <div className={'choices' + (figs ? ' fig-grid' : '')} role="radiogroup" aria-label="選択肢">
       {step.choices.map((c, i) => {
-        let cls = 'choice';
+        let cls = 'choice' + (c.figure ? ' has-fig' : '');
         if (!done && sel === c.id) cls += ' sel';
         if (done) {
           if (c.id === step.answer) cls += ' is-correct';
@@ -776,6 +784,11 @@ function ChoiceList({
               onClick={() => !done && onPick(c.id)}
             >
               <span className="letter">{letters[i]}</span>
+              {c.figure && (
+                <span className="cfig">
+                  <SignalFigure figure={c.figure} size="sm" />
+                </span>
+              )}
               <span className="ctext">
                 <RichText text={c.text} />
               </span>

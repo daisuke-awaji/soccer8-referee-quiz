@@ -1,0 +1,86 @@
+# E-05 ゴールキックのときの副審の位置
+# 根拠: JFA「審判員のための実践的ガイドライン」ポジショニング 2.「ゴールキック 副審は、先ずボールがゴールエリア内にあるかどうかチェックしなければならない。
+#       ボールが正しく置かれていない場合、副審はそのポジションから動かず、主審とアイコンタクトを取り、旗を上げなければならない。
+#       しかしながら、追加副審がいる場合、副審はオフサイドのラインに位置すべきである。追加副審はゴールラインとゴールエリアの交点のところに位置し…」
+#       ※「ボールがゴールエリア内にあるかを確かめられる位置」＝ゴールエリアのラインの延長上とした。監修で確認する
+# 座標: x=0〜68m（赤は x=68 の青ゴールへ攻撃）, y=0〜50m（y=0 がベンチ側）, 時間は秒
+id: E-05
+category: positioning
+badges: [provisional]
+review: {status: draft, note: 正解の位置（ゴールエリアのラインの延長上）と範囲（±1.5m）は監修で決める}
+title: ゴールキックのときの副審の位置
+kind: 2d
+hint: ゴールキックで、副審が最初に確かめることは何でしょう？
+scene:
+  view: {x: 40, y: 0, w: 30, h: 52}
+  actors:
+    - {id: B1, role: goalkeeper, team: blue, label: "1"}
+    - {id: B4, role: player, team: blue, label: "4"}
+    - {id: B5, role: player, team: blue, label: "5"}
+    - {id: B6, role: player, team: blue, label: "6"}
+    - {id: R9, role: player, team: red, label: "9"}
+    - {id: R7, role: player, team: red, label: "7"}
+    - {id: R10, role: player, team: red, label: "10"}
+    - {id: ball, role: ball}
+    - {id: REF, role: referee}
+    - {id: AR2, role: assistant}
+  timeline:
+    - t: 0
+      positions:
+        B1: [66, 27]
+        ball: [69.5, 33]
+        B4: [58, 17]
+        B5: [57, 36]
+        B6: [50, 26]
+        R9: [60, 28]
+        R7: [61, 40]
+        R10: [54, 22]
+        REF: [52, 16]
+        AR2: [62, 51.4]
+      events:
+        - {type: caption, text: 赤チームのシュートが、ゴールの横を通ってゴールラインを越えた}
+    - t: 2
+      positions:
+        B1: [65.3, 29.5]
+        ball: [65.5, 29.5]
+        B4: [54, 14]
+        B5: [53, 38]
+        B6: [46, 27]
+        R9: [52, 30]
+        R7: [51, 41]
+        R10: [48, 21]
+        REF: [47, 18]
+      events:
+        - {type: caption, text: 青チームのゴールキック。GKがボールをゴールエリアに置いた}
+  pauseAt: 2
+steps:
+  - type: placement
+    question: 右側の副審を、タッチライン沿いにドラッグ（またはタップ）して、ゴールキックのときに最初に立つ位置に動かしてください。
+    placement:
+      mode: line
+      actor: AR2
+      fixedY: 51.4
+      min: 34.5
+      max: 68
+      target: [64, 51.4]
+      tolerance: 1.5
+      describe: {kind: lineOffset}
+      zones:
+        - lineX: 54
+          r: 1.5
+          text: そこは後方から2人目の守備側競技者のラインです。ボールが正しく置かれたことを確かめたあとに、オフサイドラインへ移ります。
+        - lineX: 56
+          r: 0.5
+          text: そこはペナルティーエリアのラインです。まずは、ボールがゴールエリアの中にあるかを確かめられる位置に立ちます。
+        - lineX: 68
+          r: 1.5
+          text: そこはゴールラインの延長上（コーナーキックのときの位置）です。ゴールキックでは、ゴールエリアのラインに合わせます。
+explain:
+  summary: ゴールキックでは、副審はまずボールがゴールエリアの中に正しく置かれているかを確かめます。そのため、ゴールエリアのラインの延長上に立ちます。
+  detail: ボールが正しく置かれていなければ、その位置から動かず、主審と目で確認して旗を上げます。正しく置かれていれば、オフサイドラインをチェックできる位置（{{後方から2人目の守備側競技者}}のライン）へ移ります。8人制のゴールエリアは、ゴールラインから4mです。
+  overlays:
+    - {type: marker, at: [64, 51.4], label: ゴールエリアのライン}
+    - {type: offsideLine, actor: B4, label: このあと移るライン}
+refs:
+  - {src: guidelines, article: ポジショニング（位置取り）、動き方とチームワーク 2.（ゴールキック）}
+  - {src: eight, article: 第1条 競技のフィールド}
